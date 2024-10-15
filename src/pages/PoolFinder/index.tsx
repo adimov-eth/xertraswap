@@ -125,7 +125,12 @@ export default function PoolFinder() {
             {currency0 && currency1 ? (
               pairState === PairState.EXISTS ? (
                 hasPosition && pair ? (
-                  <MinimalPositionCard pair={pair} />
+                  <>
+                    <MinimalPositionCard pair={pair} />
+                    <StyledInternalLink to="/pool">
+                      <Text style={{ textAlign: 'center' }}>{TranslateString(168, 'Manage Liquidity')}</Text>
+                    </StyledInternalLink>
+                  </>
                 ) : (
                   <LightCard padding="45px 10px">
                     <AutoColumn gap="sm" justify="center">

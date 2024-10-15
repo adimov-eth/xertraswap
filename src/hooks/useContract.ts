@@ -1,6 +1,7 @@
 import { Contract } from '@ethersproject/contracts'
 import { ChainId, WETH } from '@pancakeswap-libs/sdk'
-import { abi as IUniswapV2PairABI } from '@uniswap/v2-core/build/IUniswapV2Pair.json'
+import v2Pair from '@uniswap/v2-core/build/IUniswapV2Pair.json'
+
 import { useMemo } from 'react'
 import ENS_ABI from '../constants/abis/ens-registrar.json'
 import ENS_PUBLIC_RESOLVER_ABI from '../constants/abis/ens-public-resolver.json'
@@ -11,6 +12,7 @@ import { MULTICALL_ABI, MULTICALL_NETWORKS } from '../constants/multicall'
 import { getContract } from '../utils'
 import { useActiveWeb3React } from './index'
 
+const IUniswapV2PairABI  = v2Pair.abi
 // returns null on errors
 function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
   const { library, account } = useActiveWeb3React()
@@ -41,7 +43,7 @@ export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contrac
   if (chainId) {
     switch (chainId) {
       case ChainId.MAINNET:
-      case ChainId.BSCTESTNET:
+      case ChainId.TESTNET:
     }
   }
   return useContract(address, ENS_ABI, withSignerIfPossible)

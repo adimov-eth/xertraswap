@@ -1,18 +1,16 @@
 import { useEffect, useState } from 'react'
 
 type ApiResponse = {
-  updated_at: string
-  data: {
-    [key: string]: {
-      name: string
-      symbol: string
-      price: string
-      price_BNB: string
-    }
+
+  [key: string]: {
+    usd: string
   }
+  
 }
 
-const api = 'https://api.pancakeswap.info/api/tokens'
+
+const coinId = 'stratis';
+const api = `https://api.coingecko.com/api/v3/simple/price?ids=${coinId}&vs_currencies=usd`
 
 const useGetPriceData = () => {
   const [data, setData] = useState<ApiResponse | null>(null)
