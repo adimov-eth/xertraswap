@@ -126,14 +126,6 @@
 
     {
       "chainId": 205205,
-      "name": "DEXToken4",
-      "address": "0x2d9fb245627cFBb14666E0A99Cd26e33f3a3D7E7",
-      "decimals": 18,
-      "symbol": "DT4"
-    },
-
-    {
-      "chainId": 205205,
       "name": "DEXToken3",
       "address": "0x094E10dC29B8c3220bE9240ac343F8c64D09B93F",
       "decimals": 18,
