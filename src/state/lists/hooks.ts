@@ -60,7 +60,7 @@ export function listToTokenMap(list: TokenList): TokenAddressMap {
         ...tokenMap,
         [token.chainId]: {
           ...tokenMap[token.chainId],
-          [token.address]: token
+          [token.address.toLowerCase()]: token
         }
       }
     },

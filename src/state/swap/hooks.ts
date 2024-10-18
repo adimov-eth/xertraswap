@@ -205,7 +205,7 @@ function parseCurrencyFromURLParameter(urlParam: any): string {
     if (urlParam.toUpperCase() === 'STRAX') return 'STRAX'
     if (valid === false) return 'STRAX'
   }
-  return 'STRAX' ?? ''
+  return 'STRAX'
 }
 
 function parseTokenAmountURLParameter(urlParam: any): string {
