@@ -43,22 +43,6 @@
       "logoURI": "https://straxswap.com/images/coins/0xeF11f04217d7a78641f6a300a0dE83791961b3b6.png"
     },
     {
-      "name": "GPT Token",
-      "symbol": "GPT",
-      "address": "0x83e88E09803FF8726A761ec25e91784872596fdB",
-      "chainId": 105105,
-      "decimals": 18,
-      "logoURI": "https://straxswap.com/images/coins/0x83e88E09803FF8726A761ec25e91784872596fdB.png"
-    },
-    {
-      "name": "TEST DAI",
-      "symbol": "TDAI",
-      "address": "0xa92C7D53E05ce805e9c95318e72147FEBD5DC5E5",
-      "chainId": 105105,
-      "decimals": 18,
-      "logoURI": "https://straxswap.com/images/coins/0xa92C7D53E05ce805e9c95318e72147FEBD5DC5E5.png"
-    },
-    {
       "chainId": 205205,
       "name": "WRAPPED STRAX",
       "address": "0x7b7E6F779c497df2e9EAF8C311d44A296E4F316D",
