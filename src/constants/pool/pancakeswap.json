@@ -1,0 +1,49 @@
+{
+  "name": "PancakeSwap Default List",
+  "timestamp": "2021-03-17T09:56:23Z",
+  "version": {
+    "major": 2,
+    "minor": 10,
+    "patch": 0
+  },
+  "tags": {},
+  "logoURI": "https://straxswap.com/images/pancakeswap.png",
+  "keywords": [
+    "pancake",
+    "default"
+  ],
+  "pools": [
+    {
+      "pid": 1,
+      "chainId": 105105,
+      "lpSymbol": "GPT-DAI LP",
+      "lpAddress": "0x9d9974cf88372bdfa88f15e0a629b213e7aaf605",
+      "token": "0x83e88e09803ff8726a761ec25e91784872596fdb",
+      "quoteToken": "0xa92c7d53e05ce805e9c95318e72147febd5dc5e5"
+    },
+    {
+      "pid": 2,
+      "chainId": 105105,
+      "lpSymbol": "GPT-WSTRAX LP",
+      "lpAddress": "0xbba788e473c0e4e326b68b9d76cff06f7befdde4",
+      "token": "0x83e88e09803ff8726a761ec25e91784872596fdb",
+      "quoteToken": "0xea705d2dbd8de7dc70db7b531d0f620d9cee9d18"
+    },
+    {
+      "pid": 3,
+      "chainId": 105105,
+      "lpSymbol": "DAI-WSTRAX LP",
+      "lpAddress": "0x06abcb931e6e0095ac374132a8b63d936d611593",
+      "token": "0xa92c7d53e05ce805e9c95318e72147febd5dc5e5",
+      "quoteToken": "0xea705d2dbd8de7dc70db7b531d0f620d9cee9d18"
+    },
+    {
+      "pid": 1,
+      "chainId": 205205,
+      "lpSymbol": "SSI-AGI LP",
+      "lpAddress": "0x8a6ab4ea4d7f5124f46e961b42f432b59f2cabde",
+      "token": "0x2d9fb245627cfbb14666e0a99cd26e33f3a3d7e7",
+      "quoteToken": "0x83c5dcecc4a0b1909d4ade1bb16eddba5e145fcf"
+    }
+  ]
+}

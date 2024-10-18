@@ -22,7 +22,7 @@ export function useAllTokens(): { [address: string]: Token } {
         // reduce into all ALL_TOKENS filtered by the current chain
         .reduce<{ [address: string]: Token }>(
           (tokenMap, token) => {
-            tokenMap[token.address] = token
+            tokenMap[token.address.toLowerCase()] = token
             return tokenMap
           },
           // must make a copy because reduce modifies the map, and we do not
