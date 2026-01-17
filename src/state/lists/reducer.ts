@@ -50,10 +50,10 @@ const initialState: ListsState = {
 export default createReducer(initialState, (builder) =>
   builder
     .addCase(fetchTokenList.pending, (state, { payload: { requestId, url } }) => {
+      const existing = state.byUrl[url]
       state.byUrl[url] = {
-        current: null,
-        pendingUpdate: null,
-        ...state.byUrl[url],
+        current: existing?.current ?? null,
+        pendingUpdate: existing?.pendingUpdate ?? null,
         loadingRequestId: requestId,
         error: null,
       }
