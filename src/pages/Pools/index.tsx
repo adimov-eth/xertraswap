@@ -105,7 +105,9 @@ export default function Pools() {
                     <Td>
                       <AutoColumn gap="sm">
                         <DoubleCurrencyLogo currency0={pool.pair.token0} currency1={pool.pair.token1} size={25} margin />
-                        {pool.info.lpSymbol}
+                        <Link to={`/pool/${pool.pair.token0.address}/${pool.pair.token1.address}`} style={{ textDecoration: 'none', color: '#1FC7D4', fontWeight: 500 }}>
+                          {pool.info.lpSymbol}
+                        </Link>
                       </AutoColumn>
                     </Td>
                     <Td>

@@ -3,38 +3,35 @@
   "timestamp": "2021-03-17T09:56:23Z",
   "version": {
     "major": 2,
-    "minor": 10,
+    "minor": 11,
     "patch": 0
   },
   "tags": {},
   "logoURI": "https://straxswap.com/images/pancakeswap.png",
-  "keywords": [
-    "pancake",
-    "default"
-  ],
+  "keywords": ["pancake", "default"],
   "pools": [
     {
       "pid": 1,
       "chainId": 105105,
-      "lpSymbol": "GPT-DAI LP",
-      "lpAddress": "0x9d9974cf88372bdfa88f15e0a629b213e7aaf605",
-      "token": "0x83e88e09803ff8726a761ec25e91784872596fdb",
-      "quoteToken": "0xa92c7d53e05ce805e9c95318e72147febd5dc5e5"
+      "lpSymbol": "USDT-WSTRAX LP",
+      "lpAddress": "0xdD132834Ca70df5795A272bEeDAB56Dbc3f4baD9",
+      "token": "0xe46f25af64467c21a01c20ae0edf94e2ed934c5c",
+      "quoteToken": "0xea705d2dbd8de7dc70db7b531d0f620d9cee9d18"
     },
     {
       "pid": 2,
       "chainId": 105105,
-      "lpSymbol": "GPT-WSTRAX LP",
-      "lpAddress": "0xbba788e473c0e4e326b68b9d76cff06f7befdde4",
-      "token": "0x83e88e09803ff8726a761ec25e91784872596fdb",
+      "lpSymbol": "USDC-WSTRAX LP",
+      "lpAddress": "0x65c376f6F07F117F2cF8540a3a430315b5f12af1",
+      "token": "0xdd0c4bb4b46a1c10d36593e4fa5f76abdb583f7a",
       "quoteToken": "0xea705d2dbd8de7dc70db7b531d0f620d9cee9d18"
     },
     {
       "pid": 3,
       "chainId": 105105,
-      "lpSymbol": "DAI-WSTRAX LP",
-      "lpAddress": "0x06abcb931e6e0095ac374132a8b63d936d611593",
-      "token": "0xa92c7d53e05ce805e9c95318e72147febd5dc5e5",
+      "lpSymbol": "WETH-WSTRAX LP",
+      "lpAddress": "0x07cd3314a68BC67792f93841cbBF8039671376c5",
+      "token": "0xef11f04217d7a78641f6a300a0de83791961b3b6",
       "quoteToken": "0xea705d2dbd8de7dc70db7b531d0f620d9cee9d18"
     },
     {
@@ -44,6 +41,14 @@
       "lpAddress": "0x8a6ab4ea4d7f5124f46e961b42f432b59f2cabde",
       "token": "0x2d9fb245627cfbb14666e0a99cd26e33f3a3d7e7",
       "quoteToken": "0x83c5dcecc4a0b1909d4ade1bb16eddba5e145fcf"
+    },
+    {
+      "pid": 2,
+      "chainId": 205205,
+      "lpSymbol": "rSTRAX-WSTRAX LP",
+      "lpAddress": "0xc3005def05ED2E213a9638f719d37E04D7d2c5e8",
+      "token": "0x5c0958e166144606A5d0Aeaf8efe2f1110c37B53",
+      "quoteToken": "0x6f39A32C3E7A54164e1C6E201979aec276B0Da8E"
     }
   ]
 }
