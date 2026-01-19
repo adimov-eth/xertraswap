@@ -8,7 +8,11 @@
   },
   "tags": {},
   "logoURI": "/images/pancakeswap.png",
-  "keywords": ["xertra", "stratis", "default"],
+  "keywords": [
+    "xertra",
+    "stratis",
+    "default"
+  ],
   "tokens": [
     {
       "name": "WSTRAX Token",
@@ -81,6 +85,14 @@
       "chainId": 105105,
       "decimals": 6,
       "logoURI": "/images/coins/0xaa0e34A393dadAAF661132deA1EDD834c5628e16.png"
+    },
+    {
+      "name": "SolPlex Beta Token",
+      "symbol": "tSPX",
+      "address": "0x677027a1a25341803A179BA495aDE4Eebc3a8EBE",
+      "chainId": 105105,
+      "decimals": 18,
+      "logoURI": "/images/coins/0x677027a1a25341803A179BA495aDE4Eebc3a8EBE.png"
     },
     {
       "chainId": 205205,
