@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { TokenAmount, Pair, Percent, JSBI } from '@pancakeswap-libs/sdk'
+import { TokenAmount, Pair, Percent, JSBI } from '@xertra/sdk'
 import { Interface } from '@ethersproject/abi'
 import v2Pair from '@uniswap/v2-core/build/IUniswapV2Pair.json'
 

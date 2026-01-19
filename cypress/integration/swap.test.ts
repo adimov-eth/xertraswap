@@ -2,6 +2,7 @@ describe('Swap', () => {
   beforeEach(() => {
     cy.visit('/swap')
   })
+
   it('can enter an amount into input', () => {
     cy.get('#swap-currency-input .token-amount-input')
       .type('0.001', { delay: 200 })
@@ -32,15 +33,13 @@ describe('Swap', () => {
       .should('have.value', '0.0')
   })
 
-  it('can swap BNB for ADA', () => {
+  it('can swap STRAX for USDT', () => {
+    // Select USDT as output token (Stratis mainnet)
     cy.get('#swap-currency-output .open-currency-select-button').click()
-    cy.get('.token-item-0x3EE2200Efb3400fAbB9AacF31297cBdD1d435D47').click({ force: true })
+    cy.get('.token-item-0xe46f25Af64467c21a01c20Ae0edf94E2Ed934c5C').click({ force: true })
     cy.get('#swap-currency-input .token-amount-input').should('be.visible')
     cy.get('#swap-currency-input .token-amount-input').type('0.001', { force: true, delay: 200 })
     cy.get('#swap-currency-output .token-amount-input').should('not.equal', '')
-    // Wallet not connected so shows 'connect wallet', not swap-button.
-    // cy.get('#swap-button').click()
-    // cy.get('#confirm-swap-or-send').should('contain', 'Confirm Swap')
   })
 
   it('add a recipient does not exist unless in expert mode', () => {

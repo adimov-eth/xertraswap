@@ -1,4 +1,4 @@
-import { TokenAmount, Pair, Currency } from '@pancakeswap-libs/sdk'
+import { TokenAmount, Pair, Currency } from '@xertra/sdk'
 import { useMemo } from 'react'
 import v2Pair from '@uniswap/v2-core/build/IUniswapV2Pair.json'
 import { Interface } from '@ethersproject/abi'

@@ -1,5 +1,5 @@
 import { parseUnits } from '@ethersproject/units'
-import { Currency, CurrencyAmount, ETHER, JSBI, Token, TokenAmount, Trade } from '@pancakeswap-libs/sdk'
+import { Currency, CurrencyAmount, ETHER, JSBI, Token, TokenAmount, Trade } from '@xertra/sdk'
 import { ParsedQs } from 'qs'
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -16,6 +16,7 @@ import { SwapState } from './reducer'
 
 import { useUserSlippageTolerance } from '../user/hooks'
 import { computeSlippageAdjustedAmounts } from '../../utils/prices'
+import { getBadRecipientAddresses } from '../../config/chains'
 
 export function useSwapState(): AppState['swap'] {
   return useSelector<AppState, AppState['swap']>((state) => state.swap)
@@ -86,12 +87,8 @@ export function tryParseAmount(value?: string, currency?: Currency): CurrencyAmo
   return undefined
 }
 
-const BAD_RECIPIENT_ADDRESSES: string[] = [
-  '0xDC29A634611914ed73261A71C8F20D828cA2c09F', // v2 factory
-  '0xB81CeAA5452408c29F88b2AdAfaA6B3078FBbE18', // v2 router 01
-  '0xE71d254C2F1430b597b53D83B3453d519F4C4564', // v2 router 02
-
-]
+// Bad recipient addresses derived from chain config
+const BAD_RECIPIENT_ADDRESSES: string[] = getBadRecipientAddresses()
 
 /**
  * Returns true if any of the pairs or tokens in a trade have the given checksummed address

@@ -1,50 +1,55 @@
-describe.only('Add Liquidity', () => {
+describe('Add Liquidity', () => {
+  // Using Stratis mainnet token addresses
+  // WSTRAX: 0xeA705D2DbD8DE7Dc70Db7B531D0F620d9CeE9d18
+  // USDT: 0xe46f25Af64467c21a01c20Ae0edf94E2Ed934c5C
+  // USDC: 0xDD0C4bb4b46A1C10D36593E4FA5F76abdB583f7A
+
   it('loads the two correct tokens', () => {
-    cy.visit('/add/0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82/0xe9e7cea3dedca5984780bafc599bd69add087d56')
-    cy.get('#add-liquidity-input-tokena #pair').should('contain.text', 'CAKE')
-    cy.get('#add-liquidity-input-tokenb #pair').should('contain.text', 'BUSD')
+    cy.visit('/add/0xeA705D2DbD8DE7Dc70Db7B531D0F620d9CeE9d18/0xe46f25Af64467c21a01c20Ae0edf94E2Ed934c5C')
+    cy.get('#add-liquidity-input-tokena #pair').should('contain.text', 'WSTRAX')
+    cy.get('#add-liquidity-input-tokenb #pair').should('contain.text', 'USDT')
   })
 
-  it('does not crash if CAKE is duplicated', () => {
-    cy.visit('/add/0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82/0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82')
-    cy.get('#add-liquidity-input-tokena #pair').should('contain.text', 'CAKE')
-    cy.get('#add-liquidity-input-tokenb #pair').should('not.contain.text', 'CAKE')
+  it('does not crash if WSTRAX is duplicated', () => {
+    cy.visit('/add/0xeA705D2DbD8DE7Dc70Db7B531D0F620d9CeE9d18/0xeA705D2DbD8DE7Dc70Db7B531D0F620d9CeE9d18')
+    cy.get('#add-liquidity-input-tokena #pair').should('contain.text', 'WSTRAX')
+    cy.get('#add-liquidity-input-tokenb #pair').should('not.contain.text', 'WSTRAX')
   })
 
   it('token not in storage is loaded', () => {
-    cy.visit('/add/0xe9e7cea3dedca5984780bafc599bd69add087d56/0x7083609fce4d1d8dc0c979aab8c869ea2c873402')
-    cy.get('#add-liquidity-input-tokena #pair').should('contain.text', 'BUSD')
-    cy.get('#add-liquidity-input-tokenb #pair').should('contain.text', 'DOT')
+    cy.visit('/add/0xe46f25Af64467c21a01c20Ae0edf94E2Ed934c5C/0xDD0C4bb4b46A1C10D36593E4FA5F76abdB583f7A')
+    cy.get('#add-liquidity-input-tokena #pair').should('contain.text', 'USDT')
+    cy.get('#add-liquidity-input-tokenb #pair').should('contain.text', 'USDC')
   })
 
   it('single token can be selected', () => {
-    cy.visit('/add/0x7083609fce4d1d8dc0c979aab8c869ea2c873402')
-    cy.get('#add-liquidity-input-tokena #pair').should('contain.text', 'DOT')
-    cy.visit('/add/0xe9e7cea3dedca5984780bafc599bd69add087d56')
-    cy.get('#add-liquidity-input-tokena #pair').should('contain.text', 'BUSD')
+    cy.visit('/add/0xDD0C4bb4b46A1C10D36593E4FA5F76abdB583f7A')
+    cy.get('#add-liquidity-input-tokena #pair').should('contain.text', 'USDC')
+    cy.visit('/add/0xe46f25Af64467c21a01c20Ae0edf94E2Ed934c5C')
+    cy.get('#add-liquidity-input-tokena #pair').should('contain.text', 'USDT')
   })
 
   it('redirects /add/token-token to add/token/token', () => {
-    cy.visit('/add/0xb290b2f9f8f108d03ff2af3ac5c8de6de31cdf6d-0xF9bA5210F91D0474bd1e1DcDAeC4C58E359AaD85')
+    cy.visit('/add/0xeA705D2DbD8DE7Dc70Db7B531D0F620d9CeE9d18-0xe46f25Af64467c21a01c20Ae0edf94E2Ed934c5C')
     cy.url().should(
       'contain',
-      '/add/0xb290b2f9f8f108d03ff2af3ac5c8de6de31cdf6d/0xF9bA5210F91D0474bd1e1DcDAeC4C58E359AaD85'
+      '/add/0xeA705D2DbD8DE7Dc70Db7B531D0F620d9CeE9d18/0xe46f25Af64467c21a01c20Ae0edf94E2Ed934c5C'
     )
   })
 
-  it('redirects /add/WETH-token to /add/WETH-address/token', () => {
-    cy.visit('/add/0xc778417E063141139Fce010982780140Aa0cD5Ab-0xF9bA5210F91D0474bd1e1DcDAeC4C58E359AaD85')
+  it('redirects /add/WSTRAX-token to /add/WSTRAX-address/token', () => {
+    cy.visit('/add/0xeA705D2DbD8DE7Dc70Db7B531D0F620d9CeE9d18-0xe46f25Af64467c21a01c20Ae0edf94E2Ed934c5C')
     cy.url().should(
       'contain',
-      '/add/0xc778417E063141139Fce010982780140Aa0cD5Ab/0xF9bA5210F91D0474bd1e1DcDAeC4C58E359AaD85'
+      '/add/0xeA705D2DbD8DE7Dc70Db7B531D0F620d9CeE9d18/0xe46f25Af64467c21a01c20Ae0edf94E2Ed934c5C'
     )
   })
 
-  it('redirects /add/token-WETH to /add/token/WETH-address', () => {
-    cy.visit('/add/0xF9bA5210F91D0474bd1e1DcDAeC4C58E359AaD85-0xc778417E063141139Fce010982780140Aa0cD5Ab')
+  it('redirects /add/token-WSTRAX to /add/token/WSTRAX-address', () => {
+    cy.visit('/add/0xe46f25Af64467c21a01c20Ae0edf94E2Ed934c5C-0xeA705D2DbD8DE7Dc70Db7B531D0F620d9CeE9d18')
     cy.url().should(
       'contain',
-      '/add/0xF9bA5210F91D0474bd1e1DcDAeC4C58E359AaD85/0xc778417E063141139Fce010982780140Aa0cD5Ab'
+      '/add/0xe46f25Af64467c21a01c20Ae0edf94E2Ed934c5C/0xeA705D2DbD8DE7Dc70Db7B531D0F620d9CeE9d18'
     )
   })
 })

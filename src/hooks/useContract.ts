@@ -1,5 +1,5 @@
 import { Contract } from '@ethersproject/contracts'
-import { ChainId, WETH } from '@pancakeswap-libs/sdk'
+import { ChainId, WETH } from '@xertra/sdk'
 import v2Pair from '@uniswap/v2-core/build/IUniswapV2Pair.json'
 
 import { useMemo } from 'react'

@@ -2,7 +2,7 @@ import React, { Suspense, useEffect, useState } from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 import { Credentials, StringTranslations } from '@crowdin/crowdin-api-client'
-import { LangType } from '@pancakeswap-libs/uikit'
+import { LangType } from '@xertra/uikit'
 import Popups from '../components/Popups'
 import Web3ReactManager from '../components/Web3ReactManager'
 import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from './AddLiquidity/redirects'
@@ -94,6 +94,13 @@ export default function App() {
   }, [])
 
   const fetchTranslationsForSelectedLanguage = async () => {
+    // Skip Crowdin API if credentials not configured
+    if (!apiKey || apiKey === 'undefined' || !projectId || Number.isNaN(projectId)) {
+      setTranslations([])
+      setTranslatedLanguage(selectedLanguage)
+      return
+    }
+
     stringTranslationsApi
       .listLanguageTranslations(projectId, selectedLanguage.code, undefined, fileId, 200)
       .then((translationApiResponse) => {
@@ -106,7 +113,10 @@ export default function App() {
       .then(() => setTranslatedLanguage(selectedLanguage))
       .catch((error) => {
         setTranslations(['error'])
-        console.error(error)
+        // Silently handle missing Crowdin credentials
+        if (process.env.NODE_ENV === 'development') {
+          console.info('Crowdin translations not configured - using defaults')
+        }
       })
   }
 

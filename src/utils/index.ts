@@ -4,7 +4,7 @@ import { AddressZero } from '@ethersproject/constants'
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 import { BigNumber } from '@ethersproject/bignumber'
 import v2Router from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
-import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, ETHER } from '@pancakeswap-libs/sdk'
+import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, ETHER } from '@xertra/sdk'
 import { ROUTER_ADDRESS } from '../constants'
 import { TokenAddressMap } from '../state/lists/hooks'
 

@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { BigNumber } from '@ethersproject/bignumber'
-import { Token, TokenAmount } from '@pancakeswap-libs/sdk'
+import { Token, TokenAmount } from '@xertra/sdk'
 import ERC20_INTERFACE from 'constants/abis/erc20'
 import { useTokenContract } from '../hooks/useContract'
 import { useSingleCallResult, useMultipleContractSingleData } from '../state/multicall/hooks'
