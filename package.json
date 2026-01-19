@@ -1,0 +1,15 @@
+{
+  "name": "xertra",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "interface"
+  ],
+  "scripts": {
+    "dev": "yarn workspace @xertra/interface start",
+    "build": "yarn workspace @xertra/interface build",
+    "lint": "yarn workspace @xertra/interface lint",
+    "test": "yarn workspace @xertra/interface test"
+  },
+  "packageManager": "yarn@1.22.22"
+}
