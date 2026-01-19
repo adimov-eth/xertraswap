@@ -121,6 +121,7 @@ const SUGGESTED_POOLS = [
   { symbol: 'WBNB.wh', address: '0xE6d9419BFE31992a3aA4763B1e86Faf384c91697' },
   { symbol: 'USDC.e', address: '0x959A50Db9B9c78990698cA621d7a0bA7F1d6f2D6' },
   { symbol: 'USDC.bsc', address: '0xaa0e34A393dadAAF661132deA1EDD834c5628e16' },
+  { symbol: 'tSPX', address: '0x677027a1a25341803A179BA495aDE4Eebc3a8EBE' },
 ]
 
 function SuggestedPoolRow({ tokenAddress, symbol }: { tokenAddress: string; symbol: string }) {
@@ -274,7 +275,7 @@ export default function Pools() {
 
         <SectionTitle>Create New Pools</SectionTitle>
         <Text color="textSubtle" style={{ paddingLeft: '10px', marginBottom: '16px' }}>
-          These bridged tokens need liquidity pools. Click to create a pool with STRAX.
+          These tokens need liquidity pools. Click to create a pool with STRAX.
         </Text>
         {SUGGESTED_POOLS.map((pool) => (
           <SuggestedPoolRow
