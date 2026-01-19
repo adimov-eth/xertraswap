@@ -1,9 +1,59 @@
-# 🥞 Pancake Swap Exchange
+# Xertra Swap
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/c6ef7e73-4a84-410d-83b0-b89326787dff/deploy-status)](https://app.netlify.com/sites/swap-master/deploys)
+Decentralized exchange (DEX) and automated market maker (AMM) for the Stratis EVM network.
 
-[PancakeSwap](https://pancakeswap.finance/) is an automated market maker (“**AMM**”) that allows two tokens to be exchanged on the [Binance Smart Chain](https://www.binance.org/en/smartChain) (BSC). It is fast, cheap, and allows anyone to participate.
+## Quick Start
 
-This repo is responsible for the **exchange** interface of the AMM: [exchange.pancakeswap.finance](https://exchange.pancakeswap.finance/)
+```bash
+yarn install
+NODE_OPTIONS=--openssl-legacy-provider PORT=4001 yarn start
+```
 
-If you want to contribute, please refer to the [contributing guidelines](./CONTRIBUTING.md) of this project.
+## Build
+
+```bash
+TSC_COMPILE_ON_ERROR=true NODE_OPTIONS=--openssl-legacy-provider yarn build
+```
+
+## Network
+
+| Network | Chain ID | RPC |
+|---------|----------|-----|
+| Mainnet | 105105 | https://rpc.stratisevm.com |
+| Testnet (Auroria) | 205205 | https://auroria.rpc.stratisevm.com |
+
+**Native Token:** STRAX
+**Wrapped Token:** WSTRAX
+
+## Architecture
+
+```
+src/
+├── components/     # React components
+├── pages/          # Route pages (Swap, Pool, Liquidity)
+├── hooks/          # Custom React hooks
+├── state/          # Redux state management
+├── constants/      # Token lists, addresses
+├── connectors/     # Web3 wallet connectors
+└── config/         # Chain configuration
+
+packages/
+├── xertra-sdk/     # Forked SDK with Stratis chain config
+└── xertra-uikit/   # Forked UIKit components
+```
+
+## Key Dependencies
+
+- `@xertra/sdk` - Native Stratis chain configuration (replaces @pancakeswap-libs/sdk)
+- `@xertra/uikit` - UI components (replaces @pancakeswap-libs/uikit)
+
+## Contracts
+
+| Contract | Mainnet | Testnet |
+|----------|---------|---------|
+| Factory | `0xDC29...` | `0x23D1...` |
+| Router | See deployment docs | See deployment docs |
+
+## License
+
+GPL-3.0
