@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { TokenAmount } from '@xertra/sdk'
+import { Token, TokenAmount } from '@xertra/sdk'
 import { Card, Button, Text } from '@xertra/uikit'
 
 import { useAllPools, useUserPairPosition, PairState } from 'hooks/usePools'
@@ -13,6 +13,23 @@ import { AutoColumn } from 'components/Column'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { useCurrency } from 'hooks/Tokens'
+
+// Token bridge sources (lowercase addresses)
+const BRIDGE_INFO: Record<string, { bridge: string; origin: string }> = {
+  // ChainPort bridged
+  '0xe46f25af64467c21a01c20ae0edf94e2ed934c5c': { bridge: 'ChainPort', origin: 'Ethereum' }, // USDT
+  '0xdd0c4bb4b46a1c10d36593e4fa5f76abdb583f7a': { bridge: 'ChainPort', origin: 'Ethereum' }, // USDC
+  '0xef11f04217d7a78641f6a300a0de83791961b3b6': { bridge: 'ChainPort', origin: 'Ethereum' }, // WETH
+  // Wormhole bridged
+  '0xc398cc4828e7ce677b357c8f94b6792cb5538c03': { bridge: 'Wormhole', origin: 'Ethereum' }, // WETH.wh
+  '0xe6d9419bfe31992a3aa4763b1e86faf384c91697': { bridge: 'Wormhole', origin: 'BSC' }, // WBNB.wh
+  '0x959a50db9b9c78990698ca621d7a0ba7f1d6f2d6': { bridge: 'Wormhole', origin: 'Ethereum' }, // USDC.e
+  '0xaa0e34a393dadaaf661132dea1edd834c5628e16': { bridge: 'Wormhole', origin: 'BSC' }, // USDC.bsc
+}
+
+function getBridgeInfo(token: Token): { bridge: string; origin: string } | null {
+  return BRIDGE_INFO[token.address.toLowerCase()] || null
+}
 
 const BodyWrapper = styled(Card)`
   position: relative;
@@ -107,27 +124,35 @@ const TokenSymbols = styled.div`
   flex-direction: column;
 `
 
-// Wormhole tokens that need pools
+// Bridged tokens that need pools (Wormhole bridge)
 const SUGGESTED_POOLS = [
   {
     symbol: 'WETH.wh',
     address: '0xc398Cc4828E7ce677B357c8f94B6792Cb5538c03',
+    bridge: 'Wormhole',
+    origin: 'Ethereum',
   },
   {
     symbol: 'WBNB.wh',
     address: '0xE6d9419BFE31992a3aA4763B1e86Faf384c91697',
+    bridge: 'Wormhole',
+    origin: 'BSC',
   },
   {
     symbol: 'USDC.e',
     address: '0x959A50Db9B9c78990698cA621d7a0bA7F1d6f2D6',
+    bridge: 'Wormhole',
+    origin: 'Ethereum',
   },
   {
     symbol: 'USDC.bsc',
     address: '0xaa0e34A393dadAAF661132deA1EDD834c5628e16',
+    bridge: 'Wormhole',
+    origin: 'BSC',
   },
 ]
 
-function SuggestedPoolRow({ tokenAddress, symbol }: { tokenAddress: string; symbol: string }) {
+function SuggestedPoolRow({ tokenAddress, symbol, bridge, origin }: { tokenAddress: string; symbol: string; bridge: string; origin: string }) {
   const currency = useCurrency(tokenAddress)
   const straxCurrency = useCurrency('STRAX')
   const TranslateString = useI18n()
@@ -138,6 +163,7 @@ function SuggestedPoolRow({ tokenAddress, symbol }: { tokenAddress: string; symb
         <DoubleCurrencyLogo currency0={straxCurrency ?? undefined} currency1={currency ?? undefined} size={25} margin />
         <TokenSymbols>
           <Text bold>STRAX-{symbol}</Text>
+          <Text fontSize="12px" color="textSubtle">{bridge} from {origin}</Text>
         </TokenSymbols>
       </TokenInfo>
       <Button
@@ -184,6 +210,11 @@ export default function Pools() {
                         <Link to={`/pool/${pool.pair.token0.address}/${pool.pair.token1.address}`} style={{ textDecoration: 'none', color: '#1FC7D4', fontWeight: 500 }}>
                           {pool.info.lpSymbol}
                         </Link>
+                        {(getBridgeInfo(pool.pair.token0) || getBridgeInfo(pool.pair.token1)) && (
+                          <Text fontSize="11px" color="textSubtle">
+                            {getBridgeInfo(pool.pair.token0)?.bridge || getBridgeInfo(pool.pair.token1)?.bridge}
+                          </Text>
+                        )}
                       </AutoColumn>
                     </Td>
                     <Td>
@@ -271,13 +302,15 @@ export default function Pools() {
 
         <SectionTitle>Create New Pools</SectionTitle>
         <Text color="textSubtle" style={{ paddingLeft: '10px', marginBottom: '16px' }}>
-          These Wormhole bridged tokens need liquidity pools. Click to create a pool with STRAX.
+          These bridged tokens need liquidity pools. Click to create a pool with STRAX.
         </Text>
         {SUGGESTED_POOLS.map((pool) => (
           <SuggestedPoolRow
             key={pool.address}
             tokenAddress={pool.address}
             symbol={pool.symbol}
+            bridge={pool.bridge}
+            origin={pool.origin}
           />
         ))}
       </Wrapper>
