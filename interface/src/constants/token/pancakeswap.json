@@ -1,0 +1,178 @@
+{
+  "name": "Xertra Swap Default List",
+  "timestamp": "2021-03-17T09:56:23Z",
+  "version": {
+    "major": 2,
+    "minor": 12,
+    "patch": 0
+  },
+  "tags": {},
+  "logoURI": "/images/pancakeswap.png",
+  "keywords": ["xertra", "stratis", "default"],
+  "tokens": [
+    {
+      "name": "WSTRAX Token",
+      "symbol": "WSTRAX",
+      "address": "0xeA705D2DbD8DE7Dc70Db7B531D0F620d9CeE9d18",
+      "chainId": 105105,
+      "decimals": 18,
+      "logoURI": "/images/coins/0xeA705D2DbD8DE7Dc70Db7B531D0F620d9CeE9d18.png"
+    },
+    {
+      "name": "rStrax",
+      "symbol": "rSTRAX",
+      "address": "0x2CaE3B96F7A202aE4460A391b9b4eA35dD606931",
+      "chainId": 105105,
+      "decimals": 18,
+      "logoURI": "/images/coins/0x2CaE3B96F7A202aE4460A391b9b4eA35dD606931.png"
+    },
+    {
+      "name": "USDT Token",
+      "symbol": "USDT",
+      "address": "0xe46f25Af64467c21a01c20Ae0edf94E2Ed934c5C",
+      "chainId": 105105,
+      "decimals": 6,
+      "logoURI": "/images/coins/0xe46f25Af64467c21a01c20Ae0edf94E2Ed934c5C.png"
+    },
+    {
+      "name": "USDC Token",
+      "symbol": "USDC",
+      "address": "0xDD0C4bb4b46A1C10D36593E4FA5F76abdB583f7A",
+      "chainId": 105105,
+      "decimals": 6,
+      "logoURI": "/images/coins/0xDD0C4bb4b46A1C10D36593E4FA5F76abdB583f7A.png"
+    },
+    {
+      "name": "Wrapped Ether",
+      "symbol": "WETH",
+      "address": "0xeF11f04217d7a78641f6a300a0dE83791961b3b6",
+      "chainId": 105105,
+      "decimals": 18,
+      "logoURI": "/images/coins/0xeF11f04217d7a78641f6a300a0dE83791961b3b6.png"
+    },
+    {
+      "name": "Wrapped Ether (Wormhole)",
+      "symbol": "WETH",
+      "address": "0xc398Cc4828E7ce677B357c8f94B6792Cb5538c03",
+      "chainId": 105105,
+      "decimals": 18,
+      "logoURI": "/images/coins/0xc398Cc4828E7ce677B357c8f94B6792Cb5538c03.png"
+    },
+    {
+      "name": "Wrapped BNB (Wormhole)",
+      "symbol": "WBNB",
+      "address": "0xE6d9419BFE31992a3aA4763B1e86Faf384c91697",
+      "chainId": 105105,
+      "decimals": 18,
+      "logoURI": "/images/coins/0xE6d9419BFE31992a3aA4763B1e86Faf384c91697.png"
+    },
+    {
+      "name": "USD Coin - Ethereum (Wormhole)",
+      "symbol": "USDC.e",
+      "address": "0x959A50Db9B9c78990698cA621d7a0bA7F1d6f2D6",
+      "chainId": 105105,
+      "decimals": 6,
+      "logoURI": "/images/coins/0x959A50Db9B9c78990698cA621d7a0bA7F1d6f2D6.png"
+    },
+    {
+      "name": "USD Coin - BSC (Wormhole)",
+      "symbol": "USDC.bsc",
+      "address": "0xaa0e34A393dadAAF661132deA1EDD834c5628e16",
+      "chainId": 105105,
+      "decimals": 6,
+      "logoURI": "/images/coins/0xaa0e34A393dadAAF661132deA1EDD834c5628e16.png"
+    },
+    {
+      "chainId": 205205,
+      "name": "WRAPPED STRAX",
+      "address": "0x7b7E6F779c497df2e9EAF8C311d44A296E4F316D",
+      "decimals": 18,
+      "symbol": "WSTRAX",
+      "logoURI": "/images/coins/0xeA705D2DbD8DE7Dc70Db7B531D0F620d9CeE9d18.png"
+    },
+    {
+      "chainId": 205205,
+      "name": "DAI",
+      "address": "0x6F9cBc51c7E22BBE7e5DD517925fB9bAbd1d9a05",
+      "decimals": 18,
+      "symbol": "DAI",
+      "logoURI": "/images/coins/0x6F9cBc51c7E22BBE7e5DD517925fB9bAbd1d9a05.png"
+    },
+    {
+      "chainId": 205205,
+      "name": "TestGBPT",
+      "address": "0x796D5852D54055094Ac177dE792164BCa625a28e",
+      "decimals": 18,
+      "symbol": "TGBPT",
+      "logoURI": "/images/coins/0x796D5852D54055094Ac177dE792164BCa625a28e.png"
+    },
+    {
+      "chainId": 205205,
+      "name": "Pupa token",
+      "address": "0xb84b0f343c04a31939ba97e2cfec4639cc413d66",
+      "decimals": 18,
+      "symbol": "PUPA",
+      "logoURI": "/images/coins/0xb84b0f343c04a31939ba97e2cfec4639cc413d66.png"
+    },
+    {
+      "chainId": 205205,
+      "name": "Lupa token",
+      "address": "0x0f14c19b5a28975b549e037dbc7188ffa63ffeae",
+      "decimals": 18,
+      "symbol": "LUPA",
+      "logoURI": "/images/coins/0x0f14c19b5a28975b549e037dbc7188ffa63ffeae.png"
+    },
+    {
+      "chainId": 205205,
+      "name": "AGI",
+      "address": "0x83c5DcEcc4a0b1909d4ADe1BB16edDba5e145fCf",
+      "decimals": 18,
+      "symbol": "AGI",
+      "logoURI": "/images/coins/0x83c5DcEcc4a0b1909d4ADe1BB16edDba5e145fCf.png"
+    },
+    {
+      "chainId": 205205,
+      "name": "SSI",
+      "address": "0x2d9fb245627cFBb14666E0A99Cd26e33f3a3D7E7",
+      "decimals": 18,
+      "symbol": "SSI",
+      "logoURI": "/images/coins/0x2d9fb245627cFBb14666E0A99Cd26e33f3a3D7E7.png"
+    },
+    {
+      "chainId": 205205,
+      "name": "USDC",
+      "address": "0x673E35439E5dE07e0d9C43632FBd9096F2eb372D",
+      "decimals": 6,
+      "symbol": "USDC",
+      "logoURI": "/images/coins/0x673E35439E5dE07e0d9C43632FBd9096F2eb372D.png"
+    },
+    {
+      "chainId": 205205,
+      "name": "DEXToken3",
+      "address": "0x094E10dC29B8c3220bE9240ac343F8c64D09B93F",
+      "decimals": 18,
+      "symbol": "DT3"
+    },
+    {
+      "chainId": 205205,
+      "name": "DEXToken2",
+      "address": "0x1Ce9cd2CD9e6C7dEcC92a10816908B3efd95aa23",
+      "decimals": 18,
+      "symbol": "DT2"
+    },
+    {
+      "chainId": 205205,
+      "name": "DEXToken1",
+      "address": "0xccc566AE43540f0f93eEf9D50cE65800388baF25",
+      "decimals": 18,
+      "symbol": "DT1"
+    },
+    {
+      "chainId": 205205,
+      "name": "rSTRAX",
+      "address": "0x5c0958e166144606A5d0Aeaf8efe2f1110c37B53",
+      "decimals": 18,
+      "symbol": "rSTRAX"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "name": "@xertra/sdk",
+  "license": "MIT",
+  "version": "1.0.0",
+  "description": "SDK for Xertra Swap on Stratis EVM",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "module": "dist/sdk.esm.js",
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@uniswap/v2-core": "^1.0.0",
+    "big.js": "^5.2.2",
+    "decimal.js-light": "^2.5.0",
+    "jsbi": "^3.1.1",
+    "tiny-invariant": "^1.1.0",
+    "tiny-warning": "^1.0.3",
+    "toformat": "^2.0.0"
+  },
+  "peerDependencies": {
+    "@ethersproject/address": "^5.0.0-beta",
+    "@ethersproject/contracts": "^5.0.0-beta",
+    "@ethersproject/networks": "^5.0.0-beta",
+    "@ethersproject/providers": "^5.0.0-beta",
+    "@ethersproject/solidity": "^5.0.0-beta"
+  },
+  "engines": {
+    "node": ">=10"
+  }
+}

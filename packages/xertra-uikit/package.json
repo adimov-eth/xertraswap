@@ -1,0 +1,27 @@
+{
+  "name": "@xertra/uikit",
+  "version": "1.0.0",
+  "description": "UI components for Xertra Swap on Stratis EVM",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-router-dom": "^5.2.0",
+    "styled-components": "^5.2.3"
+  },
+  "dependencies": {
+    "@popperjs/core": "^2.4.4",
+    "@types/lodash": "^4.14.168",
+    "@types/styled-system": "^5.1.10",
+    "lodash": "^4.17.20",
+    "react-popper": "^2.2.3",
+    "react-transition-group": "^4.4.1",
+    "styled-system": "^5.1.5"
+  }
+}
