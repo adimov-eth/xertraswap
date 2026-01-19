@@ -35,6 +35,13 @@
     <meta name="twitter:description" content="" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Xertra Swap" />
+    <style>
+      /* Prevent browser extension overlays from blocking clicks */
+      iframe[style*="z-index: 2147483647"],
+      iframe[style*="z-index:2147483647"] {
+        pointer-events: none !important;
+      }
+    </style>
   </head>
   <body>
     <!-- GTAG (noscript) -->

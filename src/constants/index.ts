@@ -1,8 +1,7 @@
-import { ChainId, JSBI, Percent, Token, WETH } from '@pancakeswap-libs/sdk'
+import { ChainId, JSBI, Percent, Token, WETH } from '@xertra/sdk'
+import { getCurrentContracts } from '../config/chains'
 
-const CHAIN_ID = process.env.REACT_APP_CHAIN_ID || '105105'
-export const ROUTER_ADDRESS =
-  CHAIN_ID === '105105' ? '0xE71d254C2F1430b597b53D83B3453d519F4C4564' : '0x9cD69163Ed694fD1E8c98e27A0944db1c6FABd4A'
+export const ROUTER_ADDRESS = getCurrentContracts().ROUTER
 
 // a list of tokens by chain
 type ChainTokenList = {
