@@ -1,7 +1,6 @@
 import { Currency, ETHER, JSBI, TokenAmount } from '@xertra/sdk'
 import React, { useCallback, useEffect, useState } from 'react'
 import { Button, ChevronDownIcon, AddIcon, CardBody, Text } from '@xertra/uikit'
-import CardNav from 'components/CardNav'
 import { LightCard } from 'components/Card'
 import { AutoColumn, ColumnCenter } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
@@ -81,7 +80,6 @@ export default function PoolFinder() {
 
   return (
     <>
-      <CardNav activeIndex={1} />
       <AppBody>
         <FindPoolTabs />
         <CardBody>
