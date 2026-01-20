@@ -17,6 +17,26 @@ import { FadedSpan, MenuItem } from './styleds'
 import Loader from '../Loader'
 import { isTokenOnList } from '../../utils'
 
+// Bridge info lookup by token address
+const BRIDGE_INFO: Record<string, string> = {
+  // Wormhole tokens
+  '0xc398Cc4828E7ce677B357c8f94B6792Cb5538c03': 'via Wormhole', // WETH
+  '0xE6d9419BFE31992a3aA4763B1e86Faf384c91697': 'via Wormhole', // WBNB
+  '0x959A50Db9B9c78990698cA621d7a0bA7F1d6f2D6': 'via Wormhole (Ethereum)', // USDC from ETH
+  '0xaa0e34A393dadAAF661132deA1EDD834c5628e16': 'via Wormhole (BSC)', // USDC from BSC
+  // ChainPort tokens
+  '0xe46f25Af64467c21a01c20Ae0edf94E2Ed934c5C': 'via ChainPort', // USDT
+  '0xDD0C4bb4b46A1C10D36593E4FA5F76abdB583f7A': 'via ChainPort', // USDC
+  '0xeF11f04217d7a78641f6a300a0dE83791961b3b6': 'via ChainPort', // WETH
+}
+
+function getBridgeInfo(currency: Currency): string | null {
+  if (currency instanceof Token) {
+    return BRIDGE_INFO[currency.address] || null
+  }
+  return null
+}
+
 function currencyKey(currency: Currency): string {
   return currency instanceof Token ? currency.address : currency === ETHER ? 'ETHER' : ''
 }
@@ -115,6 +135,9 @@ function CurrencyRow({
       <CurrencyLogo currency={currency} size="24px" />
       <Column>
         <Text title={currency.name}>{currency.symbol}</Text>
+        {getBridgeInfo(currency) && (
+          <Text fontSize="12px" color="textSubtle">{getBridgeInfo(currency)}</Text>
+        )}
         <FadedSpan>
           {!isOnSelectedList && customAdded && !(currency instanceof WrappedTokenInfo) ? (
             <Text>
