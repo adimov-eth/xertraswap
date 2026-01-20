@@ -15,7 +15,7 @@ const PopoverContainer = styled.div<{ show: boolean }>`
 
   background: ${({ theme }) => theme.colors.invertedContrast};
   border: 1px solid ${({ theme }) => theme.colors.tertiary};
-  box-shadow: 0 4px 8px 0 ${transparentize(0.9, '#2F80ED')};
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   color: ${({ theme }) => theme.colors.textSubtle};
   border-radius: 8px;
 `

@@ -44,7 +44,7 @@ const BodyWrapper = styled(Card)`
 
 const StatCard = styled.div`
   background: ${({ theme }) => theme.colors.background};
-  border-radius: 16px;
+  border-radius: 8px;
   padding: 16px;
   margin-bottom: 16px;
 `
@@ -382,7 +382,7 @@ export default function PoolDetails() {
                   ) : null}
 
                   {showWrap ? null : (
-                    <Card padding=".25rem .75rem 0 .75rem" borderRadius="20px">
+                    <Card padding=".25rem .75rem 0 .75rem" borderRadius="8px">
                       <AutoColumn gap="4px">
                         {Boolean(trade) && (
                           <RowBetween align="center">

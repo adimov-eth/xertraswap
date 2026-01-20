@@ -18,8 +18,8 @@ export const ConfirmedIcon = styled(ColumnCenter)`
 
 export const BottomSection = styled(Section)`
   background-color: ${({ theme }) => theme.colors.invertedContrast};
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
 `
 
 /**

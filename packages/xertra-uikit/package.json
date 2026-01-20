@@ -1,14 +1,49 @@
 {
   "name": "@xertra/uikit",
   "version": "1.0.0",
-  "description": "UI components for Xertra Swap on Stratis EVM",
+  "description": "UI components for Xertra DEX",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
+  "repository": "https://github.com/pancakeswap/pancake-toolkit/tree/master/packages/pancake-uikit",
   "license": "MIT",
+  "scripts": {
+    "start": "yarn storybook",
+    "build": "rm -rf ./dist && rollup -c && tsc -d --emitDeclarationOnly --declarationDir dist --skipLibCheck || true",
+    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
+    "format:check": "prettier --check --loglevel error 'src/**/*.{js,jsx,ts,tsx}'",
+    "format:write": "prettier --write 'src/**/*.{js,jsx,ts,tsx}'",
+    "storybook": "start-storybook -p 6006",
+    "storybook:build": "build-storybook",
+    "test": "jest"
+  },
+  "jest": {
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/setupTests.js"
+    ]
+  },
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^8.2.1",
+    "@rollup/plugin-url": "^6.1.0",
+    "@testing-library/jest-dom": "^5.11.6",
+    "@testing-library/react": "^11.2.5",
+    "@types/react": "^17.0.5",
+    "@types/react-dom": "^17.0.5",
+    "@types/react-router-dom": "^5.1.7",
+    "@types/react-transition-group": "^4.4.0",
+    "@types/styled-components": "^5.1.9",
+    "jest-styled-components": "^7.0.3",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-router-dom": "^5.2.0",
+    "rollup": "^2.50.0",
+    "styled-components": "^5.2.0",
+    "tslib": "^2.2.0",
+    "typescript": "^4.3.2"
+  },
   "peerDependencies": {
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -16,12 +51,13 @@
     "styled-components": "^5.2.3"
   },
   "dependencies": {
-    "@popperjs/core": "^2.4.4",
     "@types/lodash": "^4.14.168",
     "@types/styled-system": "^5.1.10",
     "lodash": "^4.17.20",
-    "react-popper": "^2.2.3",
     "react-transition-group": "^4.4.1",
     "styled-system": "^5.1.5"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

@@ -1,32 +1,23 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { ThemeProvider as SCThemeProvider } from 'styled-components'
-import { light, dark } from '@xertra/uikit'
-
-const CACHE_KEY = 'IS_DARK'
+import { xertraDark } from './theme/xertraTheme'
 
 export interface ThemeContextType {
   isDark: boolean;
   toggleTheme: () => void;
 }
 
-const ThemeContext = React.createContext<ThemeContextType>({ isDark: false, toggleTheme: () => null })
+// No-op function for theme toggle (dark mode only)
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const noop = () => {}
+
+// Dark mode only - matching xertra.com brand
+const ThemeContext = React.createContext<ThemeContextType>({ isDark: true, toggleTheme: noop })
 
 const ThemeContextProvider: React.FC = ({ children }) => {
-  const [isDark, setIsDark] = useState(() => {
-    const isDarkUserSetting = localStorage.getItem(CACHE_KEY)
-    return isDarkUserSetting ? JSON.parse(isDarkUserSetting) : false
-  })
-
-  const toggleTheme = () => {
-    setIsDark((prevState: any) => {
-      localStorage.setItem(CACHE_KEY, JSON.stringify(!prevState))
-      return !prevState
-    })
-  }
-
   return (
-    <ThemeContext.Provider value={{ isDark, toggleTheme }}>
-      <SCThemeProvider theme={isDark ? dark : light}>{children}</SCThemeProvider>
+    <ThemeContext.Provider value={{ isDark: true, toggleTheme: noop }}>
+      <SCThemeProvider theme={xertraDark}>{children}</SCThemeProvider>
     </ThemeContext.Provider>
   )
 }

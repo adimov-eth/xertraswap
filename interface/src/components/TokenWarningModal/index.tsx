@@ -17,16 +17,16 @@ import { AutoColumn } from '../Column'
 const Wrapper = styled.div<{ error: boolean }>`
   background: ${({ theme }) => transparentize(0.6, theme.colors.tertiary)};
   padding: 0.75rem;
-  border-radius: 20px;
+  border-radius: 8px;
 `
 
 const WarningContainer = styled.div`
   max-width: 420px;
   width: 100%;
   padding: 1rem;
-  background: rgba(242, 150, 2, 0.05);
-  border: 1px solid #f3841e;
-  border-radius: 20px;
+  background: ${({ theme }) => transparentize(0.95, theme.colors.warning)};
+  border: 1px solid ${({ theme }) => theme.colors.warning};
+  border-radius: 8px;
   overflow: auto;
 `
 

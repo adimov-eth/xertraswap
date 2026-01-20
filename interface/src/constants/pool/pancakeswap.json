@@ -1,14 +1,14 @@
 {
-  "name": "PancakeSwap Default List",
-  "timestamp": "2021-03-17T09:56:23Z",
+  "name": "Xertra Default List",
+  "timestamp": "2025-01-20T00:00:00Z",
   "version": {
-    "major": 2,
-    "minor": 11,
+    "major": 3,
+    "minor": 0,
     "patch": 0
   },
   "tags": {},
-  "logoURI": "https://straxswap.com/images/pancakeswap.png",
-  "keywords": ["pancake", "default"],
+  "logoURI": "/images/xertra-logo.png",
+  "keywords": ["xertra", "stratis", "default"],
   "pools": [
     {
       "pid": 1,

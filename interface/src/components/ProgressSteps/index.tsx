@@ -24,7 +24,7 @@ const Circle = styled.div<{ confirmed?: boolean; disabled?: boolean }>`
   line-height: 8px;
   font-size: 12px;
   color: ${({ theme, confirmed, disabled }) =>
-    disabled ? theme.colors.text : confirmed ? theme.colors.success : '#FFFFFF'};
+    disabled ? theme.colors.text : confirmed ? theme.colors.contrast : theme.colors.invertedContrast};
 `
 
 const CircleRow = styled.div`

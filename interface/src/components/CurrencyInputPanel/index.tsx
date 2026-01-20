@@ -24,16 +24,17 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
   font-size: 16px;
   font-weight: 500;
   background-color: transparent;
-  color: ${({ selected, theme }) => (selected ? theme.colors.text : '#FFFFFF')};
-  border-radius: 12px;
+  color: ${({ theme }) => theme.colors.text};
+  border-radius: 8px;
   outline: none;
   cursor: pointer;
   user-select: none;
   border: none;
   padding: 0 0.5rem;
+  transition: background-color 150ms ease-in-out;
   :focus,
   :hover {
-    background-color: ${({ theme }) => darken(0.05, theme.colors.input)};
+    background-color: rgba(255, 255, 255, 0.05);
   }
 `
 const LabelRow = styled.div`
@@ -46,7 +47,7 @@ const LabelRow = styled.div`
   padding: 0.75rem 1rem 0 1rem;
   span:hover {
     cursor: pointer;
-    color: ${({ theme }) => darken(0.2, theme.colors.textSubtle)};
+    color: ${({ theme }) => theme.colors.textSubtle};
   }
 `
 const Aligner = styled.span`
@@ -58,14 +59,14 @@ const InputPanel = styled.div<{ hideInput?: boolean }>`
   display: flex;
   flex-flow: column nowrap;
   position: relative;
-  border-radius: ${({ hideInput }) => (hideInput ? '8px' : '20px')};
+  border-radius: 8px;
   background-color: ${({ theme }) => theme.colors.background};
   z-index: 1;
 `
 const Container = styled.div<{ hideInput: boolean }>`
-  border-radius: 16px;
+  border-radius: 8px;
   background-color: ${({ theme }) => theme.colors.input};
-  box-shadow: ${({ theme }) => theme.shadows.inset};
+  box-shadow: none;
 `
 interface CurrencyInputPanelProps {
   value: string
