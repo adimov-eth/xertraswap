@@ -30,15 +30,18 @@ const PanelBody: React.FC<Props> = ({ isPushed, pushNav, isMobile, links }) => {
 
   // Helper function to check if a menu item should be active
   const isMenuItemActive = (href: string, pathname: string): boolean => {
-    // Handle exact match
+    // Handle exact match first
     if (href === pathname) return true;
 
-    // Handle Exchange: both "/" and "/swap" should highlight Exchange
-    if ((pathname === "/" || pathname === "/swap") && href === "/swap") return true;
+    // Handle Exchange: both "/" and "/swap" should highlight /swap menu item
+    if (href === "/swap" && (pathname === "/" || pathname === "/swap")) return true;
 
-    // Handle route variations
-    if (pathname.startsWith("/pool") && href === "/pool") return true;
-    if (pathname.startsWith("/pools") && href === "/pools") return true;
+    // Handle Liquidity: /pool and /pool/:A/:B should highlight /pool menu item
+    // BUT exclude /pools (that's a different feature)
+    if (href === "/pool" && pathname.startsWith("/pool") && pathname !== "/pools") return true;
+
+    // Handle Pools: only exact /pools should highlight /pools menu item
+    if (href === "/pools" && pathname === "/pools") return true;
 
     return false;
   };

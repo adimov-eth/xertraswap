@@ -2,28 +2,24 @@ import { MenuEntry } from '@xertra/uikit'
 
 const config: MenuEntry[] = [
   {
-    label: 'Home',
-    icon: 'HomeIcon',
-    href: '/',
+    label: 'Exchange',
+    icon: 'TradeIcon',
+    href: '/swap',
   },
   {
-    label: 'Trade',
-    icon: 'TradeIcon',
-    initialOpenState: true,
-    items: [
-      {
-        label: 'Exchange',
-        href: '/swap',
-      },
-      {
-        label: 'Liquidity',
-        href: '/pool',
-      },
-      {
-        label: 'Pools',
-        href: '/pools',
-      },
-    ],
+    label: 'Liquidity',
+    icon: 'PoolIcon',
+    href: '/pool',
+  },
+  {
+    label: 'Pools',
+    icon: 'InfoIcon',
+    href: '/pools',
+  },
+  {
+    label: 'Bridge',
+    icon: 'MoreIcon',
+    href: 'https://wormhole.xertra.com/',
   },
   // {
   //   label: 'Farms',
