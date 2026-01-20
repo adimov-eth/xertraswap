@@ -72,7 +72,7 @@
     },
     {
       "name": "USD Coin - Ethereum (Wormhole)",
-      "symbol": "USDC.e",
+      "symbol": "USDC",
       "address": "0x959A50Db9B9c78990698cA621d7a0bA7F1d6f2D6",
       "chainId": 105105,
       "decimals": 6,
@@ -80,7 +80,7 @@
     },
     {
       "name": "USD Coin - BSC (Wormhole)",
-      "symbol": "USDC.bsc",
+      "symbol": "USDC",
       "address": "0xaa0e34A393dadAAF661132deA1EDD834c5628e16",
       "chainId": 105105,
       "decimals": 6,

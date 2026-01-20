@@ -1,22 +1,40 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { Token, TokenAmount } from '@xertra/sdk'
+import { TokenAmount } from '@xertra/sdk'
 import { Card, Button, Text } from '@xertra/uikit'
 
 import { useAllPools, useUserPairPosition, PairState } from 'hooks/usePools'
 import useI18n from 'hooks/useI18n'
-import { useActiveWeb3React } from 'hooks'
 
 import { Wrapper } from 'components/swap/styleds'
 import { AutoColumn } from 'components/Column'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
-import CurrencyLogo from 'components/CurrencyLogo'
 import { useCurrency } from 'hooks/Tokens'
 
-// Extract bridge info from token name if explicitly stated (e.g., "Wormhole" in name)
-function getBridgeInfoFromName(tokenName: string): string | null {
-  if (tokenName.toLowerCase().includes('wormhole')) {
+// Bridge info lookup by token address
+const BRIDGE_INFO: Record<string, string> = {
+  // Wormhole tokens
+  '0xc398Cc4828E7ce677B357c8f94B6792Cb5538c03': 'Wormhole', // WETH
+  '0xE6d9419BFE31992a3aA4763B1e86Faf384c91697': 'Wormhole', // WBNB
+  '0x959A50Db9B9c78990698cA621d7a0bA7F1d6f2D6': 'Wormhole (Ethereum)', // USDC from ETH
+  '0xaa0e34A393dadAAF661132deA1EDD834c5628e16': 'Wormhole (BSC)', // USDC from BSC
+  // ChainPort tokens
+  '0xe46f25Af64467c21a01c20Ae0edf94E2Ed934c5C': 'ChainPort', // USDT
+  '0xDD0C4bb4b46A1C10D36593E4FA5F76abdB583f7A': 'ChainPort', // USDC
+  '0xeF11f04217d7a78641f6a300a0dE83791961b3b6': 'ChainPort', // WETH
+}
+
+// Get bridge info by address with fallback to name detection
+function getBridgeInfo(address: string, tokenName?: string): string | null {
+  // First check explicit mapping
+  if (BRIDGE_INFO[address]) {
+    return BRIDGE_INFO[address]
+  }
+  // Fallback to name detection
+  if (tokenName?.toLowerCase().includes('wormhole')) {
+    if (tokenName.toLowerCase().includes('ethereum')) return 'Wormhole (Ethereum)'
+    if (tokenName.toLowerCase().includes('bsc')) return 'Wormhole (BSC)'
     return 'Wormhole'
   }
   return null
@@ -132,12 +150,12 @@ const TokenSymbols = styled.div`
   flex-direction: column;
 `
 
-// Tokens that need pools (addresses only - bridge info derived from token name)
+// Tokens that need pools - bridge info retrieved from BRIDGE_INFO lookup
 const SUGGESTED_POOLS = [
-  { symbol: 'WETH.wh', address: '0xc398Cc4828E7ce677B357c8f94B6792Cb5538c03' },
-  { symbol: 'WBNB.wh', address: '0xE6d9419BFE31992a3aA4763B1e86Faf384c91697' },
-  { symbol: 'USDC.e', address: '0x959A50Db9B9c78990698cA621d7a0bA7F1d6f2D6' },
-  { symbol: 'USDC.bsc', address: '0xaa0e34A393dadAAF661132deA1EDD834c5628e16' },
+  { symbol: 'WETH', address: '0xc398Cc4828E7ce677B357c8f94B6792Cb5538c03' },
+  { symbol: 'WBNB', address: '0xE6d9419BFE31992a3aA4763B1e86Faf384c91697' },
+  { symbol: 'USDC', address: '0x959A50Db9B9c78990698cA621d7a0bA7F1d6f2D6' },
+  { symbol: 'USDC', address: '0xaa0e34A393dadAAF661132deA1EDD834c5628e16' },
   { symbol: 'tSPX', address: '0x677027a1a25341803A179BA495aDE4Eebc3a8EBE' },
 ]
 
@@ -145,7 +163,7 @@ function SuggestedPoolRow({ tokenAddress, symbol }: { tokenAddress: string; symb
   const currency = useCurrency(tokenAddress)
   const straxCurrency = useCurrency('STRAX')
   const TranslateString = useI18n()
-  const bridgeInfo = currency?.name ? getBridgeInfoFromName(currency.name) : null
+  const bridgeInfo = getBridgeInfo(tokenAddress, currency?.name ?? undefined)
 
   return (
     <SuggestedPoolCard>
@@ -200,9 +218,9 @@ export default function Pools() {
                         <Link to={`/pool/${pool.pair.token0.address}/${pool.pair.token1.address}`} style={{ textDecoration: 'none', fontWeight: 500 }}>
                           {pool.info.lpSymbol}
                         </Link>
-                        {(getBridgeInfoFromName(pool.pair.token0.name ?? '') || getBridgeInfoFromName(pool.pair.token1.name ?? '')) && (
+                        {(getBridgeInfo(pool.pair.token0.address, pool.pair.token0.name ?? '') || getBridgeInfo(pool.pair.token1.address, pool.pair.token1.name ?? '')) && (
                           <Text fontSize="11px" color="textSubtle">
-                            {getBridgeInfoFromName(pool.pair.token0.name ?? '') || getBridgeInfoFromName(pool.pair.token1.name ?? '')}
+                            {getBridgeInfo(pool.pair.token0.address, pool.pair.token0.name ?? '') || getBridgeInfo(pool.pair.token1.address, pool.pair.token1.name ?? '')}
                           </Text>
                         )}
                       </AutoColumn>
