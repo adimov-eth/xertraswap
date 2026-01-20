@@ -17,21 +17,16 @@ export const status = {
 
 export const links = [
   {
-    label: "Home",
-    icon: "HomeIcon",
-    href: "/",
-  },
-  {
     label: "Trade",
     icon: "TradeIcon",
     items: [
       {
         label: "Exchange",
-        href: "https://exchange.pancakeswap.finance",
+        href: "/",
       },
       {
         label: "Liquidity",
-        href: "https://exchange.pancakeswap.finance/#/pool",
+        href: "/pool",
       },
     ],
   },
@@ -44,7 +39,7 @@ export const links = [
   {
     label: "Pools",
     icon: "PoolIcon",
-    href: "/syrup",
+    href: "/pools",
   },
   {
     label: "Lottery",
