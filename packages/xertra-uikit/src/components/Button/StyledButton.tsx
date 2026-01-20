@@ -61,7 +61,7 @@ const StyledButton = styled.button<BaseButtonProps>`
   transition: background-color 0.2s, opacity 0.2s;
 
   &:hover:not(:disabled):not(.pancake-button--disabled):not(.pancake-button--disabled):not(:active) {
-    opacity: 0.65;
+    opacity: 0.9;
   }
 
   &:active:not(:disabled):not(.pancake-button--disabled):not(.pancake-button--disabled) {

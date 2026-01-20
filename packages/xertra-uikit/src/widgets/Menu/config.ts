@@ -150,6 +150,11 @@ export const socials = [
     icon: "TelegramIcon",
     href: "https://t.me/StratisPlatform",
   },
+  {
+    label: "Discord",
+    icon: "DiscordIcon",
+    href: "https://discord.com/invite/9tDyfZs",
+  },
 ];
 
 export const MENU_HEIGHT = 64;
