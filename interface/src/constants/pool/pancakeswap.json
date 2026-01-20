@@ -35,6 +35,14 @@
       "quoteToken": "0xea705d2dbd8de7dc70db7b531d0f620d9cee9d18"
     },
     {
+      "pid": 4,
+      "chainId": 105105,
+      "lpSymbol": "tSPX-USDC LP",
+      "lpAddress": "0x1996c0e53de02de88401f40c4024f2e3f14d7cf4",
+      "token": "0x677027a1a25341803a179ba495ade4eebc3a8ebe",
+      "quoteToken": "0xaa0e34a393dadaaf661132dea1edd834c5628e16"
+    },
+    {
       "pid": 1,
       "chainId": 205205,
       "lpSymbol": "SSI-AGI LP",
