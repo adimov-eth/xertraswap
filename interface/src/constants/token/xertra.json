@@ -83,7 +83,7 @@
       "symbol": "USDC",
       "address": "0xaa0e34A393dadAAF661132deA1EDD834c5628e16",
       "chainId": 105105,
-      "decimals": 6,
+      "decimals": 18,
       "logoURI": "/images/coins/0xaa0e34A393dadAAF661132deA1EDD834c5628e16.png"
     },
     {
@@ -92,6 +92,14 @@
       "address": "0x1996C0E53dE02dE88401f40C4024f2e3f14D7cF4",
       "chainId": 105105,
       "decimals": 18,
+      "logoURI": "/images/coins/0x1996C0E53dE02dE88401f40C4024f2e3f14D7cF4.png"
+    },
+    {
+      "name": "SolPlex Beta Token (Legacy)",
+      "symbol": "tSPX",
+      "address": "0x677027a1a25341803A179BA495aDE4Eebc3a8EBE",
+      "chainId": 105105,
+      "decimals": 6,
       "logoURI": "/images/coins/0x1996C0E53dE02dE88401f40C4024f2e3f14D7cF4.png"
     },
     {
