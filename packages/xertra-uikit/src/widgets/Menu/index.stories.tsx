@@ -30,7 +30,6 @@ const useProps = () => {
     currentLang: "EN",
     cakePriceUsd: 0.023158668932877668,
     links,
-    profile: null,
   });
 
   useEffect(() => {
@@ -46,8 +45,7 @@ const useProps = () => {
         currentLang: "EN",
         cakePriceUsd: 0.023158668932877668,
         links,
-        profile: null,
-      });
+          });
     }, 2000);
     return () => {
       clearInterval(interval);
@@ -130,10 +128,6 @@ export const WithNoProfile: React.FC = () => {
         currentLang="EN"
         cakePriceUsd={0.23158668932877668}
         links={links}
-        profile={{
-          profileLink: "/profile",
-          noProfileLink: "/no-profile",
-        }}
       >
         <div>
           <Heading as="h1" mb="8px">
@@ -172,12 +166,6 @@ export const WithProfile: React.FC = () => {
         currentLang="EN"
         cakePriceUsd={0.23158668932877668}
         links={links}
-        profile={{
-          username: "pancakeswap",
-          image: "https://pancakeswap.finance/images/nfts/blueberries-preview.png",
-          profileLink: "/profile",
-          noProfileLink: "/no-profile",
-        }}
       >
         <div>
           <Heading as="h1" mb="8px">
@@ -226,12 +214,6 @@ export const WithSubmenuSelected: React.FC = () => {
         currentLang="EN"
         cakePriceUsd={0.23158668932877668}
         links={links}
-        profile={{
-          username: "pancakeswap",
-          image: "https://pancakeswap.finance/images/nfts/blueberries-preview.png",
-          profileLink: "/profile",
-          noProfileLink: "/no-profile",
-        }}
       >
         <div>
           <Heading as="h1" mb="8px">
