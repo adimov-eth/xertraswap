@@ -28,6 +28,17 @@ const PanelBody: React.FC<Props> = ({ isPushed, pushNav, isMobile, links }) => {
   // Close the menu when a user clicks a link on mobile
   const handleClick = isMobile ? () => pushNav(false) : undefined;
 
+  // Helper function to check if a menu item should be active
+  const isMenuItemActive = (href: string, pathname: string): boolean => {
+    // Handle exact match
+    if (href === pathname) return true;
+
+    // Special case: root path "/" should also highlight "/swap" (Exchange)
+    if (pathname === "/" && href === "/swap") return true;
+
+    return false;
+  };
+
   return (
     <Container>
       {links.map((entry) => {
@@ -36,7 +47,7 @@ const PanelBody: React.FC<Props> = ({ isPushed, pushNav, isMobile, links }) => {
         const calloutClass = entry.calloutClass ? entry.calloutClass : undefined;
 
         if (entry.items) {
-          const itemsMatchIndex = entry.items.findIndex((item) => item.href === location.pathname);
+          const itemsMatchIndex = entry.items.findIndex((item) => isMenuItemActive(item.href, location.pathname));
           const initialOpenState = entry.initialOpenState === true ? entry.initialOpenState : itemsMatchIndex >= 0;
 
           return (
@@ -48,11 +59,11 @@ const PanelBody: React.FC<Props> = ({ isPushed, pushNav, isMobile, links }) => {
               label={entry.label}
               initialOpenState={initialOpenState}
               className={calloutClass}
-              isActive={entry.items.some((item) => item.href === location.pathname)}
+              isActive={entry.items.some((item) => isMenuItemActive(item.href, location.pathname))}
             >
               {isPushed &&
                 entry.items.map((item) => (
-                  <MenuEntry key={item.href} secondary isActive={item.href === location.pathname} onClick={handleClick}>
+                  <MenuEntry key={item.href} secondary isActive={isMenuItemActive(item.href, location.pathname)} onClick={handleClick}>
                     <MenuLink href={item.href}>
                       <LinkLabel isPushed={isPushed}>{item.label}</LinkLabel>
                       {item.status && (
@@ -67,7 +78,7 @@ const PanelBody: React.FC<Props> = ({ isPushed, pushNav, isMobile, links }) => {
           );
         }
         return (
-          <MenuEntry key={entry.label} isActive={entry.href === location.pathname} className={calloutClass}>
+          <MenuEntry key={entry.label} isActive={entry.href ? isMenuItemActive(entry.href, location.pathname) : false} className={calloutClass}>
             <MenuLink href={entry.href} onClick={handleClick}>
               {iconElement}
               <LinkLabel isPushed={isPushed}>{entry.label}</LinkLabel>

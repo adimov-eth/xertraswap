@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { XertraRoundIcon } from "../../../components/Svg";
 import Text from "../../../components/Text/Text";
 import Skeleton from "../../../components/Skeleton/Skeleton";
 
@@ -13,13 +12,9 @@ interface Props {
 const PriceLink = styled.a`
   display: flex;
   align-items: center;
-  svg {
-    transition: transform 0.3s;
-  }
+  text-decoration: none;
   :hover {
-    svg {
-      transform: scale(1.2);
-    }
+    opacity: 0.8;
   }
 `;
 
@@ -27,8 +22,7 @@ const PriceLink = styled.a`
 const StraxPrice: React.FC<Props> = ({ straxPriceUsd, cakePriceUsd }) => {
   const price = straxPriceUsd ?? cakePriceUsd;
   return price ? (
-    <PriceLink href="https://www.coingecko.com/en/coins/stratis" target="_blank">
-      <XertraRoundIcon width="24px" mr="8px" />
+    <PriceLink href="https://www.coingecko.com/en/coins/stratis" target="_blank" rel="noopener noreferrer">
       <Text color="textSubtle" bold>{`$${price.toFixed(3)}`}</Text>
     </PriceLink>
   ) : (
