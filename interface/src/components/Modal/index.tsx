@@ -18,7 +18,7 @@ const StyledDialogOverlay = styled(AnimatedDialogOverlay)`
     align-items: center;
     justify-content: center;
 
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.5);
   }
 `
 
@@ -32,9 +32,9 @@ const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, ...r
 })`
   &[data-reach-dialog-content] {
     margin: 0 0 2rem 0;
-    border: 1px solid ${({ theme }) => theme.colors.invertedContrast};
-    background-color: ${({ theme }) => theme.colors.invertedContrast};
-    box-shadow: 0 4px 8px 0 ${transparentize(0.95, '#191326')};
+    border: 1px solid ${({ theme }) => theme.colors.borderColor};
+    background-color: ${({ theme }) => theme.colors.card};
+    box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.2);
     padding: 0px;
     width: 80%;
     overflow: hidden;
@@ -53,7 +53,7 @@ const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, ...r
         min-height: ${minHeight}vh;
       `}
     display: flex;
-    border-radius: 20px;
+    border-radius: 8px;
 
     ${({ theme }) => theme.mediaQueries.lg} {
       width: 65vw;

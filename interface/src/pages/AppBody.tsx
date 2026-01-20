@@ -7,6 +7,10 @@ export const BodyWrapper = styled(Card)`
   max-width: 436px;
   width: 100%;
   z-index: 5;
+  border-radius: 8px;
+  border: 1px solid ${({ theme }) => theme.colors.borderColor};
+  background: ${({ theme }) => theme.colors.card};
+  box-shadow: none;
 `
 
 /**

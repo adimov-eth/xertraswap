@@ -36,29 +36,38 @@ const Grid = styled.div`
 `
 
 const Th = styled.th`
-  padding: 10px 5px;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.borderColor};
+  padding: 12px 8px;
+  text-align: left;
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors.textSubtle};
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 
   &:first-child {
-    padding-left: 10px;
+    padding-left: 16px;
   }
 
   &:last-child {
-    padding-right: 10px;
+    padding-right: 16px;
   }
 `
 
 const Td = styled.td`
-  padding: 5px;
+  padding: 16px 8px;
   vertical-align: middle;
-  border-top: 1px solid ${({ theme }) => theme.colors.borderColor};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.borderColor};
 
   &:first-child {
-    padding-left: 10px;
+    padding-left: 16px;
   }
 
   &:last-child {
-    padding-right: 10px;
+    padding-right: 16px;
+  }
+
+  tr:last-child & {
+    border-bottom: none;
   }
 `
 
@@ -87,11 +96,12 @@ const TdHideMd = styled(Td)`
 `
 
 const SectionTitle = styled(Text)`
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
-  margin-top: 24px;
-  margin-bottom: 12px;
-  padding-left: 10px;
+  margin-top: 32px;
+  margin-bottom: 8px;
+  padding-left: 16px;
+  color: ${({ theme }) => theme.colors.text};
 `
 
 const SuggestedPoolCard = styled.div`
@@ -99,9 +109,16 @@ const SuggestedPoolCard = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 12px 16px;
-  border: 1px solid ${({ theme }) => theme.colors.borderColor};
-  border-radius: 12px;
-  margin: 0 10px 8px 10px;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.borderColor};
+  transition: background-color 150ms ease-in-out;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background-color: ${({ theme }) => theme.isDark ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.02)'};
+  }
 `
 
 const TokenInfo = styled.div`
@@ -180,7 +197,7 @@ export default function Pools() {
                     <Td>
                       <AutoColumn gap="sm">
                         <DoubleCurrencyLogo currency0={pool.pair.token0} currency1={pool.pair.token1} size={25} margin />
-                        <Link to={`/pool/${pool.pair.token0.address}/${pool.pair.token1.address}`} style={{ textDecoration: 'none', color: '#1FC7D4', fontWeight: 500 }}>
+                        <Link to={`/pool/${pool.pair.token0.address}/${pool.pair.token1.address}`} style={{ textDecoration: 'none', fontWeight: 500 }}>
                           {pool.info.lpSymbol}
                         </Link>
                         {(getBridgeInfoFromName(pool.pair.token0.name ?? '') || getBridgeInfoFromName(pool.pair.token1.name ?? '')) && (
