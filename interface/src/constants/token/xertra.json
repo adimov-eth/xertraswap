@@ -89,10 +89,10 @@
     {
       "name": "SolPlex Beta Token",
       "symbol": "tSPX",
-      "address": "0x677027a1a25341803A179BA495aDE4Eebc3a8EBE",
+      "address": "0x1996C0E53dE02dE88401f40C4024f2e3f14D7cF4",
       "chainId": 105105,
       "decimals": 18,
-      "logoURI": "/images/coins/0x677027a1a25341803A179BA495aDE4Eebc3a8EBE.png"
+      "logoURI": "/images/coins/0x1996C0E53dE02dE88401f40C4024f2e3f14D7cF4.png"
     },
     {
       "chainId": 205205,
