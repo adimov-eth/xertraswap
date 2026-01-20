@@ -33,8 +33,8 @@ const PanelBody: React.FC<Props> = ({ isPushed, pushNav, isMobile, links }) => {
     // Handle exact match
     if (href === pathname) return true;
 
-    // Special case: root path "/" should highlight Exchange
-    if (pathname === "/" && href === "/") return true;
+    // Handle Exchange: both "/" and "/swap" should highlight Exchange
+    if ((pathname === "/" || pathname === "/swap") && href === "/swap") return true;
 
     // Handle route variations
     if (pathname.startsWith("/pool") && href === "/pool") return true;

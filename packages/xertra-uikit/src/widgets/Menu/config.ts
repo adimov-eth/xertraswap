@@ -22,7 +22,7 @@ export const links = [
     items: [
       {
         label: "Exchange",
-        href: "/",
+        href: "/swap",
       },
       {
         label: "Liquidity",
