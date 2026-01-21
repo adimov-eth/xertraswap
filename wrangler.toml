@@ -1,4 +1,0 @@
-[build.environment_variables]
-NODE_VERSION = "18"
-NODE_OPTIONS = "--openssl-legacy-provider"
-TSC_COMPILE_ON_ERROR = "true"
