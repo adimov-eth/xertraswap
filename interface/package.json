@@ -91,7 +91,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider react-scripts build",
     "postinstall": "echo 'No patches required - using @xertra/sdk and @xertra/uikit'",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
