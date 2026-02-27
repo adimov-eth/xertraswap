@@ -14,19 +14,25 @@ import {
 describe('utils', () => {
   describe('#getBscScanLink', () => {
     it('correct for tx', () => {
-      expect(getBscScanLink(ChainId.TESTNET, 'abc', 'transaction')).toEqual('https://explorer.stratisevm.com/tx/abc')
+      expect(getBscScanLink(ChainId.TESTNET, 'abc', 'transaction')).toEqual(
+        'https://auroria.explorer.stratisevm.com/tx/abc'
+      )
     })
     it('correct for token', () => {
-      expect(getBscScanLink(ChainId.TESTNET, 'abc', 'token')).toEqual('https://explorer.stratisevm.com/token/abc')
+      expect(getBscScanLink(ChainId.TESTNET, 'abc', 'token')).toEqual(
+        'https://auroria.explorer.stratisevm.com/token/abc'
+      )
     })
     it('correct for address', () => {
-      expect(getBscScanLink(ChainId.TESTNET, 'abc', 'address')).toEqual('https://explorer.stratisevm.com/address/abc')
+      expect(getBscScanLink(ChainId.TESTNET, 'abc', 'address')).toEqual(
+        'https://auroria.explorer.stratisevm.com/address/abc'
+      )
     })
     it('unrecognized chain id defaults to mainnet', () => {
-      expect(getBscScanLink(ChainId.TESTNET, 'abc', 'address')).toEqual('https://explorer.stratisevm.com/address/abc')
+      expect(getBscScanLink(999999 as ChainId, 'abc', 'address')).toEqual('https://explorer.stratisevm.com/address/abc')
     })
     it('random chain id', () => {
-      expect(getBscScanLink(ChainId.TESTNET, 'abc', 'address')).toEqual('https://explorer.stratisevm.com/address/abc')
+      expect(getBscScanLink(123 as ChainId, 'abc', 'address')).toEqual('https://explorer.stratisevm.com/address/abc')
     })
     it('enum', () => {
       expect(getBscScanLink(ChainId.MAINNET, 'abc', 'address')).toEqual('https://explorer.stratisevm.com/address/abc')

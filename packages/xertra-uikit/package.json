@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "UI components for Xertra DEX",
   "main": "dist/index.js",
+  "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
   "repository": "https://github.com/pancakeswap/pancake-toolkit/tree/master/packages/pancake-uikit",
   "license": "MIT",
