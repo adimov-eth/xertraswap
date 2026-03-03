@@ -17,6 +17,13 @@ export const RPC_URLS: Record<SupportedChainId, string> = {
   [CHAIN_IDS.TESTNET]: 'https://auroria.rpc.stratisevm.com',
 }
 
+// RPC URLs
+export const BLOCK_EXPLORER_URLS: Record<SupportedChainId, string> = {
+  [CHAIN_IDS.MAINNET]: 'https://explorer.xertra.com',
+  [CHAIN_IDS.TESTNET]: 'https://auroria.explorer.xertra.com',
+}
+
+
 // Contract addresses per network
 export interface NetworkContracts {
   WSTRAX: string
@@ -42,7 +49,7 @@ export const NETWORK_CONTRACTS: Record<SupportedChainId, NetworkContracts> = {
     ROUTER: '0x9cD69163Ed694fD1E8c98e27A0944db1c6FABd4A',
     ROUTER01: '0xa7b5486F70Afc1a6a81cD62f602e921083B2Fa13',
     INIT_HASH: '0xa70eeb9bb3b548bd3404057cd53405c892d49801acca673e77238beb06b75b15',
-    MULTICALL: '0xf297eB680328a2ca0995b8447B2cEb1b87553b7c',
+    MULTICALL: '0x3037081943FcBDFf1771245F404C96681055A808',
   },
 }
 
@@ -62,7 +69,7 @@ export function getCurrentContracts(): NetworkContracts {
 }
 
 export function getCurrentRpcUrl(): string {
-  return process.env.REACT_APP_NETWORK_URL || RPC_URLS[getCurrentChainId()]
+  return RPC_URLS[getCurrentChainId()];
 }
 
 // Bad recipient addresses - contracts that should not receive tokens directly

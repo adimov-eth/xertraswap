@@ -28,10 +28,10 @@ const UserBlock: React.FC<Props> = ({ account, login, logout }) => {
         <Button
           scale="sm"
           onClick={() => {
-            onPresentConnectModal();
+            login();
           }}
         >
-          Connects
+          Connect
         </Button>
       )}
     </div>
