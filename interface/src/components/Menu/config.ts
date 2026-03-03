@@ -1,4 +1,4 @@
-import { MenuEntry } from '@xertra/uikit'
+import { MenuEntry } from 'uikit'
 
 const config: MenuEntry[] = [
   {

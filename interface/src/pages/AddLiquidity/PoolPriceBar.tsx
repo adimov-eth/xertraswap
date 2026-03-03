@@ -1,6 +1,6 @@
 import React from 'react'
 import { Currency, Percent, Price } from '@xertra/sdk'
-import { Text } from '@xertra/uikit'
+import { Text } from 'uikit'
 import { AutoColumn } from '../../components/Column'
 import { AutoRow } from '../../components/Row'
 import { ONE_BIPS } from '../../constants'

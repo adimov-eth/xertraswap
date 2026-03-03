@@ -1,6 +1,6 @@
 import { Token } from '@xertra/sdk'
 import { transparentize } from 'polished'
-import { Button, Text } from '@xertra/uikit'
+import { Button, Text } from 'uikit'
 import React, { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { AlertTriangle } from 'react-feather'

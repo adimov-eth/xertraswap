@@ -7,13 +7,9 @@
   ],
   "scripts": {
     "build:sdk": "yarn workspace @xertra/sdk build",
-    "build:uikit": "yarn workspace @xertra/uikit build",
-    "build:dev:uikit": "yarn workspace @xertra/uikit build:dev",
-    "build:packages": "yarn build:sdk && yarn build:uikit",
-    "build:dev:packages": "yarn build:sdk && yarn build:dev:uikit", 
     "build:interface": "yarn workspace @xertra/interface build",
-    "dev": "yarn build:dev:packages && yarn workspace @xertra/interface start",
-    "build": "yarn build:packages && yarn build:interface",
+    "dev": "yarn build:sdk && yarn workspace @xertra/interface start",
+    "build": "yarn build:sdk && yarn build:interface",
     "lint": "yarn workspace @xertra/interface lint",
     "test": "yarn workspace @xertra/interface test"
   },

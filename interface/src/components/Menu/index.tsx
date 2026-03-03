@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { Menu as UikitMenu} from '@xertra/uikit'
+import { Menu as UikitMenu} from 'uikit'
 import { allLanguages } from '../../constants/localisation/languageCodes'
 import { LanguageContext } from '../../hooks/LanguageContext'
 import useGetPriceData from '../../hooks/useGetPriceData'

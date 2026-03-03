@@ -1,6 +1,6 @@
 import React, { StrictMode } from 'react'
 import ReactDOM from 'react-dom'
-import { ResetCSS } from '@xertra/uikit'
+import { ResetCSS } from 'uikit'
 import GlobalStyle from './style/Global'
 import CSSVariables from './style/CSSVariables'
 import ButtonOverrides from './style/ButtonOverrides'
