@@ -6,6 +6,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import v2Router from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
 import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, ETHER } from '@xertra/sdk'
 import { ROUTER_ADDRESS } from '../constants'
+import { BLOCK_EXPLORER_URLS, CHAIN_IDS } from '../config/chains'
 import { TokenAddressMap } from '../state/lists/hooks'
 
 const IUniswapV2Router02ABI  = v2Router.abi
@@ -18,13 +19,8 @@ export function isAddress(value: any): string | false {
   }
 }
 
-const BSCSCAN_PREFIXES: { [chainId in ChainId]: string } = {
-  [ChainId.MAINNET]: '',
-  [ChainId.TESTNET]: 'auroria.'
-}
-
 export function getBscScanLink(chainId: ChainId, data: string, type: 'transaction' | 'token' | 'address'): string {
-  const prefix = `https://${BSCSCAN_PREFIXES[chainId] || BSCSCAN_PREFIXES[ChainId.MAINNET]}explorer.stratisevm.com`
+  const prefix = BLOCK_EXPLORER_URLS[chainId] || BLOCK_EXPLORER_URLS[CHAIN_IDS.MAINNET]
 
   switch (type) {
     case 'transaction': {

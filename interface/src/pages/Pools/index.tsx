@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { TokenAmount } from '@xertra/sdk'
-import { Card, Button, Text } from '@xertra/uikit'
+import { Card, Button, Text } from 'uikit'
 
 import { useAllPools, useUserPairPosition, PairState } from 'hooks/usePools'
 import useI18n from 'hooks/useI18n'

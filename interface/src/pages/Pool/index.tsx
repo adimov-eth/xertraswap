@@ -1,7 +1,7 @@
 import React, { useContext, useMemo } from 'react'
 import { ThemeContext } from 'styled-components'
 import { Pair } from '@xertra/sdk'
-import { Button, CardBody, Text } from '@xertra/uikit'
+import { Button, CardBody, Text } from 'uikit'
 import { Link } from 'react-router-dom'
 import Question from 'components/QuestionHelper'
 import FullPositionCard from 'components/PositionCard'

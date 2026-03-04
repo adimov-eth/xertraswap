@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useWeb3React } from '@web3-react/core'
-import { connectorLocalStorageKey, ConnectorNames } from '@xertra/uikit'
+import { connectorLocalStorageKey, ConnectorNames } from 'uikit'
 import useToast from 'hooks/useToast'
 import { connectorsByName, web3authConnector } from 'connectors'
 

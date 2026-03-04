@@ -1,5 +1,5 @@
 import React, { createContext } from 'react'
-import { LangType } from '@xertra/uikit'
+import { LangType } from 'uikit'
 
 export interface LanguageObject {
   code: string

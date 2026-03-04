@@ -1,6 +1,6 @@
 import { Trade, TradeType } from '@xertra/sdk'
 import React, { useMemo, useState } from 'react'
-import { Text, Button } from '@xertra/uikit'
+import { Text, Button } from 'uikit'
 import { Repeat } from 'react-feather'
 
 import useI18n from 'hooks/useI18n'

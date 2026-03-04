@@ -1,6 +1,6 @@
 import React from 'react'
 import { Price } from '@xertra/sdk'
-import { SyncAltIcon, Text } from '@xertra/uikit'
+import { SyncAltIcon, Text } from 'uikit'
 import { StyledBalanceMaxMini } from './styleds'
 
 interface TradePriceProps {

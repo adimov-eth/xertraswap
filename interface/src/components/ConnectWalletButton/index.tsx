@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, ButtonProps } from '@xertra/uikit'
+import { Button, ButtonProps } from 'uikit'
 import useI18n from 'hooks/useI18n'
 import useWeb3Auth from '../../hooks/useWeb3Auth'
 

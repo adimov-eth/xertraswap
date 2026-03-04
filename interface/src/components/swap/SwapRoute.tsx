@@ -1,7 +1,7 @@
 import { Trade } from '@xertra/sdk'
 import React, { Fragment, memo, useContext } from 'react'
 import { ChevronRight } from 'react-feather'
-import { Flex, Text } from '@xertra/uikit'
+import { Flex, Text } from 'uikit'
 import { ThemeContext } from 'styled-components'
 import CurrencyLogo from '../CurrencyLogo'
 

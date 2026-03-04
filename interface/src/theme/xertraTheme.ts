@@ -6,7 +6,7 @@
  */
 
 // eslint-disable-next-line import/no-unresolved
-import { XertraTheme } from '@xertra/uikit/dist/theme'
+import { XertraTheme } from 'uikit'
 import {
   colors,
   radii,

@@ -1,6 +1,6 @@
 import { Currency, ETHER, JSBI, TokenAmount } from '@xertra/sdk'
 import React, { useCallback, useEffect, useState } from 'react'
-import { Button, ChevronDownIcon, AddIcon, CardBody, Text } from '@xertra/uikit'
+import { Button, ChevronDownIcon, AddIcon, CardBody, Text } from 'uikit'
 import { LightCard } from 'components/Card'
 import { AutoColumn, ColumnCenter } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'

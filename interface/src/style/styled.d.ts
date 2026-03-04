@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-unresolved
-import { XertraTheme } from '@xertra/uikit/dist/theme'
+import { XertraTheme } from 'uikit'
 
 declare module 'styled-components' {
   /* eslint-disable @typescript-eslint/no-empty-interface */

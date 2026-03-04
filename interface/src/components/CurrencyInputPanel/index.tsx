@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react'
 import { Currency, Pair } from '@xertra/sdk'
-import { Button, ChevronDownIcon, Text } from '@xertra/uikit'
+import { Button, ChevronDownIcon, Text } from 'uikit'
 import styled from 'styled-components'
 import useI18n from 'hooks/useI18n'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
