@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import styled, { keyframes } from 'styled-components'
 import BunnyIcon from '../Svg/Icons/Logo'
 import { BunnyProps, FallingBunniesProps } from './types'
@@ -71,8 +71,17 @@ const FallingBunnies: React.FC<FallingBunniesProps> = ({
   iterations = Infinity,
   duration = 10,
 }) => {
-  const bunnies = [...Array(count)].map((_, index) => (
-    <Bunny key={String(index)} position={Math.random() * 100} iterations={iterations} duration={duration}>
+  const bunnyConfig = useMemo(
+    () =>
+      Array.from({ length: count }, () => ({
+        id: Math.random().toString(36).slice(2),
+        position: Math.random() * 100,
+      })),
+    [count]
+  )
+
+  const bunnies = bunnyConfig.map((bunny) => (
+    <Bunny key={bunny.id} position={bunny.position} iterations={iterations} duration={duration}>
       <BunnyIcon width={size} height={size} />
     </Bunny>
   ))

@@ -12,8 +12,4 @@ const XertraToggle: React.FC<XertraToggleProps> = ({ checked, scale = scales.MD,
   </ToggleStack>
 )
 
-XertraToggle.defaultProps = {
-  scale: scales.MD,
-}
-
 export default XertraToggle
