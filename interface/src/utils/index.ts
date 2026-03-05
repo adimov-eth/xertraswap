@@ -13,7 +13,7 @@ const IUniswapV2Router02ABI  = v2Router.abi
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {
   try {
-    return getAddress(value)
+    return getAddress(value).toLowerCase() // Addresses from web3auth appears to be in lowercase so subsequent lookupsa can fail
   } catch {
     return false
   }
