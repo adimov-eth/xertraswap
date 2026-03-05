@@ -19,7 +19,6 @@ import SafeMoonWarningModal from 'components/SafeMoonWarningModal'
 import ProgressSteps from 'components/ProgressSteps'
 
 import { INITIAL_ALLOWED_SLIPPAGE } from 'constants/index'
-import { useActiveWeb3React } from 'hooks'
 import { useCurrency } from 'hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
 import { useSwapCallback } from 'hooks/useSwapCallback'
@@ -35,11 +34,14 @@ import useI18n from 'hooks/useI18n'
 import PageHeader from 'components/PageHeader'
 import ConnectWalletButton from 'components/ConnectWalletButton'
 import AppBody from '../AppBody'
+import Web3AuthContext from '../Web3AuthContext'
 
 const Swap = () => {
+  const { account } = useContext(Web3AuthContext)  
+
   const loadedUrlParams = useDefaultsFromURLSearch()
   const TranslateString = useI18n()
-
+  
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
     useCurrency(loadedUrlParams?.inputCurrencyId),
@@ -68,7 +70,6 @@ const Swap = () => {
     })
   }
 
-  const { account } = useActiveWeb3React()
   const theme = useContext(ThemeContext)
 
   const [isExpertMode] = useExpertModeManager()
@@ -84,7 +85,7 @@ const Swap = () => {
     currencies[Field.INPUT],
     currencies[Field.OUTPUT],
     typedValue
-  )
+  )  
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
   const trade = showWrap ? undefined : v2Trade
 

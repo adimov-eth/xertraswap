@@ -1,11 +1,10 @@
 import { TokenAmount, Pair, Currency } from '@xertra/sdk'
-import { useMemo } from 'react'
+import { useContext, useMemo } from 'react'
 import v2Pair from '@uniswap/v2-core/build/IUniswapV2Pair.json'
 import { Interface } from '@ethersproject/abi'
-import { useActiveWeb3React } from '../hooks'
-
 import { useMultipleContractSingleData } from '../state/multicall/hooks'
 import { wrappedCurrency } from '../utils/wrappedCurrency'
+import Web3AuthContext from '../pages/Web3AuthContext'
 
 const IUniswapV2PairABI = v2Pair.abi
 const PAIR_INTERFACE = new Interface(IUniswapV2PairABI)
@@ -18,7 +17,7 @@ export enum PairState {
 }
 
 export function usePairs(currencies: [Currency | undefined, Currency | undefined][]): [PairState, Pair | null][] {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useContext(Web3AuthContext)
 
   const tokens = useMemo(
     () =>

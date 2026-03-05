@@ -1,5 +1,5 @@
 import { Currency, CurrencyAmount, currencyEquals, ETHER, Token } from '@xertra/sdk'
-import React, { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
+import React, { CSSProperties, MutableRefObject, useCallback, useContext, useMemo } from 'react'
 import { FixedSizeList } from 'react-window'
 import styled from 'styled-components'
 import { Text } from 'uikit'
@@ -16,6 +16,7 @@ import { MouseoverTooltip } from '../Tooltip'
 import { FadedSpan, MenuItem } from './styleds'
 import Loader from '../Loader'
 import { isTokenOnList } from '../../utils'
+import Web3AuthContext from '../../pages/Web3AuthContext'
 
 // Bridge info lookup by token address
 const BRIDGE_INFO: Record<string, string> = {
@@ -113,7 +114,8 @@ function CurrencyRow({
   otherSelected: boolean
   style: CSSProperties
 }) {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useContext(Web3AuthContext)
+  
   const key = currencyKey(currency)
   const selectedTokenList = useSelectedTokenList()
   const isOnSelectedList = isTokenOnList(selectedTokenList, currency)

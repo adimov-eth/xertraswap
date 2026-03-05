@@ -2,11 +2,11 @@ import React, { useContext } from 'react'
 import { AlertCircle, CheckCircle } from 'react-feather'
 import { Text } from 'uikit'
 import styled, { ThemeContext } from 'styled-components'
-import { useActiveWeb3React } from '../../hooks'
 import { getBscScanLink } from '../../utils'
 import { ExternalLink } from '../Shared'
 import { AutoColumn } from '../Column'
 import { AutoRow } from '../Row'
+import Web3AuthContext from '../../pages/Web3AuthContext'
 
 const RowNoFlex = styled(AutoRow)`
   flex-wrap: nowrap;
@@ -21,7 +21,7 @@ export default function TransactionPopup({
   success?: boolean
   summary?: string
 }) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useContext(Web3AuthContext)
 
   const theme = useContext(ThemeContext)
 

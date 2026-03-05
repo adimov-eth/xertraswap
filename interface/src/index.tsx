@@ -25,11 +25,11 @@ ReactDOM.render(
   <StrictMode>
     <Providers>
       <>
-        <ListsUpdater />
+        {/* <ListsUpdater />
         <ApplicationUpdater />
         <TransactionUpdater />
         <MulticallUpdater />
-        <ToastListener />
+        <ToastListener /> */}
       </>
       <ResetCSS />
       <GlobalStyle />

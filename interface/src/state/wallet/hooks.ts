@@ -1,11 +1,11 @@
 import { Currency, CurrencyAmount, ETHER, JSBI, Token, TokenAmount } from '@xertra/sdk'
-import { useMemo } from 'react'
+import { useContext, useMemo } from 'react'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
 import { useAllTokens } from '../../hooks/Tokens'
-import { useActiveWeb3React } from '../../hooks'
 import { useMulticallContract } from '../../hooks/useContract'
 import { isAddress } from '../../utils'
 import { useSingleContractMultipleData, useMultipleContractSingleData } from '../multicall/hooks'
+import Web3AuthContext from '../../pages/Web3AuthContext'
 
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
@@ -50,6 +50,7 @@ export function useTokenBalancesWithLoadingIndicator(
   address?: string,
   tokens?: (Token | undefined)[]
 ): [{ [tokenAddress: string]: TokenAmount | undefined }, boolean] {
+
   const validatedTokens: Token[] = useMemo(
     () => tokens?.filter((t?: Token): t is Token => isAddress(t?.address) !== false) ?? [],
     [tokens]
@@ -98,10 +99,12 @@ export function useCurrencyBalances(
   account?: string,
   currencies?: (Currency | undefined)[]
 ): (CurrencyAmount | undefined)[] {
-  const tokens = useMemo(() => currencies?.filter((currency): currency is Token => currency instanceof Token) ?? [], [
+  
+  const tokens = useMemo(() => currencies?.filter((currency): currency is Token => currency instanceof Token) ?? [], 
+  [
     currencies
   ])
-
+    
   const tokenBalances = useTokenBalances(account, tokens)
   const containsETH: boolean = useMemo(() => currencies?.some(currency => currency === ETHER) ?? false, [currencies])
   const ethBalance = useETHBalances(containsETH ? [account] : [])
@@ -110,7 +113,7 @@ export function useCurrencyBalances(
     () =>
       currencies?.map(currency => {
         if (!account || !currency) return undefined
-        if (currency instanceof Token) return tokenBalances[currency.address]
+        if (currency instanceof Token) return tokenBalances[currency.address]       
         if (currency === ETHER) return ethBalance[account]
         return undefined
       }) ?? [],
@@ -119,12 +122,13 @@ export function useCurrencyBalances(
 }
 
 export function useCurrencyBalance(account?: string, currency?: Currency): CurrencyAmount | undefined {
-  return useCurrencyBalances(account, [currency])[0]
+  const res = useCurrencyBalances(account, [currency])
+  return res[0]
 }
 
 // mimics useAllBalances
 export function useAllTokenBalances(): { [tokenAddress: string]: TokenAmount | undefined } {
-  const { account } = useActiveWeb3React()
+  const {account} = useContext(Web3AuthContext)
   const allTokens = useAllTokens()
   const allTokensArray = useMemo(() => Object.values(allTokens ?? {}), [allTokens])
   const balances = useTokenBalances(account ?? undefined, allTokensArray)

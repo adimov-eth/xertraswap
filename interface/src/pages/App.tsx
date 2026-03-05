@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Credentials, StringTranslations } from '@crowdin/crowdin-api-client'
 import { LangType } from 'uikit'
 import Popups from '../components/Popups'
-import Web3ReactManager from '../components/Web3ReactManager'
+import Web3AuthManager from '../components/Web3ReactManager'
 import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from './AddLiquidity/redirects'
 import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
 import AddLiquidity from './AddLiquidity'
@@ -18,9 +18,17 @@ import { RedirectPathToSwapOnly } from './Swap/redirects'
 import { EN, allLanguages } from '../constants/localisation/languageCodes'
 import { LanguageContext } from '../hooks/LanguageContext'
 import { TranslationsContext } from '../hooks/TranslationsContext'
-
 import Menu from '../components/Menu'
 import useGetDocumentTitlePrice from '../hooks/useGetDocumentTitlePrice'
+import Web3AuthContext from './Web3AuthContext'
+import { Web3Provider } from '@ethersproject/providers'
+import ToastListener from '../components/ToastListener'
+
+import ApplicationUpdater from '../state/application/updater'
+import ListsUpdater from '../state/lists/updater'
+import MulticallUpdater from '../state/multicall/updater'
+import TransactionUpdater from '../state/transactions/updater'
+import { IProvider } from '@web3auth/base'
 
 const AppWrapper = styled.div`
   display: flex;
@@ -134,6 +142,10 @@ export default function App() {
 
   useGetDocumentTitlePrice()
 
+  const [account, setAccount] = useState<string | undefined>()
+  const [chainId, setChainId] = useState<number | undefined>()
+  const [library, setProvider] = useState<Web3Provider | undefined>()
+
   return (
     <Suspense fallback={null}>
       <HashRouter>
@@ -141,32 +153,42 @@ export default function App() {
           <LanguageContext.Provider
             value={{ selectedLanguage, setSelectedLanguage: handleLanguageSelect, translatedLanguage, setTranslatedLanguage }}
           >
-            <TranslationsContext.Provider value={{ translations, setTranslations }}>
-              <Menu>
-                <BodyWrapper>
-                  <Popups />
-                  <Web3ReactManager>
-                    <Switch>
-                      <Route exact strict path="/" component={Swap} />
-                      <Route exact strict path="/swap" component={Swap} />
-                      <Route exact strict path="/find" component={PoolFinder} />
-                      <Route exact strict path="/pool" component={Pool} />
-                      <Route exact strict path="/pools" component={Pools} />
-                      <Route exact strict path="/pool/:currencyIdA/:currencyIdB" component={PoolDetails} />
-                      <Route exact path="/add" component={AddLiquidity} />
-                      <Route exact strict path="/remove/:currencyIdA/:currencyIdB" component={RemoveLiquidity} />
+            <TranslationsContext.Provider value={{ translations, setTranslations }}>              
 
-                      {/* Redirection: These old routes are still used in the code base */}
-                      <Route exact path="/add/:currencyIdA" component={RedirectOldAddLiquidityPathStructure} />
-                      <Route exact path="/add/:currencyIdA/:currencyIdB" component={RedirectDuplicateTokenIds} />
-                      <Route exact strict path="/remove/:tokens" component={RedirectOldRemoveLiquidityPathStructure} />
+              <Web3AuthContext.Provider value={{account, setAccount, chainId, setChainId, library, setProvider}}>
 
-                      <Route component={RedirectPathToSwapOnly} />
-                    </Switch>
-                  </Web3ReactManager>
-                  <Marginer />
-                </BodyWrapper>
-              </Menu>
+                <ListsUpdater />
+                <ApplicationUpdater />
+                <TransactionUpdater />
+                <MulticallUpdater />
+                <ToastListener />
+
+                <Web3AuthManager>
+                  <Menu>
+                    <BodyWrapper>
+                      <Popups />
+                        <Switch>
+                          <Route exact strict path="/" component={Swap} />
+                          <Route exact strict path="/swap" component={Swap} />
+                          <Route exact strict path="/find" component={PoolFinder} />
+                          <Route exact strict path="/pool" component={Pool} />
+                          <Route exact strict path="/pools" component={Pools} />
+                          <Route exact strict path="/pool/:currencyIdA/:currencyIdB" component={PoolDetails} />
+                          <Route exact path="/add" component={AddLiquidity} />
+                          <Route exact strict path="/remove/:currencyIdA/:currencyIdB" component={RemoveLiquidity} />
+
+                          {/* Redirection: These old routes are still used in the code base */}
+                          <Route exact path="/add/:currencyIdA" component={RedirectOldAddLiquidityPathStructure} />
+                          <Route exact path="/add/:currencyIdA/:currencyIdB" component={RedirectDuplicateTokenIds} />
+                          <Route exact strict path="/remove/:tokens" component={RedirectOldRemoveLiquidityPathStructure} />
+
+                          <Route component={RedirectPathToSwapOnly} />
+                        </Switch>
+                      <Marginer />
+                    </BodyWrapper>
+                  </Menu>
+                </Web3AuthManager>
+              </Web3AuthContext.Provider>
             </TranslationsContext.Provider>
           </LanguageContext.Provider>
         </AppWrapper>

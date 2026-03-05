@@ -1,9 +1,9 @@
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useActiveWeb3React } from '../../hooks'
 import { useAddPopup, useBlockNumber } from '../application/hooks'
 import { AppDispatch, AppState } from '../index'
 import { checkedTransaction, finalizeTransaction } from './actions'
+import Web3AuthContext from '../../pages/Web3AuthContext'
 
 export function shouldCheck(
   lastBlockNumber: number,
@@ -27,7 +27,7 @@ export function shouldCheck(
 }
 
 export default function Updater(): null {
-  const { chainId, library } = useActiveWeb3React()
+  const { chainId, library } = useContext(Web3AuthContext)
 
   const lastBlockNumber = useBlockNumber()
 

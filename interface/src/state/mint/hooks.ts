@@ -1,16 +1,15 @@
 import { Currency, CurrencyAmount, ETHER, JSBI, Pair, Percent, Price, TokenAmount } from '@xertra/sdk'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useContext, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { PairState, usePair } from '../../data/Reserves'
 import { useTotalSupply } from '../../data/TotalSupply'
-
-import { useActiveWeb3React } from '../../hooks'
 import { TranslateString } from '../../utils/translateTextHelpers'
 import { wrappedCurrency, wrappedCurrencyAmount } from '../../utils/wrappedCurrency'
 import { AppDispatch, AppState } from '../index'
 import { tryParseAmount } from '../swap/hooks'
 import { useCurrencyBalances } from '../wallet/hooks'
 import { Field, typeInput } from './actions'
+import Web3AuthContext from '../../pages/Web3AuthContext'
 
 const ZERO = JSBI.BigInt(0)
 
@@ -34,7 +33,7 @@ export function useDerivedMintInfo(
   poolTokenPercentage?: Percent
   error?: string
 } {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useContext(Web3AuthContext)
 
   const { independentField, typedValue, otherTypedValue } = useMintState()
 

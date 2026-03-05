@@ -1,10 +1,12 @@
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import type { ConnectorUpdate } from '@web3-react/types'
 import { Web3Auth } from '@web3auth/modal'
-import { CHAIN_NAMESPACES, WEB3AUTH_NETWORK } from '@web3auth/base'
+import { CHAIN_NAMESPACES, IProvider, WEB3AUTH_NETWORK } from '@web3auth/base'
 import { EthereumPrivateKeyProvider } from '@web3auth/ethereum-provider'
 import { getDefaultExternalAdapters } from '@web3auth/default-evm-adapter'
 import { BLOCK_EXPLORER_URLS, RPC_URLS } from '../config/chains'
+import getLibrary from '../utils/getLibrary'
+import { Web3Provider } from '@ethersproject/providers'
 
 interface Eip1193ProviderLike {
   request?: (args: { method: string; params?: unknown[] | Record<string, unknown> }) => Promise<unknown>
@@ -19,6 +21,12 @@ function resolveWeb3AuthNetwork(): (typeof WEB3AUTH_NETWORK)[keyof typeof WEB3AU
   if (env === 'sapphire_devnet') 
     return WEB3AUTH_NETWORK.SAPPHIRE_DEVNET;
   return WEB3AUTH_NETWORK.SAPPHIRE_MAINNET;
+}
+
+export interface Web3AuthConnectorState {
+  account : string | null
+  chainId : number
+  web3Provider : Web3Provider
 }
 
 // eslint-disable-next-line import/prefer-default-export
@@ -91,7 +99,7 @@ export class Web3AuthConnector{
     return this.web3auth
   }
 
-  async connect(): Promise<string | null> {
+  async connect(): Promise<Web3AuthConnectorState | null> {
     if(!this.initialized)
     {
       console.log("web3auth initialization started")
@@ -100,9 +108,13 @@ export class Web3AuthConnector{
     }
 
     try {
-      const provider = await this.web3auth?.connect() as Eip1193ProviderLike
-      const account = await this.resolveAccount(provider);
-      return account;
+      const provider = await this.web3auth?.connect()
+      const web3Provider = getLibrary(provider);
+      const account = await this.resolveAccount(provider  as Eip1193ProviderLike);
+      const chainIdValue = (await this.request(provider as Eip1193ProviderLike, 'eth_chainId')) ?? (provider as Eip1193ProviderLike).chainId
+      const chainId = this.parseChainId(chainIdValue)
+
+      return { account, chainId, web3Provider }
       // if (provider?.on) {
       //   provider.on('accountsChanged', this.handleAccountsChanged as unknown as (...args: unknown[]) => void)
       //   provider.on('chainChanged', this.handleChainChanged as unknown as (...args: unknown[]) => void)
@@ -127,50 +139,20 @@ export class Web3AuthConnector{
   //   const chainIdValue = (await this.request(provider, 'eth_chainId')) ?? provider.chainId
   //   const chainId = this.parseChainId(chainIdValue)
 
-  //   // Listen for provider events
-  //   if (provider.on) {
-  //     provider.on('accountsChanged', this.handleAccountsChanged as unknown as (...args: unknown[]) => void)
-  //     provider.on('chainChanged', this.handleChainChanged as unknown as (...args: unknown[]) => void)
-  //     provider.on('disconnect', this.handleDisconnect as unknown as (...args: unknown[]) => void)
-  //   }
-  //   return {
-  //     provider,
-  //     chainId,
-  //     account,
-  //   }
-  // }
-
-  // async getProvider(): Promise<Eip1193ProviderLike | undefined> {
-  //   if (!this.web3auth) return undefined
-  //   return this.web3auth.provider as Eip1193ProviderLike
-  // }
-
-  // async getChainId(): Promise<number> {
-  //   const provider = this.web3auth?.provider as Eip1193ProviderLike | null
-  //   if (!provider) return this.chainId
-  //   const chainIdValue = (await this.request(provider, 'eth_chainId')) ?? provider.chainId
-  //   return this.parseChainId(chainIdValue)
-  // }
-
-  // async getAccount(): Promise<string | null> {
-  //   const provider = this.web3auth?.provider as Eip1193ProviderLike | null
-  //   if (!provider) return null
-  //   return this.resolveAccount(provider);
-  // }
-
   async logout(): Promise<void> {
-    // const provider = this.web3auth?.provider as Eip1193ProviderLike | null
-    // if (provider) {
-    //   provider.removeListener?.('accountsChanged', this.handleAccountsChanged as unknown as (...args: unknown[]) => void)
-    //   provider.removeListener?.('chainChanged', this.handleChainChanged as unknown as (...args: unknown[]) => void)
-    //   provider.removeListener?.('disconnect', this.handleDisconnect as unknown as (...args: unknown[]) => void)
-    // }
+    const provider = this.web3auth?.provider as Eip1193ProviderLike | null
+    if (provider) {
+      // provider.removeListener?.('accountsChanged', this.handleAccountsChanged as unknown as (...args: unknown[]) => void)
+      // provider.removeListener?.('chainChanged', this.handleChainChanged as unknown as (...args: unknown[]) => void)
+      // provider.removeListener?.('disconnect', this.handleDisconnect as unknown as (...args: unknown[]) => void)
+    }
 
     if (this.web3auth?.connected) {
       // Fire-and-forget logout since deactivate is synchronous
-      await this.web3auth.logout().catch((err) => {
-        console.error('Web3Auth logout error', err)
-      })
+      await this.web3auth.logout()
+      // .catch((err) => {
+      //   console.error('Web3Auth logout error', err)
+      // })
     }
   }
 
