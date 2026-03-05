@@ -24,20 +24,28 @@ export function useEagerConnect() {
 
     // Restore Web3Auth session if that was the last used connector
     if (hasSignedIn === ConnectorNames.Web3Auth) {
-      web3authConnector
-        .isSessionAvailable()
-        .then((hasSession) => {
-          if (hasSession) {
-            activate(web3authConnector, undefined, true).catch(() => {
-              setTried(true)
-            })
-          } else {
-            setTried(true)
-          }
-        })
-        .catch(() => {
-          setTried(true)
-        })
+
+      web3authConnector.connect().then((account)=>{
+        if(account)
+          console.log("web3auth reconnected to:", account);
+        else
+          console.log("web3auth not connected");
+      })
+      
+      // web3authConnector
+      //   .isSessionAvailable()
+      //   .then((hasSession) => {
+      //     if (hasSession) {
+      //       activate(web3authConnector, undefined, true).catch(() => {
+      //         setTried(true)
+      //       })
+      //     } else {
+      //       setTried(true)
+      //     }
+      //   })
+      //   .catch(() => {
+      //     setTried(true)
+      //   })
       return
     }
 
@@ -77,33 +85,33 @@ export function useInactiveListener(suppress = false) {
   useEffect(() => {
     const { ethereum } = window
 
-    if (ethereum && ethereum.on && !active && !error && !suppress) {
-      const handleChainChanged = () => {
-        // eat errors
-        activate(injected, undefined, true).catch((e) => {
-          console.error('Failed to activate after chain changed', e)
-        })
-      }
+    // if (ethereum && ethereum.on && !active && !error && !suppress) {
+    //   const handleChainChanged = () => {
+    //     // eat errors
+    //     activate(injected, undefined, true).catch((e) => {
+    //       console.error('Failed to activate after chain changed', e)
+    //     })
+    //   }
 
-      const handleAccountsChanged = (accounts: string[]) => {
-        if (accounts.length > 0) {
-          // eat errors
-          activate(injected, undefined, true).catch((e) => {
-            console.error('Failed to activate after accounts changed', e)
-          })
-        }
-      }
+    //   const handleAccountsChanged = (accounts: string[]) => {
+    //     if (accounts.length > 0) {
+    //       // eat errors
+    //       activate(injected, undefined, true).catch((e) => {
+    //         console.error('Failed to activate after accounts changed', e)
+    //       })
+    //     }
+    //   }
 
-      ethereum.on('chainChanged', handleChainChanged)
-      ethereum.on('accountsChanged', handleAccountsChanged)
+    //   ethereum.on('chainChanged', handleChainChanged)
+    //   ethereum.on('accountsChanged', handleAccountsChanged)
 
-      return () => {
-        if (ethereum.removeListener) {
-          ethereum.removeListener('chainChanged', handleChainChanged)
-          ethereum.removeListener('accountsChanged', handleAccountsChanged)
-        }
-      }
-    }
+    //   return () => {
+    //     if (ethereum.removeListener) {
+    //       ethereum.removeListener('chainChanged', handleChainChanged)
+    //       ethereum.removeListener('accountsChanged', handleAccountsChanged)
+    //     }
+    //   }
+    // }
     return undefined
   }, [active, error, suppress, activate])
 }
