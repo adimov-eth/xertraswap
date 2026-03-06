@@ -38,7 +38,10 @@ jobs:
             echo "REACT_APP_WEB3AUTH_CLIENT_ID=${{ secrets.WEB3AUTH_CLIENT_ID_DEV }}" >> "$GITHUB_ENV"
           fi
 
-      - name: Build
+      - name: Build SDK
+        run: yarn workspace @xertra/sdk build
+
+      - name: Build interface
         run: yarn workspace @xertra/interface build
         env:
           GENERATE_SOURCEMAP: false
