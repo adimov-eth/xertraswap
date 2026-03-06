@@ -1,7 +1,13 @@
 require("@nomiclabs/hardhat-waffle")
 require("@nomiclabs/hardhat-ethers")
 require("@nomicfoundation/hardhat-verify")
-require('dotenv').config()
+
+const { vars } = require("hardhat/config")
+
+// Store deployer key securely:
+//   npx hardhat vars set DEPLOYER_KEY
+// Key is encrypted at rest in ~/.config/hardhat/vars.json
+const DEPLOYER_KEY = vars.get("DEPLOYER_KEY", "")
 
 module.exports = {
   paths: {
@@ -32,14 +38,14 @@ module.exports = {
     auroria: {
       url: 'https://auroria.rpc.stratisevm.com',
       chainId: 205205,
-      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+      accounts: DEPLOYER_KEY ? [DEPLOYER_KEY] : [],
       gasPrice: 1000000000,
       gas: 8000000,
     },
     stratis: {
       url: 'https://rpc.stratisevm.com',
       chainId: 105105,
-      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+      accounts: DEPLOYER_KEY ? [DEPLOYER_KEY] : [],
     },
   },
   etherscan: {
