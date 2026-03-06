@@ -39,7 +39,6 @@ export class Web3AuthConnector{
   private readonly chainId: number
 
   constructor(chainId: number) {
-    //super({ supportedChainIds: [chainId] })
     this.chainId = chainId;
   }
 
