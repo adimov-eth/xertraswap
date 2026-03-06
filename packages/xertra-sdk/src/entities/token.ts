@@ -66,7 +66,7 @@ export const WETH: { [chainId in ChainId]: Token } = {
   ),
   [ChainId.TESTNET]: new Token(
     ChainId.TESTNET,
-    '0x6f39A32C3E7A54164e1C6E201979aec276B0Da8E',
+    '0x57402359Eb6f3aB02c19EA7B98F366f324b66Aae',
     18,
     'WSTRAX',
     'Wrapped STRAX'
