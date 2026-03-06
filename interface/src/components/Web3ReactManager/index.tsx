@@ -7,7 +7,7 @@ import { network, web3authConnector } from '../../connectors'
 import { useEagerConnect, useInactiveListener } from '../../hooks'
 import { NetworkContextName } from '../../constants'
 import Loader from '../Loader'
-import { connectorLocalStorageKey, ConnectorNames } from '../../uikit'
+import { ConnectorNames } from '../../uikit'
 import Web3AuthContext from '../../pages/Web3AuthContext'
 
 const MessageWrapper = styled.div`
@@ -26,23 +26,17 @@ export default function Web3AuthManager({ children }: { children: JSX.Element })
   const web3AuthContext = useContext(Web3AuthContext)
 
   useEffect(() => {
-    (async () => {
-      const hasSignedIn = window.localStorage.getItem(connectorLocalStorageKey)
-  
-      // Restore Web3Auth session if that was the last used connector
-      if (hasSignedIn === ConnectorNames.Web3Auth) {
-
-        web3authConnector.connect().then((connectorState)=>{
-          if(connectorState && connectorState.account){
-            web3AuthContext.setAccount(connectorState.account);
-            web3AuthContext.setChainId(connectorState.chainId);
-            web3AuthContext.setProvider(connectorState.web3Provider);
-            console.log(`web3auth reconnected to ${connectorState.account} on chain ${connectorState.chainId}`);
-          }
-          else
-            console.log("web3auth not connected...");
-        })
-      }
+    (async () => {  
+      web3authConnector.connect().then((connectorState)=>{
+        if(connectorState && connectorState.account){
+          web3AuthContext.setAccount(connectorState.account);
+          web3AuthContext.setChainId(connectorState.chainId);
+          web3AuthContext.setProvider(connectorState.web3Provider);
+          console.log(`web3auth reconnected to ${connectorState.account} on chain ${connectorState.chainId}`);
+        }
+        else
+          console.log("web3auth not connected...");
+      })
     })();
 
     return () => {

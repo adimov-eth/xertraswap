@@ -28,7 +28,6 @@ import ApplicationUpdater from '../state/application/updater'
 import ListsUpdater from '../state/lists/updater'
 import MulticallUpdater from '../state/multicall/updater'
 import TransactionUpdater from '../state/transactions/updater'
-import { IProvider } from '@web3auth/base'
 
 const AppWrapper = styled.div`
   display: flex;

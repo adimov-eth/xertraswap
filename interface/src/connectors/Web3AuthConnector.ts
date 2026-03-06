@@ -127,17 +127,6 @@ export class Web3AuthConnector{
     return null
   }
 
-  // async activate(): Promise<ConnectorUpdate> {
-  //   const web3auth = await this.ensureInitialized();
-
-  //   const provider = await this.waitForProvider(web3auth)
-  //   const account = await this.waitForAccount(provider)
-  //   if (!account) {
-  //     throw new Error('Web3Auth account not available after connect')
-  //   }
-
-  //   const chainIdValue = (await this.request(provider, 'eth_chainId')) ?? provider.chainId
-  //   const chainId = this.parseChainId(chainIdValue)
 
   async logout(): Promise<void> {
     const provider = this.web3auth?.provider as Eip1193ProviderLike | null
@@ -155,15 +144,6 @@ export class Web3AuthConnector{
       // })
     }
   }
-
-  // async isSessionAvailable(): Promise<boolean> {
-  //   try {
-  //     const web3auth = await this.ensureInitialized()
-  //     return web3auth.connected
-  //   } catch {
-  //     return false
-  //   }
-  // }
 
   // private handleAccountsChanged = (accounts: unknown): void => {
   //   if (!Array.isArray(accounts) || accounts.length === 0) {

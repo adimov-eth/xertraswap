@@ -14,7 +14,6 @@ import { MinimalPositionCard } from 'components/PositionCard'
 import Row, { RowBetween, RowFlat } from 'components/Row'
 
 import { PairState } from 'data/Reserves'
-import { useActiveWeb3React } from 'hooks'
 import { useCurrency } from 'hooks/Tokens'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { Field } from 'state/mint/actions'

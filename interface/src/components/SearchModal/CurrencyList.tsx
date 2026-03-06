@@ -3,7 +3,6 @@ import React, { CSSProperties, MutableRefObject, useCallback, useContext, useMem
 import { FixedSizeList } from 'react-window'
 import styled from 'styled-components'
 import { Text } from 'uikit'
-import { useActiveWeb3React } from '../../hooks'
 import { useSelectedTokenList, WrappedTokenInfo } from '../../state/lists/hooks'
 import { useAddUserToken, useRemoveUserAddedToken } from '../../state/user/hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'

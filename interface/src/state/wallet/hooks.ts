@@ -19,8 +19,9 @@ export function useETHBalances(
     () =>
       uncheckedAddresses
         ? uncheckedAddresses
-            .map(isAddress)
+            .map((a) => isAddress(a))
             .filter((a): a is string => a !== false)
+            .map((a) => a.toLowerCase()) // After the checksum check we should lowercase again as the address from the context/wallet is passed in lowercase.
             .sort()
         : [],
     [uncheckedAddresses]
@@ -122,8 +123,7 @@ export function useCurrencyBalances(
 }
 
 export function useCurrencyBalance(account?: string, currency?: Currency): CurrencyAmount | undefined {
-  const res = useCurrencyBalances(account, [currency])
-  return res[0]
+  return useCurrencyBalances(account, [currency])[0]
 }
 
 // mimics useAllBalances

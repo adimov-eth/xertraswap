@@ -1,6 +1,6 @@
 import { Web3Provider } from '@ethersproject/providers'
 import { ChainId } from '@xertra/sdk'
-import { connectorLocalStorageKey, ConnectorNames } from 'uikit'
+import { ConnectorNames } from 'uikit'
 import { useWeb3React as useWeb3ReactCore } from '@web3-react/core'
 // eslint-disable-next-line import/no-unresolved
 import { Web3ReactContextInterface } from '@web3-react/core/dist/types'
@@ -20,49 +20,35 @@ export function useEagerConnect() {
   const [tried, setTried] = useState(false)
 
   useEffect(() => {
-    const hasSignedIn = window.localStorage.getItem(connectorLocalStorageKey)
+    // const hasSignedIn = window.localStorage.getItem(connectorLocalStorageKey)
 
-    // Restore Web3Auth session if that was the last used connector
-    if (hasSignedIn === ConnectorNames.Web3Auth) {
+    // // Restore Web3Auth session if that was the last used connector
+    // if (hasSignedIn === ConnectorNames.Web3Auth) {
 
-      web3authConnector.connect().then((account)=>{
-        if(account)
-          console.log("web3auth reconnected to:", account);
-        else
-          console.log("web3auth not connected");
-      })
-      
-      // web3authConnector
-      //   .isSessionAvailable()
-      //   .then((hasSession) => {
-      //     if (hasSession) {
-      //       activate(web3authConnector, undefined, true).catch(() => {
-      //         setTried(true)
-      //       })
-      //     } else {
-      //       setTried(true)
-      //     }
-      //   })
-      //   .catch(() => {
-      //     setTried(true)
-      //   })
-      return
-    }
+    //   web3authConnector.connect().then((account)=>{
+    //     if(account)
+    //       console.log("web3auth reconnected to:", account);
+    //     else
+    //       console.log("web3auth not connected");
+    //   })
 
-    // Original injected wallet eager connect
-    injected.isAuthorized().then((isAuthorized) => {
-      if (isAuthorized && hasSignedIn) {
-        activate(injected, undefined, true).catch(() => {
-          setTried(true)
-        })
-      } else if (isMobile && window.ethereum && hasSignedIn) {
-        activate(injected, undefined, true).catch(() => {
-          setTried(true)
-        })
-      } else {
-        setTried(true)
-      }
-    })
+    //   return
+    // }
+
+    // // Original injected wallet eager connect
+    // injected.isAuthorized().then((isAuthorized) => {
+    //   if (isAuthorized && hasSignedIn) {
+    //     activate(injected, undefined, true).catch(() => {
+    //       setTried(true)
+    //     })
+    //   } else if (isMobile && window.ethereum && hasSignedIn) {
+    //     activate(injected, undefined, true).catch(() => {
+    //       setTried(true)
+    //     })
+    //   } else {
+    //     setTried(true)
+    //   }
+    // })
   }, [activate]) // intentionally only running on mount (make sure it's only mounted once :))
 
   // if the connection worked, wait until we get confirmation of that to flip the flag

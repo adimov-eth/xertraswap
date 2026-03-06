@@ -37,7 +37,7 @@ import AppBody from '../AppBody'
 import Web3AuthContext from '../Web3AuthContext'
 
 const Swap = () => {
-  const { account } = useContext(Web3AuthContext)  
+  const { account } = useContext(Web3AuthContext)
 
   const loadedUrlParams = useDefaultsFromURLSearch()
   const TranslateString = useI18n()

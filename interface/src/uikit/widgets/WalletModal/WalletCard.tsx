@@ -1,7 +1,6 @@
 import React from 'react'
 import Button from '../../components/Button/Button'
 import Text from '../../components/Text/Text'
-import { connectorLocalStorageKey } from './config'
 import { Login, Config } from './types'
 
 interface Props {
@@ -19,7 +18,6 @@ const WalletCard: React.FC<Props> = ({ login, walletConfig, onDismiss, mb }) => 
       variant="tertiary"
       onClick={() => {
         login()
-        window.localStorage.setItem(connectorLocalStorageKey, walletConfig.connectorId)
         onDismiss()
       }}
       style={{ justifyContent: 'space-between' }}
