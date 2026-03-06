@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { JSBI, Pair, Percent } from '@xertra/sdk'
 import { Button, Card as UIKitCard, CardBody, Text } from 'uikit'
 import { ChevronDown, ChevronUp } from 'react-feather'
@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { useTotalSupply } from '../../data/TotalSupply'
 
-import { useActiveWeb3React } from '../../hooks'
 import { useTokenBalance } from '../../state/wallet/hooks'
 import { currencyId } from '../../utils/currencyId'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
@@ -16,6 +15,7 @@ import CurrencyLogo from '../CurrencyLogo'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import { RowBetween, RowFixed } from '../Row'
 import { Dots } from '../swap/styleds'
+import Web3AuthContext from '../../pages/Web3AuthContext'
 
 export const FixedHeightRow = styled(RowBetween)`
   height: 24px;
@@ -36,7 +36,7 @@ interface PositionCardProps {
 }
 
 export function MinimalPositionCard({ pair, showUnwrapped = false }: PositionCardProps) {
-  const { account } = useActiveWeb3React()
+  const { account } = useContext(Web3AuthContext)
 
   const currency0 = showUnwrapped ? pair.token0 : unwrappedToken(pair.token0)
   const currency1 = showUnwrapped ? pair.token1 : unwrappedToken(pair.token1)
@@ -117,7 +117,7 @@ export function MinimalPositionCard({ pair, showUnwrapped = false }: PositionCar
 }
 
 export default function FullPositionCard({ pair }: PositionCardProps) {
-  const { account } = useActiveWeb3React()
+  const { account } = useContext(Web3AuthContext)
 
   const currency0 = unwrappedToken(pair.token0)
   const currency1 = unwrappedToken(pair.token1)

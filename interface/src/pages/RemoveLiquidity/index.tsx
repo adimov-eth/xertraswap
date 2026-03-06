@@ -22,7 +22,6 @@ import { RowBetween, RowFixed } from '../../components/Row'
 import Slider from '../../components/Slider'
 import CurrencyLogo from '../../components/CurrencyLogo'
 import { ROUTER_ADDRESS } from '../../constants'
-import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
 import { usePairContract } from '../../hooks/useContract'
 
@@ -40,6 +39,7 @@ import { useBurnActionHandlers, useDerivedBurnInfo, useBurnState } from '../../s
 
 import { Field } from '../../state/burn/actions'
 import { useUserDeadline, useUserSlippageTolerance } from '../../state/user/hooks'
+import Web3AuthContext from '../Web3AuthContext'
 
 const OutlineCard = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.borderColor};
@@ -58,8 +58,10 @@ export default function RemoveLiquidity({
     params: { currencyIdA, currencyIdB },
   },
 }: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
+
+  const { account, chainId, library } = useContext(Web3AuthContext)
+
   const [currencyA, currencyB] = [useCurrency(currencyIdA) ?? undefined, useCurrency(currencyIdB) ?? undefined]
-  const { account, chainId, library } = useActiveWeb3React()
   const TranslateString = useI18n()
   const [tokenA, tokenB] = useMemo(() => [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)], [
     currencyA,

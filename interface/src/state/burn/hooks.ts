@@ -1,15 +1,14 @@
 import { Currency, CurrencyAmount, JSBI, Pair, Percent, TokenAmount } from '@xertra/sdk'
-import { useCallback } from 'react'
+import { useCallback, useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { usePair } from '../../data/Reserves'
 import { useTotalSupply } from '../../data/TotalSupply'
-
-import { useActiveWeb3React } from '../../hooks'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import { AppDispatch, AppState } from '../index'
 import { tryParseAmount } from '../swap/hooks'
 import { useTokenBalances } from '../wallet/hooks'
 import { Field, typeInput } from './actions'
+import Web3AuthContext from '../../pages/Web3AuthContext'
 
 export function useBurnState(): AppState['burn'] {
   return useSelector<AppState, AppState['burn']>(state => state.burn)
@@ -28,7 +27,7 @@ export function useDerivedBurnInfo(
   }
   error?: string
 } {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useContext(Web3AuthContext)
 
   const { independentField, typedValue } = useBurnState()
 

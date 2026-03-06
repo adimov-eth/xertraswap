@@ -1,34 +1,30 @@
-import { useCallback } from 'react'
-import { useWeb3React } from '@web3-react/core'
-import { connectorLocalStorageKey, ConnectorNames } from 'uikit'
+import { useCallback, useContext } from 'react'
 import useToast from 'hooks/useToast'
-import { connectorsByName, web3authConnector } from 'connectors'
+import { web3authConnector } from 'connectors'
+import Web3AuthContext from '../pages/Web3AuthContext'
 
 const useWeb3Auth = () => {
-  const { activate, deactivate, account } = useWeb3React()
   const { toastError } = useToast()
 
-  const login = useCallback(() => {
-    const connector = connectorsByName[ConnectorNames.Web3Auth]
+  const web3AuthContext = useContext(Web3AuthContext)
 
-    window.localStorage.setItem(connectorLocalStorageKey, ConnectorNames.Web3Auth)
+  const login = useCallback(async () => {
+    const connectorState = await web3authConnector.connect()
+    if(connectorState){
+      web3AuthContext.setAccount(connectorState.account!)
+      web3AuthContext.setChainId(connectorState.chainId)
+      web3AuthContext.setProvider(connectorState.web3Provider)
+    }    
+  }, [toastError])
 
-    activate(connector, async (error: Error) => {
-      window.localStorage.removeItem(connectorLocalStorageKey)
-      if (error) {
-        toastError(error.message)
-      }
-    })
-  }, [activate, toastError])
+  const logout = useCallback(async () => {
+    await web3authConnector.logout()
+    web3AuthContext.setAccount(undefined)
+    web3AuthContext.setChainId(undefined)
+    web3AuthContext.setProvider(undefined)
+  }, [])
 
-  const logout = useCallback(() => {
-    // Web3Auth needs its own logout before web3-react deactivate
-    web3authConnector.deactivate()
-    deactivate()
-    window.localStorage.removeItem(connectorLocalStorageKey)
-  }, [deactivate])
-
-  return { login, logout, account }
+  return { login, logout }
 }
 
 export default useWeb3Auth

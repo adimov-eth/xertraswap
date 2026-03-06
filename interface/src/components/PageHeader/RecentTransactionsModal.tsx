@@ -1,10 +1,10 @@
-import React, { useMemo } from 'react'
+import React, { useContext, useMemo } from 'react'
 import { CheckmarkCircleIcon, ErrorIcon, Flex, LinkExternal, Text, Modal, Button } from 'uikit'
-import { useActiveWeb3React } from 'hooks'
 import { getBscScanLink } from 'utils'
 import { isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
 import { TransactionDetails } from 'state/transactions/reducer'
 import Loader from 'components/Loader'
+import Web3AuthContext from '../../pages/Web3AuthContext'
 
 type RecentTransactionsModalProps = {
   onDismiss?: () => void
@@ -31,7 +31,7 @@ const getRowStatus = (sortedRecentTransaction: TransactionDetails) => {
 }
 
 const RecentTransactionsModal = ({ onDismiss = defaultOnDismiss, translateString }: RecentTransactionsModalProps) => {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId } = useContext(Web3AuthContext)
   const allTransactions = useAllTransactions()
 
   // Logic taken from Web3Status/index.tsx line 175

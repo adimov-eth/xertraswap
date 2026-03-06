@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useContext } from 'react'
 import { Currency, Pair } from '@xertra/sdk'
 import { Button, ChevronDownIcon, Text } from 'uikit'
 import styled from 'styled-components'
@@ -9,7 +9,7 @@ import CurrencyLogo from '../CurrencyLogo'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import { RowBetween } from '../Row'
 import { Input as NumericalInput } from '../NumericalInput'
-import { useActiveWeb3React } from '../../hooks'
+import Web3AuthContext from '../../pages/Web3AuthContext'
 
 const InputRow = styled.div<{ selected: boolean }>`
   display: flex;
@@ -100,13 +100,14 @@ export default function CurrencyInputPanel({
   showCommonBases,
 }: CurrencyInputPanelProps) {
   const [modalOpen, setModalOpen] = useState(false)
-  const { account } = useActiveWeb3React()
+  const { account } = useContext(Web3AuthContext)
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
   const TranslateString = useI18n()
   const translatedLabel = label || TranslateString(132, 'Input')
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)
   }, [setModalOpen])
+
   return (
     <InputPanel id={id}>
       <Container hideInput={hideInput}>

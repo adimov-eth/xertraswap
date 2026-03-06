@@ -1,6 +1,6 @@
 import { Web3Provider } from '@ethersproject/providers'
 import { ChainId } from '@xertra/sdk'
-import { connectorLocalStorageKey, ConnectorNames } from 'uikit'
+import { ConnectorNames } from 'uikit'
 import { useWeb3React as useWeb3ReactCore } from '@web3-react/core'
 // eslint-disable-next-line import/no-unresolved
 import { Web3ReactContextInterface } from '@web3-react/core/dist/types'
@@ -20,41 +20,35 @@ export function useEagerConnect() {
   const [tried, setTried] = useState(false)
 
   useEffect(() => {
-    const hasSignedIn = window.localStorage.getItem(connectorLocalStorageKey)
+    // const hasSignedIn = window.localStorage.getItem(connectorLocalStorageKey)
 
-    // Restore Web3Auth session if that was the last used connector
-    if (hasSignedIn === ConnectorNames.Web3Auth) {
-      web3authConnector
-        .isSessionAvailable()
-        .then((hasSession) => {
-          if (hasSession) {
-            activate(web3authConnector, undefined, true).catch(() => {
-              setTried(true)
-            })
-          } else {
-            setTried(true)
-          }
-        })
-        .catch(() => {
-          setTried(true)
-        })
-      return
-    }
+    // // Restore Web3Auth session if that was the last used connector
+    // if (hasSignedIn === ConnectorNames.Web3Auth) {
 
-    // Original injected wallet eager connect
-    injected.isAuthorized().then((isAuthorized) => {
-      if (isAuthorized && hasSignedIn) {
-        activate(injected, undefined, true).catch(() => {
-          setTried(true)
-        })
-      } else if (isMobile && window.ethereum && hasSignedIn) {
-        activate(injected, undefined, true).catch(() => {
-          setTried(true)
-        })
-      } else {
-        setTried(true)
-      }
-    })
+    //   web3authConnector.connect().then((account)=>{
+    //     if(account)
+    //       console.log("web3auth reconnected to:", account);
+    //     else
+    //       console.log("web3auth not connected");
+    //   })
+
+    //   return
+    // }
+
+    // // Original injected wallet eager connect
+    // injected.isAuthorized().then((isAuthorized) => {
+    //   if (isAuthorized && hasSignedIn) {
+    //     activate(injected, undefined, true).catch(() => {
+    //       setTried(true)
+    //     })
+    //   } else if (isMobile && window.ethereum && hasSignedIn) {
+    //     activate(injected, undefined, true).catch(() => {
+    //       setTried(true)
+    //     })
+    //   } else {
+    //     setTried(true)
+    //   }
+    // })
   }, [activate]) // intentionally only running on mount (make sure it's only mounted once :))
 
   // if the connection worked, wait until we get confirmation of that to flip the flag
@@ -77,33 +71,33 @@ export function useInactiveListener(suppress = false) {
   useEffect(() => {
     const { ethereum } = window
 
-    if (ethereum && ethereum.on && !active && !error && !suppress) {
-      const handleChainChanged = () => {
-        // eat errors
-        activate(injected, undefined, true).catch((e) => {
-          console.error('Failed to activate after chain changed', e)
-        })
-      }
+    // if (ethereum && ethereum.on && !active && !error && !suppress) {
+    //   const handleChainChanged = () => {
+    //     // eat errors
+    //     activate(injected, undefined, true).catch((e) => {
+    //       console.error('Failed to activate after chain changed', e)
+    //     })
+    //   }
 
-      const handleAccountsChanged = (accounts: string[]) => {
-        if (accounts.length > 0) {
-          // eat errors
-          activate(injected, undefined, true).catch((e) => {
-            console.error('Failed to activate after accounts changed', e)
-          })
-        }
-      }
+    //   const handleAccountsChanged = (accounts: string[]) => {
+    //     if (accounts.length > 0) {
+    //       // eat errors
+    //       activate(injected, undefined, true).catch((e) => {
+    //         console.error('Failed to activate after accounts changed', e)
+    //       })
+    //     }
+    //   }
 
-      ethereum.on('chainChanged', handleChainChanged)
-      ethereum.on('accountsChanged', handleAccountsChanged)
+    //   ethereum.on('chainChanged', handleChainChanged)
+    //   ethereum.on('accountsChanged', handleAccountsChanged)
 
-      return () => {
-        if (ethereum.removeListener) {
-          ethereum.removeListener('chainChanged', handleChainChanged)
-          ethereum.removeListener('accountsChanged', handleAccountsChanged)
-        }
-      }
-    }
+    //   return () => {
+    //     if (ethereum.removeListener) {
+    //       ethereum.removeListener('chainChanged', handleChainChanged)
+    //       ethereum.removeListener('accountsChanged', handleAccountsChanged)
+    //     }
+    //   }
+    // }
     return undefined
   }, [active, error, suppress, activate])
 }

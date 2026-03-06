@@ -1,10 +1,9 @@
 import { parseUnits } from '@ethersproject/units'
 import { Currency, CurrencyAmount, ETHER, JSBI, Token, TokenAmount, Trade } from '@xertra/sdk'
 import { ParsedQs } from 'qs'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import useENS from '../../hooks/useENS'
-import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
 import { useTradeExactIn, useTradeExactOut } from '../../hooks/Trades'
 import useParsedQueryString from '../../hooks/useParsedQueryString'
@@ -17,6 +16,7 @@ import { SwapState } from './reducer'
 import { useUserSlippageTolerance } from '../user/hooks'
 import { computeSlippageAdjustedAmounts } from '../../utils/prices'
 import { getBadRecipientAddresses } from '../../config/chains'
+import Web3AuthContext from '../../pages/Web3AuthContext'
 
 export function useSwapState(): AppState['swap'] {
   return useSelector<AppState, AppState['swap']>((state) => state.swap)
@@ -110,8 +110,7 @@ export function useDerivedSwapInfo(): {
   v2Trade: Trade | undefined
   inputError?: string
 } {
-  const { account } = useActiveWeb3React()
-
+  const { account } = useContext(Web3AuthContext)
   const {
     independentField,
     typedValue,
@@ -123,13 +122,14 @@ export function useDerivedSwapInfo(): {
   const inputCurrency = useCurrency(inputCurrencyId)
   const outputCurrency = useCurrency(outputCurrencyId)
   const recipientLookup = useENS(recipient ?? undefined)
+  
   const to: string | null = (recipient === null ? account : recipientLookup.address) ?? null
 
   const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
     inputCurrency ?? undefined,
     outputCurrency ?? undefined,
   ])
-
+  
   const isExactIn: boolean = independentField === Field.INPUT
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined)
 
@@ -252,10 +252,8 @@ export function queryParametersToSwapState(parsedQs: ParsedQs): SwapState {
 }
 
 // updates the swap state to use the defaults for a given network
-export function useDefaultsFromURLSearch():
-  | { inputCurrencyId: string | undefined; outputCurrencyId: string | undefined }
-  | undefined {
-  const { chainId } = useActiveWeb3React()
+export function useDefaultsFromURLSearch(): | { inputCurrencyId: string | undefined; outputCurrencyId: string | undefined } | undefined {
+  const { chainId } = useContext(Web3AuthContext)
   const dispatch = useDispatch<AppDispatch>()
   const parsedQs = useParsedQueryString()
   const [result, setResult] = useState<
@@ -263,7 +261,6 @@ export function useDefaultsFromURLSearch():
   >()
 
   useEffect(() => {
-    if (!chainId) return
     const parsed = queryParametersToSwapState(parsedQs)
 
     dispatch(

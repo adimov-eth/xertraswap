@@ -1,13 +1,13 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 import { JSBI, Percent, Router, SwapParameters, Trade, TradeType } from '@xertra/sdk'
-import { useMemo } from 'react'
+import { useContext, useMemo } from 'react'
 import { BIPS_BASE, DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE } from '../constants'
 import { useTransactionAdder } from '../state/transactions/hooks'
 import { calculateGasMargin, getRouterContract, isAddress, shortenAddress } from '../utils'
 import isZero from '../utils/isZero'
-import { useActiveWeb3React } from './index'
 import useENS from './useENS'
+import Web3AuthContext from '../pages/Web3AuthContext'
 
  enum SwapCallbackState {
   INVALID,
@@ -45,7 +45,7 @@ function useSwapCallArguments(
   deadline: number = DEFAULT_DEADLINE_FROM_NOW, // in seconds from now
   recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): SwapCall[] {
-  const { account, chainId, library } = useActiveWeb3React()
+  const { account, chainId, library } = useContext(Web3AuthContext)
 
   const { address: recipientAddress } = useENS(recipientAddressOrName)
   const recipient = recipientAddressOrName === null ? account : recipientAddress
@@ -94,7 +94,7 @@ export function useSwapCallback(
   deadline: number = DEFAULT_DEADLINE_FROM_NOW, // in seconds from now
   recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
-  const { account, chainId, library } = useActiveWeb3React()
+  const { account, chainId, library } = useContext(Web3AuthContext)
 
   const swapCalls = useSwapCallArguments(trade, allowedSlippage, deadline, recipientAddressOrName)
 

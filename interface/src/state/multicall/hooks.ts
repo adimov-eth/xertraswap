@@ -1,9 +1,8 @@
 import { Interface, FunctionFragment } from '@ethersproject/abi'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
-import { useEffect, useMemo } from 'react'
+import { useContext, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useActiveWeb3React } from '../../hooks'
 import { useBlockNumber } from '../application/hooks'
 import { AppDispatch, AppState } from '../index'
 import {
@@ -14,6 +13,7 @@ import {
   toCallKey,
   ListenerOptions,
 } from './actions'
+import Web3AuthContext from '../../pages/Web3AuthContext'
 
 export interface Result extends ReadonlyArray<any> {
   readonly [key: string]: any
@@ -50,10 +50,12 @@ export const NEVER_RELOAD: ListenerOptions = {
 
 // the lowest level call for subscribing to contract data
 function useCallsData(calls: (Call | undefined)[], options?: ListenerOptions): CallResult[] {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useContext(Web3AuthContext)
+  
   const callResults = useSelector<AppState, AppState['multicall']['callResults']>(
     (state) => state.multicall.callResults
   )
+
   const dispatch = useDispatch<AppDispatch>()
 
   const serializedCallKeys: string = useMemo(
@@ -100,7 +102,6 @@ function useCallsData(calls: (Call | undefined)[], options?: ListenerOptions): C
 
         const result = callResults[chainId]?.[toCallKey(call)]
         const data = result?.data && result?.data !== '0x' ? result.data : null
-
         return { valid: true, data, blockNumber: result?.blockNumber }
       }),
     [callResults, calls, chainId]
@@ -166,7 +167,7 @@ export function useSingleContractMultipleData(
   options?: ListenerOptions
 ): CallState[] {
   const fragment = useMemo(() => contract?.interface?.getFunction(methodName), [contract, methodName])
-
+  
   const calls = useMemo(
     () =>
       contract && fragment && callInputs && callInputs.length > 0
@@ -197,6 +198,7 @@ export function useMultipleContractSingleData(
   options?: ListenerOptions
 ): CallState[] {
   const fragment = useMemo(() => contractInterface.getFunction(methodName), [contractInterface, methodName])
+
   const callData: string | undefined = useMemo(
     () =>
       fragment && isValidMethodArgs(callInputs)

@@ -1,14 +1,13 @@
-import { useMemo } from 'react'
+import { useContext, useMemo } from 'react'
 import { TokenAmount, Pair, Percent, JSBI } from '@xertra/sdk'
 import { Interface } from '@ethersproject/abi'
 import v2Pair from '@uniswap/v2-core/build/IUniswapV2Pair.json'
-
 import { useMultipleContractSingleData } from 'state/multicall/hooks'
 import { useTokenBalances } from 'state/wallet/hooks'
 import { getPoolList, PoolInfo } from 'utils/getPoolList'
 import { useTotalSupplies } from 'data/TotalSupply'
-import { useActiveWeb3React } from './index'
 import { useAllTokens } from './Tokens'
+import Web3AuthContext from '../pages/Web3AuthContext'
 
 const IUniswapV2PairABI  = new Interface(v2Pair.abi)
 
@@ -26,7 +25,7 @@ interface PoolData {
 }
 
 export function useAllPools(): PoolData[] {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useContext(Web3AuthContext)
 
   const tokens = useAllTokens()
   const poolList = getPoolList()
@@ -87,7 +86,7 @@ interface UserPoolPosition {
 }
 
 export function useUserPairPosition(pairs: (Pair | null)[]): UserPoolPosition[] {
-  const { account } = useActiveWeb3React()
+  const { account } = useContext(Web3AuthContext)
   const lpTokens = pairs.map(p => p?.liquidityToken)
   const tokens = pairs.map(p => ([p?.liquidityToken, p?.token0, p?.token1])).flat()
 

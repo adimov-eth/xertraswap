@@ -5,11 +5,6 @@ import GlobalStyle from './style/Global'
 import CSSVariables from './style/CSSVariables'
 import ButtonOverrides from './style/ButtonOverrides'
 import App from './pages/App'
-import ApplicationUpdater from './state/application/updater'
-import ListsUpdater from './state/lists/updater'
-import MulticallUpdater from './state/multicall/updater'
-import TransactionUpdater from './state/transactions/updater'
-import ToastListener from './components/ToastListener'
 import Providers from './Providers'
 import './i18n'
 
@@ -24,13 +19,6 @@ window.addEventListener('error', () => {
 ReactDOM.render(
   <StrictMode>
     <Providers>
-      <>
-        <ListsUpdater />
-        <ApplicationUpdater />
-        <TransactionUpdater />
-        <MulticallUpdater />
-        <ToastListener />
-      </>
       <ResetCSS />
       <GlobalStyle />
       <CSSVariables />

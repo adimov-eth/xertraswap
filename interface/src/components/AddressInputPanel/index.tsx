@@ -1,13 +1,13 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useContext } from 'react'
 import styled from 'styled-components'
 import { Text } from 'uikit'
 import useI18n from '../../hooks/useI18n'
 import useENS from '../../hooks/useENS'
-import { useActiveWeb3React } from '../../hooks'
 import { ExternalLink } from '../Shared'
 import { AutoColumn } from '../Column'
 import { RowBetween } from '../Row'
 import { getBscScanLink } from '../../utils'
+import Web3AuthContext from '../../pages/Web3AuthContext'
 
 const InputPanel = styled.div`
   display: flex;
@@ -79,7 +79,7 @@ export default function AddressInputPanel({
   // triggers whenever the typed value changes
   onChange: (value: string) => void
 }) {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useContext(Web3AuthContext)
   const TranslateString = useI18n()
   const { address, loading, name } = useENS(value)
 

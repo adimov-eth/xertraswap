@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import Cookies from 'js-cookie'
-import { useActiveWeb3React } from 'hooks'
+import Web3AuthContext from '../pages/Web3AuthContext'
 
 const initialState = {
   profileLink: '/',
@@ -12,7 +12,7 @@ const initialState = {
  */
 const useGetLocalProfile = () => {
   const [profile, setProfile] = useState(initialState)
-  const { account } = useActiveWeb3React()
+  const { account } = useContext(Web3AuthContext)
 
   useEffect(() => {
     if (account) {
