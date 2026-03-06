@@ -110,17 +110,22 @@ To redeploy the DEX on a new chain or after a chain reset:
 
 ```bash
 cd contracts
-cp .env.example .env  # Add PRIVATE_KEY
 npm install
+npx hardhat vars set DEPLOYER_KEY    # Paste private key (encrypted at rest)
 npx hardhat compile
 
 # Deploy everything (Factory + Router + Multicall)
 npx hardhat run scripts/deploy-all.js --network auroria
 
+# Seed with swap activity
+npx hardhat run scripts/seed-activity.js --network auroria
+
 # Then update:
 #   interface/src/config/chains.ts
 #   packages/xertra-sdk/src/constants.ts
 ```
+
+Deployer key is stored encrypted in `~/.config/hardhat/vars.json` — never in `.env` or source.
 
 The deploy script uses the existing WSTRAX on Auroria. The INIT_CODE_HASH in `PancakeLibrary.sol` and the SDK must match — if you recompile the Factory/Pair contracts, the hash changes due to Solidity metadata.
 
