@@ -14,6 +14,7 @@ import PoolDetails from './PoolDetails'
 import PoolFinder from './PoolFinder'
 import RemoveLiquidity from './RemoveLiquidity'
 import Swap from './Swap'
+import Faucet from './Faucet'
 import { RedirectPathToSwapOnly } from './Swap/redirects'
 import { EN, allLanguages } from '../constants/localisation/languageCodes'
 import { LanguageContext } from '../hooks/LanguageContext'
@@ -170,6 +171,7 @@ export default function App() {
                           <Route exact strict path="/" component={Swap} />
                           <Route exact strict path="/swap" component={Swap} />
                           <Route exact strict path="/find" component={PoolFinder} />
+                          <Route exact strict path="/faucet" component={Faucet} />
                           <Route exact strict path="/pool" component={Pool} />
                           <Route exact strict path="/pools" component={Pools} />
                           <Route exact strict path="/pool/:currencyIdA/:currencyIdB" component={PoolDetails} />

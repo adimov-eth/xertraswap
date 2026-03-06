@@ -8,7 +8,11 @@
   },
   "tags": {},
   "logoURI": "/images/xertra-logo.png",
-  "keywords": ["xertra", "stratis", "default"],
+  "keywords": [
+    "xertra",
+    "stratis",
+    "default"
+  ],
   "pools": [
     {
       "pid": 1,
@@ -45,18 +49,34 @@
     {
       "pid": 1,
       "chainId": 205205,
-      "lpSymbol": "SSI-AGI LP",
-      "lpAddress": "0x8a6ab4ea4d7f5124f46e961b42f432b59f2cabde",
-      "token": "0x2d9fb245627cfbb14666e0a99cd26e33f3a3d7e7",
-      "quoteToken": "0x83c5dcecc4a0b1909d4ade1bb16eddba5e145fcf"
+      "lpSymbol": "xUSD-WSTRAX LP",
+      "lpAddress": "0xAc4Fc1b2C740dB83C6A82b6eB9a3D24a40EDf684",
+      "token": "0xE71d254C2F1430b597b53D83B3453d519F4C4564",
+      "quoteToken": "0x57402359Eb6f3aB02c19EA7B98F366f324b66Aae"
     },
     {
       "pid": 2,
       "chainId": 205205,
-      "lpSymbol": "rSTRAX-WSTRAX LP",
-      "lpAddress": "0xc3005def05ED2E213a9638f719d37E04D7d2c5e8",
-      "token": "0x5c0958e166144606A5d0Aeaf8efe2f1110c37B53",
-      "quoteToken": "0x6f39A32C3E7A54164e1C6E201979aec276B0Da8E"
+      "lpSymbol": "xETH-WSTRAX LP",
+      "lpAddress": "0x9f95fC89Da1DD6bbab00E609054F557969F69D48",
+      "token": "0xd16Cab1e481eF8401Bfd8fb3BaC42Ce2918e9ad2",
+      "quoteToken": "0x57402359Eb6f3aB02c19EA7B98F366f324b66Aae"
+    },
+    {
+      "pid": 3,
+      "chainId": 205205,
+      "lpSymbol": "xBTC-WSTRAX LP",
+      "lpAddress": "0x138cF9832B3CC4974F793EDae0420ACD67D05942",
+      "token": "0xde05775bC57cD8447e3D9F0e9dC4712641cfAB15",
+      "quoteToken": "0x57402359Eb6f3aB02c19EA7B98F366f324b66Aae"
+    },
+    {
+      "pid": 4,
+      "chainId": 205205,
+      "lpSymbol": "xUSD-xETH LP",
+      "lpAddress": "0xA9b70a3d233B04Ae46462c310991850EDCE1221d",
+      "token": "0xE71d254C2F1430b597b53D83B3453d519F4C4564",
+      "quoteToken": "0xd16Cab1e481eF8401Bfd8fb3BaC42Ce2918e9ad2"
     }
   ]
 }

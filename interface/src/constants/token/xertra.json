@@ -104,95 +104,32 @@
     },
     {
       "chainId": 205205,
-      "name": "WRAPPED STRAX",
-      "address": "0x7b7E6F779c497df2e9EAF8C311d44A296E4F316D",
+      "name": "Wrapped STRAX",
+      "address": "0x57402359Eb6f3aB02c19EA7B98F366f324b66Aae",
       "decimals": 18,
       "symbol": "WSTRAX",
       "logoURI": "/images/coins/0xeA705D2DbD8DE7Dc70Db7B531D0F620d9CeE9d18.png"
     },
     {
       "chainId": 205205,
-      "name": "DAI",
-      "address": "0x6F9cBc51c7E22BBE7e5DD517925fB9bAbd1d9a05",
+      "name": "Xertra USD",
+      "address": "0xE71d254C2F1430b597b53D83B3453d519F4C4564",
       "decimals": 18,
-      "symbol": "DAI",
-      "logoURI": "/images/coins/0x6F9cBc51c7E22BBE7e5DD517925fB9bAbd1d9a05.png"
+      "symbol": "xUSD"
     },
     {
       "chainId": 205205,
-      "name": "TestGBPT",
-      "address": "0x796D5852D54055094Ac177dE792164BCa625a28e",
+      "name": "Xertra ETH",
+      "address": "0xd16Cab1e481eF8401Bfd8fb3BaC42Ce2918e9ad2",
       "decimals": 18,
-      "symbol": "TGBPT",
-      "logoURI": "/images/coins/0x796D5852D54055094Ac177dE792164BCa625a28e.png"
+      "symbol": "xETH"
     },
     {
       "chainId": 205205,
-      "name": "Pupa token",
-      "address": "0xb84b0f343c04a31939ba97e2cfec4639cc413d66",
+      "name": "Xertra BTC",
+      "address": "0xde05775bC57cD8447e3D9F0e9dC4712641cfAB15",
       "decimals": 18,
-      "symbol": "PUPA",
-      "logoURI": "/images/coins/0xb84b0f343c04a31939ba97e2cfec4639cc413d66.png"
-    },
-    {
-      "chainId": 205205,
-      "name": "Lupa token",
-      "address": "0x0f14c19b5a28975b549e037dbc7188ffa63ffeae",
-      "decimals": 18,
-      "symbol": "LUPA",
-      "logoURI": "/images/coins/0x0f14c19b5a28975b549e037dbc7188ffa63ffeae.png"
-    },
-    {
-      "chainId": 205205,
-      "name": "AGI",
-      "address": "0x83c5DcEcc4a0b1909d4ADe1BB16edDba5e145fCf",
-      "decimals": 18,
-      "symbol": "AGI",
-      "logoURI": "/images/coins/0x83c5DcEcc4a0b1909d4ADe1BB16edDba5e145fCf.png"
-    },
-    {
-      "chainId": 205205,
-      "name": "SSI",
-      "address": "0x2d9fb245627cFBb14666E0A99Cd26e33f3a3D7E7",
-      "decimals": 18,
-      "symbol": "SSI",
-      "logoURI": "/images/coins/0x2d9fb245627cFBb14666E0A99Cd26e33f3a3D7E7.png"
-    },
-    {
-      "chainId": 205205,
-      "name": "USDC",
-      "address": "0x673E35439E5dE07e0d9C43632FBd9096F2eb372D",
-      "decimals": 6,
-      "symbol": "USDC",
-      "logoURI": "/images/coins/0x673E35439E5dE07e0d9C43632FBd9096F2eb372D.png"
-    },
-    {
-      "chainId": 205205,
-      "name": "DEXToken3",
-      "address": "0x094E10dC29B8c3220bE9240ac343F8c64D09B93F",
-      "decimals": 18,
-      "symbol": "DT3"
-    },
-    {
-      "chainId": 205205,
-      "name": "DEXToken2",
-      "address": "0x1Ce9cd2CD9e6C7dEcC92a10816908B3efd95aa23",
-      "decimals": 18,
-      "symbol": "DT2"
-    },
-    {
-      "chainId": 205205,
-      "name": "DEXToken1",
-      "address": "0xccc566AE43540f0f93eEf9D50cE65800388baF25",
-      "decimals": 18,
-      "symbol": "DT1"
-    },
-    {
-      "chainId": 205205,
-      "name": "rSTRAX",
-      "address": "0x5c0958e166144606A5d0Aeaf8efe2f1110c37B53",
-      "decimals": 18,
-      "symbol": "rSTRAX"
+      "symbol": "xBTC"
     }
   ]
 }
