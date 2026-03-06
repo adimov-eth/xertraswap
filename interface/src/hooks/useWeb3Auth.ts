@@ -9,13 +9,19 @@ const useWeb3Auth = () => {
   const web3AuthContext = useContext(Web3AuthContext)
 
   const login = useCallback(async () => {
-    const connectorState = await web3authConnector.connect()
-    if(connectorState){
-      web3AuthContext.setAccount(connectorState.account!)
-      web3AuthContext.setChainId(connectorState.chainId)
-      web3AuthContext.setProvider(connectorState.web3Provider)
-    }    
-  }, [toastError])
+    try {
+      const connectorState = await web3authConnector.connect()
+      if(connectorState){
+        web3AuthContext.setAccount(connectorState.account!)
+        web3AuthContext.setChainId(connectorState.chainId)
+        web3AuthContext.setProvider(connectorState.web3Provider)
+      }          
+    } catch (error) {
+      // TOOD this is not being caught.
+      toastError(error as any);
+    }
+
+  }, [])
 
   const logout = useCallback(async () => {
     await web3authConnector.logout()

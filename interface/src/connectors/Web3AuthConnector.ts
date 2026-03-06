@@ -7,6 +7,7 @@ import { getDefaultExternalAdapters } from '@web3auth/default-evm-adapter'
 import { BLOCK_EXPLORER_URLS, RPC_URLS } from '../config/chains'
 import getLibrary from '../utils/getLibrary'
 import { Web3Provider } from '@ethersproject/providers'
+import { chain } from 'lodash'
 
 interface Eip1193ProviderLike {
   request?: (args: { method: string; params?: unknown[] | Record<string, unknown> }) => Promise<unknown>
@@ -30,16 +31,18 @@ export interface Web3AuthConnectorState {
 }
 
 // eslint-disable-next-line import/prefer-default-export
-export class Web3AuthConnector{
+export class Web3AuthConnector {
 
   private web3auth: Web3Auth | null = null
 
   private initialized = false
 
   private readonly chainId: number
+  private readonly chainIdHex: string
 
   constructor(chainId: number) {
     this.chainId = chainId;
+    this.chainIdHex = `0x${this.chainId.toString(16)}`
   }
 
   private async ensureInitialized(): Promise<Web3Auth | null> {
@@ -48,11 +51,9 @@ export class Web3AuthConnector{
       return this.web3auth
     }
 
-    const chainIdHex = `0x${this.chainId.toString(16)}`
-
     const chainConfig = {
       chainNamespace: CHAIN_NAMESPACES.EIP155,
-      chainId: chainIdHex,
+      chainId: this.chainIdHex,
       rpcTarget: RPC_URLS[this.chainId],
       displayName: 'Stratis EVM',
       ticker: 'STRAX',
@@ -110,15 +111,18 @@ export class Web3AuthConnector{
       const provider = await this.web3auth?.connect()
       const web3Provider = getLibrary(provider);
       const account = await this.resolveAccount(provider  as Eip1193ProviderLike);
-      const chainIdValue = (await this.request(provider as Eip1193ProviderLike, 'eth_chainId')) ?? (provider as Eip1193ProviderLike).chainId
-      const chainId = this.parseChainId(chainIdValue)
+      //const chainIdValue = (await this.request(provider as Eip1193ProviderLike, 'eth_chainId')) ?? (provider as Eip1193ProviderLike).chainId
+      //this.chainId = this.parseChainId(chainIdValue)
 
-      return { account, chainId, web3Provider }
-      // if (provider?.on) {
-      //   provider.on('accountsChanged', this.handleAccountsChanged as unknown as (...args: unknown[]) => void)
-      //   provider.on('chainChanged', this.handleChainChanged as unknown as (...args: unknown[]) => void)
-      //   provider.on('disconnect', this.handleDisconnect as unknown as (...args: unknown[]) => void)
-      // }
+      const { ethereum } = window
+
+      if (ethereum && ethereum.on) {
+        ethereum.on('chainChanged', this.handleChainChanged)
+        ethereum.on('accountsChanged', this.handleAccountsChanged)
+      }
+
+      return { account, chainId : this.chainId, web3Provider }
+
     } catch (error) {
       console.log(error);
     }
@@ -126,39 +130,32 @@ export class Web3AuthConnector{
     return null
   }
 
-
   async logout(): Promise<void> {
-    const provider = this.web3auth?.provider as Eip1193ProviderLike | null
-    if (provider) {
-      // provider.removeListener?.('accountsChanged', this.handleAccountsChanged as unknown as (...args: unknown[]) => void)
-      // provider.removeListener?.('chainChanged', this.handleChainChanged as unknown as (...args: unknown[]) => void)
-      // provider.removeListener?.('disconnect', this.handleDisconnect as unknown as (...args: unknown[]) => void)
-    }
 
     if (this.web3auth?.connected) {
-      // Fire-and-forget logout since deactivate is synchronous
+
+      const { ethereum } = window
+      if (ethereum && ethereum.removeListener) {
+        ethereum.removeListener('chainChanged', this.handleChainChanged)
+        ethereum.removeListener('accountsChanged', this.handleChainChanged)
+      }
+
       await this.web3auth.logout()
-      // .catch((err) => {
-      //   console.error('Web3Auth logout error', err)
-      // })
     }
   }
 
-  // private handleAccountsChanged = (accounts: unknown): void => {
-  //   if (!Array.isArray(accounts) || accounts.length === 0) {
-  //     this.emitDeactivate()
-  //   } else {
-  //     this.emitUpdate({ account: String(accounts[0]) })
-  //   }
-  // }
+  private handleAccountsChanged = (accounts: string[]): void => {
+    // Todo: toast reload message
+    window.location.reload();
+  }
 
-  // private handleChainChanged = (chainId: unknown): void => {
-  //   this.emitUpdate({ chainId: this.parseChainId(chainId) })
-  // }
-
-  // private handleDisconnect = (): void => {
-  //   this.emitDeactivate()
-  // }
+  private handleChainChanged = (chainId: number): void => {
+    const parsedChange = this.parseChainId(chainId) 
+    if(this.chainId !== parsedChange){
+      console.log(`Chain Id changed to ${parsedChange}`);
+      throw `Chain Id mismatch, please switch to ${this.chainId}`
+    }
+  }
 
   private async request(provider: Eip1193ProviderLike, method: string): Promise<unknown> {
     if (!provider.request) {
