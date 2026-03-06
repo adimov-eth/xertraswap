@@ -13,6 +13,22 @@ jobs:
       contents: read
       deployments: write
 
+    strategy:
+      matrix:
+        network:
+          - name: mainnet
+            chain_id: "105105"
+            web3auth_network: sapphire_mainnet
+            web3auth_secret: WEB3AUTH_CLIENT_ID_PROD
+            pages_project: xertraswap
+          - name: testnet
+            chain_id: "205205"
+            web3auth_network: sapphire_devnet
+            web3auth_secret: WEB3AUTH_CLIENT_ID_DEV
+            pages_project: xertraswap-testnet
+
+    name: Deploy ${{ matrix.network.name }} (${{ github.ref_name }})
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -26,18 +42,6 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Set environment
-        run: |
-          if [ "${{ github.ref_name }}" = "main" ]; then
-            echo "REACT_APP_CHAIN_ID=105105" >> "$GITHUB_ENV"
-            echo "REACT_APP_WEB3AUTH_NETWORK=sapphire_mainnet" >> "$GITHUB_ENV"
-            echo "REACT_APP_WEB3AUTH_CLIENT_ID=${{ secrets.WEB3AUTH_CLIENT_ID_PROD }}" >> "$GITHUB_ENV"
-          else
-            echo "REACT_APP_CHAIN_ID=205205" >> "$GITHUB_ENV"
-            echo "REACT_APP_WEB3AUTH_NETWORK=sapphire_devnet" >> "$GITHUB_ENV"
-            echo "REACT_APP_WEB3AUTH_CLIENT_ID=${{ secrets.WEB3AUTH_CLIENT_ID_DEV }}" >> "$GITHUB_ENV"
-          fi
-
       - name: Build SDK
         run: yarn workspace @xertra/sdk build
 
@@ -45,9 +49,12 @@ jobs:
         run: yarn workspace @xertra/interface build
         env:
           GENERATE_SOURCEMAP: false
+          REACT_APP_CHAIN_ID: ${{ matrix.network.chain_id }}
+          REACT_APP_WEB3AUTH_NETWORK: ${{ matrix.network.web3auth_network }}
+          REACT_APP_WEB3AUTH_CLIENT_ID: ${{ secrets[matrix.network.web3auth_secret] }}
 
       - name: Deploy to Cloudflare Pages
-        run: npx wrangler pages deploy interface/build --project-name=xertraswap --branch=${{ github.ref_name }}
+        run: npx wrangler pages deploy interface/build --project-name=${{ matrix.network.pages_project }} --branch=${{ github.ref_name }}
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
