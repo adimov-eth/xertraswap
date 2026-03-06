@@ -47,10 +47,8 @@ jobs:
           GENERATE_SOURCEMAP: false
 
       - name: Deploy to Cloudflare Pages
-        env:
-          CF_REFRESH_TOKEN: ${{ secrets.CLOUDFLARE_REFRESH_TOKEN }}
-        run: |
-          CFG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/.wrangler/config"
-          mkdir -p "$CFG_DIR"
-          printf 'oauth_token = ""\nrefresh_token = "%s"\nexpiration_time = "2000-01-01T00:00:00.000Z"\nscopes = ["account:read", "user:read", "pages:write", "offline_access"]\n' "$CF_REFRESH_TOKEN" > "$CFG_DIR/default.toml"
-          npx wrangler pages deploy interface/build --project-name=xertraswap --branch=${{ github.ref_name }}
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy interface/build --project-name=xertraswap --branch=${{ github.ref_name }}
