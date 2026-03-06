@@ -142,7 +142,7 @@ export default function App() {
   useGetDocumentTitlePrice()
 
   const [account, setAccount] = useState<string | undefined>()
-  const [chainId, setChainId] = useState<number | undefined>()
+  const [chainId, setChainId] = useState<number | undefined>(parseInt(process.env.REACT_APP_CHAIN_ID ?? '105105', 10))
   const [library, setProvider] = useState<Web3Provider | undefined>()
 
   return (
