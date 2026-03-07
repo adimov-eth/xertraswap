@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useMemo, useState } from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 import { Credentials, StringTranslations } from '@crowdin/crowdin-api-client'
@@ -22,7 +22,8 @@ import { TranslationsContext } from '../hooks/TranslationsContext'
 import Menu from '../components/Menu'
 import useGetDocumentTitlePrice from '../hooks/useGetDocumentTitlePrice'
 import Web3AuthContext from './Web3AuthContext'
-import { Web3Provider } from '@ethersproject/providers'
+import { Web3Provider, JsonRpcProvider } from '@ethersproject/providers'
+import { getCurrentRpcUrl, getCurrentChainId } from 'config/chains'
 import ToastListener from '../components/ToastListener'
 
 import ApplicationUpdater from '../state/application/updater'
@@ -144,7 +145,14 @@ export default function App() {
 
   const [account, setAccount] = useState<string | undefined>()
   const [chainId, setChainId] = useState<number | undefined>(parseInt(process.env.REACT_APP_CHAIN_ID ?? '105105', 10))
-  const [library, setProvider] = useState<Web3Provider | undefined>()
+  const [walletProvider, setProvider] = useState<Web3Provider | undefined>()
+
+  // Read-only fallback provider for when no wallet is connected
+  const readOnlyProvider = useMemo(() => {
+    return new JsonRpcProvider(getCurrentRpcUrl(), getCurrentChainId()) as unknown as Web3Provider
+  }, [])
+
+  const library = walletProvider ?? readOnlyProvider
 
   return (
     <Suspense fallback={null}>
