@@ -78,7 +78,7 @@ jobs:
           REACT_APP_WEB3AUTH_CLIENT_ID: ${{ secrets.WEB3AUTH_CLIENT_ID_DEV }}
 
       - name: Deploy to Cloudflare Pages
-        run: npx wrangler pages deploy interface/build --project-name=xertraswap-testnet --branch=develop
+        run: npx wrangler pages deploy interface/build --project-name=xertraswap-testnet --branch=main
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
