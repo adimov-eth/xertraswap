@@ -43,8 +43,8 @@ export function useAllPools(): PoolData[] {
   return useMemo(() => {
     return results.map((result, i) => {
       const { result: reserves, loading } = result
-      const tokenA = tokens[chainPools[i].token]
-      const tokenB = tokens[chainPools[i].quoteToken]
+      const tokenA = tokens[chainPools[i].token.toLowerCase()]
+      const tokenB = tokens[chainPools[i].quoteToken.toLowerCase()]
       const info = chainPools[i]
 
       if (loading) {
