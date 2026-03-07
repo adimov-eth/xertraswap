@@ -73,9 +73,9 @@ const Faucet: React.FC = () => {
   const isTestnet = CHAIN_ID === 205205
 
   const loadFaucetInfo = useCallback(async () => {
-    if (!library) return
+    const provider = library || new ethers.providers.JsonRpcProvider('https://auroria.rpc.stratisevm.com')
     try {
-      const faucet = new ethers.Contract(FAUCET_ADDRESS, FAUCET_ABI, library)
+      const faucet = new ethers.Contract(FAUCET_ADDRESS, FAUCET_ABI, provider)
 
       const nativeAmount = await faucet.nativeDripAmount()
       setNativeDrip(ethers.utils.formatEther(nativeAmount))
