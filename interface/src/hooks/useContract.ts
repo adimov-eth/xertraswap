@@ -12,19 +12,25 @@ import { getContract } from '../utils'
 import Web3AuthContext from '../pages/Web3AuthContext'
 
 const IUniswapV2PairABI  = v2Pair.abi
-// returns null on errors
+
+// Returns a Contract instance. Uses wallet signer for writes when available,
+// falls back to read-only provider (always available).
 function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
-  const { account, library} = useContext(Web3AuthContext)
+  const { account, library, walletProvider } = useContext(Web3AuthContext)
 
   return useMemo(() => {
-    if (!address || !ABI || !library) return null
+    if (!address || !ABI) return null
     try {
-      return getContract(address, ABI, library, withSignerIfPossible && account ? account : undefined)
+      // Use wallet provider for signing when available and requested
+      const providerOrSigner = withSignerIfPossible && walletProvider && account
+        ? walletProvider
+        : library
+      return getContract(address, ABI, providerOrSigner, withSignerIfPossible && account ? account : undefined)
     } catch (error) {
       console.error('Failed to get contract', error)
       return null
     }
-  }, [address, ABI, library, withSignerIfPossible, account])
+  }, [address, ABI, library, walletProvider, withSignerIfPossible, account])
 }
 
 export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: boolean): Contract | null {

@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useMemo, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 import { Credentials, StringTranslations } from '@crowdin/crowdin-api-client'
@@ -24,6 +24,9 @@ import useGetDocumentTitlePrice from '../hooks/useGetDocumentTitlePrice'
 import Web3AuthContext from './Web3AuthContext'
 import { Web3Provider, JsonRpcProvider } from '@ethersproject/providers'
 import { getCurrentRpcUrl, getCurrentChainId } from 'config/chains'
+
+const DEFAULT_CHAIN_ID = getCurrentChainId()
+const READ_ONLY_PROVIDER = new JsonRpcProvider(getCurrentRpcUrl(), DEFAULT_CHAIN_ID)
 import ToastListener from '../components/ToastListener'
 
 import ApplicationUpdater from '../state/application/updater'
@@ -144,15 +147,10 @@ export default function App() {
   useGetDocumentTitlePrice()
 
   const [account, setAccount] = useState<string | undefined>()
-  const [chainId, setChainId] = useState<number | undefined>(parseInt(process.env.REACT_APP_CHAIN_ID ?? '105105', 10))
+  const [chainId, setChainId] = useState<number>(DEFAULT_CHAIN_ID)
   const [walletProvider, setProvider] = useState<Web3Provider | undefined>()
 
-  // Read-only fallback provider for when no wallet is connected
-  const readOnlyProvider = useMemo(() => {
-    return new JsonRpcProvider(getCurrentRpcUrl(), getCurrentChainId()) as unknown as Web3Provider
-  }, [])
-
-  const library = walletProvider ?? readOnlyProvider
+  const library = walletProvider ?? READ_ONLY_PROVIDER
 
   return (
     <Suspense fallback={null}>
@@ -163,7 +161,7 @@ export default function App() {
           >
             <TranslationsContext.Provider value={{ translations, setTranslations }}>              
 
-              <Web3AuthContext.Provider value={{account, setAccount, chainId, setChainId, library, setProvider}}>
+              <Web3AuthContext.Provider value={{account, setAccount, chainId, setChainId, library, setProvider, walletProvider}}>
 
                 <ListsUpdater />
                 <ApplicationUpdater />

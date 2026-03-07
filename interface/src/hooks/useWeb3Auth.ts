@@ -1,6 +1,7 @@
 import { useCallback, useContext } from 'react'
 import useToast from 'hooks/useToast'
 import { web3authConnector } from 'connectors'
+import { getCurrentChainId } from 'config/chains'
 import Web3AuthContext from '../pages/Web3AuthContext'
 
 const useWeb3Auth = () => {
@@ -20,8 +21,9 @@ const useWeb3Auth = () => {
   const logout = useCallback(async () => {
     await web3authConnector.logout()
     web3AuthContext.setAccount(undefined)
-    web3AuthContext.setChainId(undefined)
+    web3AuthContext.setChainId(getCurrentChainId())
     web3AuthContext.setProvider(undefined)
+    localStorage.clear()
   }, [])
 
   return { login, logout }
