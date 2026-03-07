@@ -96,29 +96,46 @@ export class Web3AuthConnector{
     return this.web3auth
   }
 
-  async connect(): Promise<Web3AuthConnectorState | null> {
-    if(!this.initialized)
-    {
-      console.log("web3auth initialization started")
-      await this.ensureInitialized()
-      console.log("web3auth initialization completed")
+  /**
+   * Reconnect silently if a session already exists (after initModal).
+   * Returns the existing session or null — never opens the modal.
+   */
+  async reconnect(): Promise<Web3AuthConnectorState | null> {
+    await this.ensureInitialized()
+
+    // After initModal(), web3auth.connected is true if a session was restored
+    if (!this.web3auth?.connected || !this.web3auth.provider) {
+      return null
     }
 
     try {
-      const provider = await this.web3auth?.connect()
-      const web3Provider = getLibrary(provider);
-      const account = await this.resolveAccount(provider  as Eip1193ProviderLike);
+      const provider = this.web3auth.provider
+      const web3Provider = getLibrary(provider)
+      const account = await this.resolveAccount(provider as Eip1193ProviderLike)
       const chainIdValue = (await this.request(provider as Eip1193ProviderLike, 'eth_chainId')) ?? (provider as Eip1193ProviderLike).chainId
       const chainId = this.parseChainId(chainIdValue)
-
       return { account, chainId, web3Provider }
-      // if (provider?.on) {
-      //   provider.on('accountsChanged', this.handleAccountsChanged as unknown as (...args: unknown[]) => void)
-      //   provider.on('chainChanged', this.handleChainChanged as unknown as (...args: unknown[]) => void)
-      //   provider.on('disconnect', this.handleDisconnect as unknown as (...args: unknown[]) => void)
-      // }
     } catch (error) {
-      console.log(error);
+      console.error('Web3Auth reconnect failed:', error)
+      return null
+    }
+  }
+
+  /**
+   * Open the Web3Auth modal and connect. Use for explicit user login.
+   */
+  async connect(): Promise<Web3AuthConnectorState | null> {
+    await this.ensureInitialized()
+
+    try {
+      const provider = await this.web3auth?.connect()
+      const web3Provider = getLibrary(provider)
+      const account = await this.resolveAccount(provider as Eip1193ProviderLike)
+      const chainIdValue = (await this.request(provider as Eip1193ProviderLike, 'eth_chainId')) ?? (provider as Eip1193ProviderLike).chainId
+      const chainId = this.parseChainId(chainIdValue)
+      return { account, chainId, web3Provider }
+    } catch (error) {
+      console.error('Web3Auth connect failed:', error)
     }
 
     return null

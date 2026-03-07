@@ -6,16 +6,14 @@ import { SupportedChainId } from '../../config/chains'
 export default function Web3AuthManager({ children }: { children: JSX.Element }) {
   const { connection, connect, disconnect, switchChain } = useContext(Web3AuthContext)
 
-  // Reconnect on mount (restores session if user was previously logged in)
+  // Silently restore existing session on mount — never opens the modal
   useEffect(() => {
     web3authConnector
-      .connect()
+      .reconnect()
       .then((connectorState) => {
         if (connectorState?.account) {
           connect(connectorState.web3Provider, connectorState.account, connectorState.chainId as SupportedChainId)
-          console.info(`Web3Auth reconnected: ${connectorState.account} on chain ${connectorState.chainId}`)
-        } else {
-          console.info('Web3Auth: no active session')
+          console.info(`Web3Auth restored session: ${connectorState.account}`)
         }
       })
       .catch((error) => {
