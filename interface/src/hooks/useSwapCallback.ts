@@ -94,7 +94,7 @@ export function useSwapCallback(
   deadline: number = DEFAULT_DEADLINE_FROM_NOW, // in seconds from now
   recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
-  const { connection, account, chainId } = useContext(Web3AuthContext)
+  const { connection, account } = useContext(Web3AuthContext)
 
   const swapCalls = useSwapCallArguments(trade, allowedSlippage, deadline, recipientAddressOrName)
 
@@ -217,7 +217,7 @@ export function useSwapCallback(
       },
       error: null,
     }
-  }, [trade, connection, account, chainId, recipient, recipientAddressOrName, swapCalls, addTransaction])
+  }, [trade, connection, account, recipient, recipientAddressOrName, swapCalls, addTransaction])
 }
 
 export default useSwapCallback

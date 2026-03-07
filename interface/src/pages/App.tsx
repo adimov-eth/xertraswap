@@ -1,10 +1,13 @@
-import React, { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { Suspense, useCallback, useEffect, useState } from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
+import { Web3Provider } from '@ethersproject/providers'
 import { Credentials, StringTranslations } from '@crowdin/crowdin-api-client'
 import { LangType } from 'uikit'
+import { SupportedChainId } from 'config/chains'
 import Popups from '../components/Popups'
 import Web3AuthManager from '../components/Web3ReactManager'
+import ToastListener from '../components/ToastListener'
 import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from './AddLiquidity/redirects'
 import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
 import AddLiquidity from './AddLiquidity'
@@ -21,10 +24,7 @@ import { LanguageContext } from '../hooks/LanguageContext'
 import { TranslationsContext } from '../hooks/TranslationsContext'
 import Menu from '../components/Menu'
 import useGetDocumentTitlePrice from '../hooks/useGetDocumentTitlePrice'
-import Web3AuthContext, { ConnectionState, INITIAL_STATE, READ_ONLY_PROVIDER } from './Web3AuthContext'
-import { Web3Provider } from '@ethersproject/providers'
-import { getCurrentChainId, SupportedChainId } from 'config/chains'
-import ToastListener from '../components/ToastListener'
+import Web3AuthContext, { ConnectionState, INITIAL_STATE } from './Web3AuthContext'
 
 import ApplicationUpdater from '../state/application/updater'
 import ListsUpdater from '../state/lists/updater'
@@ -170,8 +170,7 @@ export default function App() {
 
   // Convenience accessors — derived, not independent state
   const account = connection.kind === 'connected' ? connection.account : undefined
-  const chainId = connection.chainId
-  const library = connection.provider
+  const { chainId, provider: library } = connection
 
   return (
     <Suspense fallback={null}>

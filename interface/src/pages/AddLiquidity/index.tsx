@@ -41,7 +41,7 @@ export default function AddLiquidity({
   },
   history,
 }: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
-  const { connection, account, chainId, library } = useContext(Web3AuthContext)
+  const { connection, account, chainId } = useContext(Web3AuthContext)
   
   const currencyA = useCurrency(currencyIdA)
   const currencyB = useCurrency(currencyIdB)

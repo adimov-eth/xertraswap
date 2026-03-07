@@ -51,7 +51,7 @@ const defaultState: Web3AuthContextState = {
   library: READ_ONLY_PROVIDER,
 }
 
-export const Web3AuthContext = createContext<Web3AuthContextState>(defaultState)
+const Web3AuthContext = createContext<Web3AuthContextState>(defaultState)
 export default Web3AuthContext
 
 export { READ_ONLY_PROVIDER, INITIAL_STATE }

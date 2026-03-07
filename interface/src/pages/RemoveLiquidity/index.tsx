@@ -59,7 +59,7 @@ export default function RemoveLiquidity({
   },
 }: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
 
-  const { connection, account, chainId, library } = useContext(Web3AuthContext)
+  const { connection, account, chainId } = useContext(Web3AuthContext)
 
   const [currencyA, currencyB] = [useCurrency(currencyIdA) ?? undefined, useCurrency(currencyIdB) ?? undefined]
   const TranslateString = useI18n()
@@ -191,7 +191,7 @@ export default function RemoveLiquidity({
   const addTransaction = useTransactionAdder()
   async function onRemove() {
     if (connection.kind !== 'connected') throw new Error('missing dependencies')
-    const { account: connectedAccount, provider: connectedProvider } = connection
+    const { account: connectedAccount } = connection
     const { [Field.CURRENCY_A]: currencyAmountA, [Field.CURRENCY_B]: currencyAmountB } = parsedAmounts
     if (!currencyAmountA || !currencyAmountB) {
       throw new Error('missing currency amounts')

@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react'
+import { useEffect, useContext } from 'react'
 import { web3authConnector } from '../../connectors'
 import Web3AuthContext from '../../pages/Web3AuthContext'
 import { SupportedChainId } from '../../config/chains'
@@ -21,6 +21,7 @@ export default function Web3AuthManager({ children }: { children: JSX.Element })
       .catch((error) => {
         console.error('Web3Auth reconnect failed:', error?.message || error)
       })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Listen for provider events (chain changed, accounts changed, disconnect)
@@ -62,7 +63,7 @@ export default function Web3AuthManager({ children }: { children: JSX.Element })
         underlying.removeListener('disconnect', handleDisconnect)
       }
     }
-  }, [connection])
+  }, [connection, connect, disconnect, switchChain])
 
   return children
 }

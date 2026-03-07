@@ -1,12 +1,10 @@
-import { AbstractConnector } from '@web3-react/abstract-connector'
-import type { ConnectorUpdate } from '@web3-react/types'
+import { Web3Provider } from '@ethersproject/providers'
 import { Web3Auth } from '@web3auth/modal'
-import { CHAIN_NAMESPACES, IProvider, WEB3AUTH_NETWORK } from '@web3auth/base'
+import { CHAIN_NAMESPACES, WEB3AUTH_NETWORK } from '@web3auth/base'
 import { EthereumPrivateKeyProvider } from '@web3auth/ethereum-provider'
 import { getDefaultExternalAdapters } from '@web3auth/default-evm-adapter'
 import { BLOCK_EXPLORER_URLS, RPC_URLS } from '../config/chains'
 import getLibrary from '../utils/getLibrary'
-import { Web3Provider } from '@ethersproject/providers'
 
 interface Eip1193ProviderLike {
   request?: (args: { method: string; params?: unknown[] | Record<string, unknown> }) => Promise<unknown>
