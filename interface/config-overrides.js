@@ -4,6 +4,13 @@ const path = require('path')
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
 module.exports = function override(config) {
+  // 0. Remove CRA's ESLintWebpackPlugin to avoid conflict with project .eslintrc
+  //    CRA loads eslint-config-react-app as BaseConfig, which conflicts with
+  //    @pancakeswap-libs/eslint-config-pancake (both load eslint-plugin-react from different paths).
+  //    Project .eslintrc is the single source of truth; editor and `yarn lint` use it directly.
+  config.plugins = (config.plugins || []).filter(
+    (plugin) => plugin.constructor.name !== 'ESLintWebpackPlugin'
+  )
   // 1. Polyfills for Node.js globals that Web3Auth dependencies need
   config.plugins = (config.plugins || []).concat([
     new NodePolyfillPlugin(), // auto polyfills many node modules
