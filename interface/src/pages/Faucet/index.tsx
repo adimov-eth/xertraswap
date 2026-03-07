@@ -61,7 +61,7 @@ interface TokenDrip {
 }
 
 const Faucet: React.FC = () => {
-  const { account, library } = useContext(Web3AuthContext)
+  const { connection, account, library } = useContext(Web3AuthContext)
   const [canClaim, setCanClaim] = useState(false)
   const [timeLeft, setTimeLeft] = useState(0)
   const [tokenDrips, setTokenDrips] = useState<TokenDrip[]>([])
@@ -73,9 +73,8 @@ const Faucet: React.FC = () => {
   const isTestnet = CHAIN_ID === 205205
 
   const loadFaucetInfo = useCallback(async () => {
-    const provider = library || new ethers.providers.JsonRpcProvider('https://auroria.rpc.stratisevm.com')
     try {
-      const faucet = new ethers.Contract(FAUCET_ADDRESS, FAUCET_ABI, provider)
+      const faucet = new ethers.Contract(FAUCET_ADDRESS, FAUCET_ABI, library)
 
       const nativeAmount = await faucet.nativeDripAmount()
       setNativeDrip(ethers.utils.formatEther(nativeAmount))
@@ -127,13 +126,12 @@ const Faucet: React.FC = () => {
   }, [timeLeft])
 
   const handleClaim = useCallback(async () => {
-    if (!library || !account) return
+    if (connection.kind !== 'connected') return
     setClaiming(true)
     setError('')
     setTxHash('')
     try {
-      const signer = library.getSigner()
-      const faucet = new ethers.Contract(FAUCET_ADDRESS, FAUCET_ABI, signer)
+      const faucet = new ethers.Contract(FAUCET_ADDRESS, FAUCET_ABI, connection.signer)
       const tx = await faucet.claim()
       setTxHash(tx.hash)
       await tx.wait()
@@ -146,7 +144,7 @@ const Faucet: React.FC = () => {
     } finally {
       setClaiming(false)
     }
-  }, [library, account, loadFaucetInfo])
+  }, [connection, loadFaucetInfo])
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60)

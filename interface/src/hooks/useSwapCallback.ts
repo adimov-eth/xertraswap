@@ -45,15 +45,15 @@ function useSwapCallArguments(
   deadline: number = DEFAULT_DEADLINE_FROM_NOW, // in seconds from now
   recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): SwapCall[] {
-  const { account, chainId, library } = useContext(Web3AuthContext)
+  const { connection, account, chainId } = useContext(Web3AuthContext)
 
   const { address: recipientAddress } = useENS(recipientAddressOrName)
   const recipient = recipientAddressOrName === null ? account : recipientAddress
 
   return useMemo(() => {
-    if (!trade || !recipient || !library || !account || !chainId) return []
+    if (!trade || !recipient || connection.kind !== 'connected') return []
 
-    const contract: Contract | null = getRouterContract(chainId, library, account)
+    const contract: Contract | null = getRouterContract(chainId, connection.provider, connection.account)
     if (!contract) {
       return []
     }
@@ -83,7 +83,7 @@ function useSwapCallArguments(
     }
 
     return swapMethods.map((parameters) => ({ parameters, contract }))
-  }, [account, allowedSlippage, chainId, deadline, library, recipient, trade])
+  }, [connection, allowedSlippage, chainId, deadline, recipient, trade])
 }
 
 // returns a function that will execute a swap, if the parameters are all valid
@@ -94,7 +94,7 @@ export function useSwapCallback(
   deadline: number = DEFAULT_DEADLINE_FROM_NOW, // in seconds from now
   recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
-  const { account, chainId, library } = useContext(Web3AuthContext)
+  const { connection, account, chainId } = useContext(Web3AuthContext)
 
   const swapCalls = useSwapCallArguments(trade, allowedSlippage, deadline, recipientAddressOrName)
 
@@ -104,7 +104,7 @@ export function useSwapCallback(
   const recipient = recipientAddressOrName === null ? account : recipientAddress
 
   return useMemo(() => {
-    if (!trade || !library || !account || !chainId) {
+    if (!trade || connection.kind !== 'connected') {
       return { state: SwapCallbackState.INVALID, callback: null, error: 'Missing dependencies' }
     }
     if (!recipient) {
@@ -217,7 +217,7 @@ export function useSwapCallback(
       },
       error: null,
     }
-  }, [trade, library, account, chainId, recipient, recipientAddressOrName, swapCalls, addTransaction])
+  }, [trade, connection, account, chainId, recipient, recipientAddressOrName, swapCalls, addTransaction])
 }
 
 export default useSwapCallback
