@@ -63,8 +63,8 @@ export class Web3AuthConnector{
       config: { chainConfig },
     })
 
-    const clientId = process.env.REACT_APP_WEB3AUTH_CLIENT_ID!;
-    const clientNetwork =  resolveWeb3AuthNetwork();
+    const clientId = process.env.REACT_APP_WEB3AUTH_CLIENT_ID || ''
+    const clientNetwork = resolveWeb3AuthNetwork()
 
     this.web3auth = new Web3Auth({
       clientId,
@@ -84,11 +84,12 @@ export class Web3AuthConnector{
     });
 
     try {
-      const adapters = getDefaultExternalAdapters({ options: this.web3auth.options })
-      adapters.forEach((adapter) => this.web3auth!.configureAdapter(adapter))
+      const { web3auth } = this
+      const adapters = getDefaultExternalAdapters({ options: web3auth.options })
+      adapters.forEach((adapter) => web3auth.configureAdapter(adapter))
     } catch (err) {
       console.warn('Failed to configure external wallet adapters:', err)
-    }    
+    }
 
     await this.web3auth.initModal()
     this.initialized = true
@@ -109,7 +110,7 @@ export class Web3AuthConnector{
     }
 
     try {
-      const provider = this.web3auth.provider
+      const { provider } = this.web3auth
       const web3Provider = getLibrary(provider)
       const account = await this.resolveAccount(provider as Eip1193ProviderLike)
       const chainIdValue = (await this.request(provider as Eip1193ProviderLike, 'eth_chainId')) ?? (provider as Eip1193ProviderLike).chainId
@@ -187,7 +188,7 @@ export class Web3AuthConnector{
     }
   }
 
-  private async resolveAccount(provider: Eip1193ProviderLike, requestAccess = true): Promise<string | null> {
+  private async resolveAccount(provider: Eip1193ProviderLike): Promise<string | null> {
     // Web3Auth v9 provider only supports eth_accounts — eth_coinbase and
     // eth_requestAccounts are not available on the private key provider.    
     const accounts = await this.request(provider, 'eth_accounts')

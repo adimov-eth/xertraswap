@@ -1,4 +1,4 @@
-import { ChainId, Currency, CurrencyAmount, ETHER, Token, TokenAmount, WETH } from '@xertra/sdk'
+import { Currency, CurrencyAmount, ETHER, Token, TokenAmount, WETH } from '@xertra/sdk'
 
 export function wrappedCurrency(currency: Currency | undefined, chainId: number | undefined): Token | undefined {
   // eslint-disable-next-line no-nested-ternary
