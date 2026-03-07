@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from 'react'
+import React, { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 import { Credentials, StringTranslations } from '@crowdin/crowdin-api-client'
@@ -21,12 +21,9 @@ import { LanguageContext } from '../hooks/LanguageContext'
 import { TranslationsContext } from '../hooks/TranslationsContext'
 import Menu from '../components/Menu'
 import useGetDocumentTitlePrice from '../hooks/useGetDocumentTitlePrice'
-import Web3AuthContext from './Web3AuthContext'
-import { Web3Provider, JsonRpcProvider } from '@ethersproject/providers'
-import { getCurrentRpcUrl, getCurrentChainId } from 'config/chains'
-
-const DEFAULT_CHAIN_ID = getCurrentChainId()
-const READ_ONLY_PROVIDER = new JsonRpcProvider(getCurrentRpcUrl(), DEFAULT_CHAIN_ID)
+import Web3AuthContext, { ConnectionState, INITIAL_STATE, READ_ONLY_PROVIDER } from './Web3AuthContext'
+import { Web3Provider } from '@ethersproject/providers'
+import { getCurrentChainId, SupportedChainId } from 'config/chains'
 import ToastListener from '../components/ToastListener'
 
 import ApplicationUpdater from '../state/application/updater'
@@ -146,11 +143,35 @@ export default function App() {
 
   useGetDocumentTitlePrice()
 
-  const [account, setAccount] = useState<string | undefined>()
-  const [chainId, setChainId] = useState<number>(DEFAULT_CHAIN_ID)
-  const [walletProvider, setProvider] = useState<Web3Provider | undefined>()
+  const [connection, setConnection] = useState<ConnectionState>(INITIAL_STATE)
 
-  const library = walletProvider ?? READ_ONLY_PROVIDER
+  const connect = useCallback((provider: Web3Provider, account: string, chainId: SupportedChainId) => {
+    setConnection({
+      kind: 'connected',
+      provider,
+      signer: provider.getSigner(account),
+      account,
+      chainId,
+    })
+  }, [])
+
+  const disconnect = useCallback(() => {
+    setConnection(INITIAL_STATE)
+    localStorage.clear()
+  }, [])
+
+  const switchChain = useCallback((chainId: SupportedChainId) => {
+    setConnection((prev) =>
+      prev.kind === 'connected'
+        ? { ...prev, chainId }
+        : { ...prev, chainId }
+    )
+  }, [])
+
+  // Convenience accessors — derived, not independent state
+  const account = connection.kind === 'connected' ? connection.account : undefined
+  const chainId = connection.chainId
+  const library = connection.provider
 
   return (
     <Suspense fallback={null}>
@@ -161,7 +182,7 @@ export default function App() {
           >
             <TranslationsContext.Provider value={{ translations, setTranslations }}>              
 
-              <Web3AuthContext.Provider value={{account, setAccount, chainId, setChainId, library, setProvider, walletProvider}}>
+              <Web3AuthContext.Provider value={{connection, connect, disconnect, switchChain, account, chainId, library}}>
 
                 <ListsUpdater />
                 <ApplicationUpdater />

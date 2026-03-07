@@ -11,11 +11,11 @@ import { NetworkContextName } from '../constants'
 import Web3AuthContext from '../pages/Web3AuthContext'
 
 export function useActiveWeb3React(): Web3ReactContextInterface<Web3Provider> & { chainId?: ChainId } {
-  const { account, chainId, library, walletProvider } = useContext(Web3AuthContext)
+  const { account, chainId, library } = useContext(Web3AuthContext)
   return {
     account: account ?? null,
     chainId: chainId as ChainId | undefined,
-    library: (walletProvider ?? library) as any,
+    library: library as any,
     active: !!account,
     activate: async () => { /* noop */ },
     deactivate: () => { /* noop */ },
