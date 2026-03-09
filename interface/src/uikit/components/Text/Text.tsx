@@ -15,7 +15,9 @@ const getFontSize = ({ fontSize, small }: TextProps) => {
   return small ? '14px' : fontSize || '16px'
 }
 
-const Text = styled.div<TextProps>`
+const Text = styled.div
+.withConfig({ shouldForwardProp: (prop) => !['mr', 'textAlign', 'padding'].includes(prop)})
+<TextProps>`
   color: ${getColor};
   font-size: ${getFontSize};
   font-weight: ${({ bold }) => (bold ? 600 : 400)};

@@ -32,7 +32,9 @@ const getHeight = ({ scale = scales.MD }: StyledInputProps) => {
   }
 }
 
-const Input = styled.input<InputProps>`
+const Input = styled.input
+.withConfig({ shouldForwardProp: (prop) => prop !== 'isWarning' })
+<InputProps>`
   background-color: ${({ theme }) => theme.colors.input};
   border: 0;
   border-radius: 16px;

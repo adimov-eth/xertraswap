@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import { PropsWithChildren, useContext } from 'react'
 import { Menu as UikitMenu} from 'uikit'
 import { allLanguages } from '../../constants/localisation/languageCodes'
 import { LanguageContext } from '../../hooks/LanguageContext'
@@ -11,7 +11,7 @@ import Web3AuthContext from '../../pages/Web3AuthContext'
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const noop = () => {}
 
-const Menu: React.FC = (props) => {
+function Menu({ children }: PropsWithChildren<{}>) {
   const { login, logout } = useWeb3Auth();
   const { account } = useContext(Web3AuthContext)
   const { selectedLanguage, setSelectedLanguage } = useContext(LanguageContext);
@@ -30,7 +30,7 @@ const Menu: React.FC = (props) => {
       langs={allLanguages}
       setLang={setSelectedLanguage}
       cakePriceUsd={cakePriceUsd}
-      {...props}
+      children={children}
     />
   )
 }

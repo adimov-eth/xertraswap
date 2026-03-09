@@ -10,7 +10,9 @@ interface Props extends PanelProps, PushedProps {
   isMobile: boolean
 }
 
-const StyledPanel = styled.div<{ isPushed: boolean; showMenu: boolean }>`
+const StyledPanel = styled.div
+.withConfig({ shouldForwardProp: (prop) => !['isPushed', 'showMenu'].includes(prop) })
+<{ isPushed: boolean; showMenu: boolean }>`
   position: fixed;
   padding-top: ${({ showMenu }) => (showMenu ? '80px' : 0)};
   top: 0;

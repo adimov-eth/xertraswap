@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 
-const Card = styled.div<any>`
+const Card = styled.div
+.withConfig({ shouldForwardProp: (prop) => !['borderRadius', 'padding'].includes(prop) })<any>`
   width: 100%;
   border-radius: 8px;
   padding: 1.25rem;

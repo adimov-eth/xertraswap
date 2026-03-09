@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { PropsWithChildren, useState } from 'react'
 import styled from 'styled-components'
 import Text from '../../components/Text/Text'
 import { CopyIcon } from '../../components/Svg'
 
-interface Props {
+interface Props extends PropsWithChildren {
   toCopy: string
 }
 
@@ -27,7 +27,8 @@ const Tooltip = styled.div<{ isTooltipDisplayed: boolean }>`
   opacity: 0.7;
 `
 
-const CopyToClipboard: React.FC<Props> = ({ toCopy, children, ...props }) => {
+function CopyToClipboard({ toCopy, children, ...props }: Props ) {
+
   const [isTooltipDisplayed, setIsTooltipDisplayed] = useState(false)
 
   return (

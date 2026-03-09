@@ -1,9 +1,9 @@
-import React from 'react'
 import styled from 'styled-components'
 import { useLastTruthy } from '../../hooks/useLast'
 import { AdvancedSwapDetails, AdvancedSwapDetailsProps } from './AdvancedSwapDetails'
 
-const AdvancedDetailsFooter = styled.div<{ show: boolean }>`
+const AdvancedDetailsFooter = styled.div
+.withConfig({ shouldForwardProp: (prop) => prop !== 'show' })<{ show: boolean }>`
   padding-top: calc(16px + 2rem);
   padding-bottom: 20px;
   margin-top: -2rem;

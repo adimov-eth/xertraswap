@@ -24,7 +24,8 @@ const pulse = keyframes`
   }
 `
 
-const Root = styled.div<SkeletonProps>`
+const Root = styled.div
+.withConfig({ shouldForwardProp: (prop) => prop !== 'variant'})<SkeletonProps>`
   min-height: 20px;
   display: block;
   background-color: ${({ theme }) => theme.colors.backgroundDisabled};

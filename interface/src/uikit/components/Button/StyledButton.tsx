@@ -8,11 +8,11 @@ interface ThemedButtonProps extends BaseButtonProps {
 }
 
 interface TransientButtonProps extends ThemedButtonProps {
-  $isLoading?: boolean
+  isLoading?: boolean
 }
 
-const getDisabledStyles = ({ $isLoading, theme }: TransientButtonProps) => {
-  if ($isLoading === true) {
+const getDisabledStyles = ({ isLoading, theme }: TransientButtonProps) => {
+  if (isLoading === true) {
     return `
       &:disabled,
       &.pancake-button--disabled {
@@ -39,11 +39,13 @@ const getDisabledStyles = ({ $isLoading, theme }: TransientButtonProps) => {
  * @see https://github.com/styled-components/styled-components/issues/135
  */
 
-const getOpacity = ({ $isLoading = false }: TransientButtonProps) => {
-  return $isLoading ? '.5' : '1'
+const getOpacity = ({ isLoading = false }: TransientButtonProps) => {
+  return isLoading ? '.5' : '1'
 }
 
-const StyledButton = styled.button<BaseButtonProps>`
+const StyledButton = styled.button.withConfig({
+  shouldForwardProp: (prop) => !['isLoading', 'mr', 'variant'].includes(prop)
+})<BaseButtonProps>`
   align-items: center;
   border: 0;
   border-radius: 16px;

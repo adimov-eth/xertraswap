@@ -20,13 +20,17 @@ const rainbowAnimation = keyframes`
   }
 `
 
-const LinkLabel = styled.div<{ isPushed: boolean }>`
+const LinkLabel = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'isPushed',
+})<{ isPushed?: boolean }>`
   color: ${({ isPushed, theme }) => (isPushed ? theme.colors.textSubtle : 'transparent')};
   transition: color 0.4s;
   flex-grow: 1;
-`
+`;
 
-const MenuEntry = styled.div<Props>`
+const MenuEntry = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'isActive',
+})<Props>`
   cursor: pointer;
   display: flex;
   align-items: center;

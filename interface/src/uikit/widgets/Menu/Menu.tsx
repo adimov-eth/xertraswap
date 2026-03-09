@@ -15,7 +15,9 @@ const Wrapper = styled.div`
   width: 100%;
 `
 
-const StyledNav = styled.nav<{ showMenu: boolean }>`
+const StyledNav = styled.nav.withConfig({
+  shouldForwardProp: (prop) => prop !== 'showMenu',
+})<{ showMenu: boolean }>`
   position: fixed;
   top: ${({ showMenu }) => (showMenu ? 0 : `-${MENU_HEIGHT}px`)};
   left: 0;
@@ -38,7 +40,9 @@ const BodyWrapper = styled.div`
   display: flex;
 `
 
-const Inner = styled.div<{ isPushed: boolean; showMenu: boolean }>`
+const Inner = styled.div.withConfig({
+  shouldForwardProp: (prop) => !['isPushed', 'showMenu'].includes(prop),
+})<{ isPushed: boolean; showMenu: boolean }>`
   flex-grow: 1;
   margin-top: ${({ showMenu }) => (showMenu ? `${MENU_HEIGHT}px` : 0)};
   transition: margin-top 0.2s;
@@ -60,7 +64,7 @@ const MobileOnlyOverlay = styled(Overlay)`
   }
 `
 
-const Menu: React.FC<NavProps> = ({
+function Menu({
   account,
   login,
   logout,
@@ -72,7 +76,7 @@ const Menu: React.FC<NavProps> = ({
   cakePriceUsd,
   links,
   children,
-}) => {
+} : NavProps) {
   const { isXl } = useMatchBreakpoints()
   const isMobile = isXl === false
   const [isPushed, setIsPushed] = useState(!isMobile)

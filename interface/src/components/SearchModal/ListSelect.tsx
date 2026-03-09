@@ -27,7 +27,9 @@ const UnpaddedLinkStyledButton = styled(LinkStyledButton)`
   opacity: ${({ disabled }) => (disabled ? '0.4' : '1')};
 `
 
-const PopoverContainer = styled.div<{ show: boolean }>`
+const PopoverContainer = styled.div
+.withConfig({ shouldForwardProp: (prop) => prop !== 'show' })
+<{ show: boolean }>`
   z-index: 100;
   visibility: ${(props) => (props.show ? 'visible' : 'hidden')};
   opacity: ${(props) => (props.show ? 1 : 0)};

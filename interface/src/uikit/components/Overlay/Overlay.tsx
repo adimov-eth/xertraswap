@@ -1,7 +1,9 @@
 import styled from 'styled-components'
 import { OverlayProps } from './types'
 
-const Overlay = styled.div.attrs({ role: 'presentation' })<OverlayProps>`
+const Overlay = styled.div
+.withConfig({ shouldForwardProp: (prop) => prop !== 'zIndex' })
+.attrs({ role: 'presentation' })<OverlayProps>`
   position: fixed;
   top: 0px;
   left: 0px;

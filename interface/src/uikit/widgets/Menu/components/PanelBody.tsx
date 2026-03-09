@@ -22,7 +22,7 @@ const Container = styled.div`
   height: 100%;
 `
 
-const PanelBody: React.FC<Props> = ({ isPushed, pushNav, isMobile, links }) => {
+function PanelBody({ isPushed, pushNav, isMobile, links } : Props) {
   const location = useLocation()
 
   // Close the menu when a user clicks a link on mobile

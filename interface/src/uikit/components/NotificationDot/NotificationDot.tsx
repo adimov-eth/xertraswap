@@ -7,7 +7,8 @@ const NotificationDotRoot = styled.span`
   position: relative;
 `
 
-const Dot = styled.span<DotProps>`
+const Dot = styled.span
+.withConfig({ shouldForwardProp: (prop) => prop !== 'show' })<DotProps>`
   display: ${({ show }) => (show ? 'inline-flex' : 'none')};
   position: absolute;
   top: 0;

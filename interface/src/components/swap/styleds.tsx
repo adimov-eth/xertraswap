@@ -9,7 +9,9 @@ export const Wrapper = styled.div`
   position: relative;
 `
 
-export const ArrowWrapper = styled.div<{ clickable: boolean }>`
+export const ArrowWrapper = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'clickable',
+})<{ clickable: boolean }>`
   padding: 2px;
 
   ${({ clickable }) =>
