@@ -111,12 +111,10 @@ export class Web3AuthConnector {
       const provider = await this.web3auth?.connect()
       const web3Provider = getLibrary(provider);
       const account = await this.resolveAccount(provider  as Eip1193ProviderLike);
-      //const chainIdValue = (await this.request(provider as Eip1193ProviderLike, 'eth_chainId')) ?? (provider as Eip1193ProviderLike).chainId
-      //this.chainId = this.parseChainId(chainIdValue)
 
       const { ethereum } = window
 
-      if (ethereum && ethereum.on) {
+      if (ethereum?.on) {
         ethereum.on('chainChanged', this.handleChainChanged)
         ethereum.on('accountsChanged', this.handleAccountsChanged)
       }
@@ -144,12 +142,12 @@ export class Web3AuthConnector {
     }
   }
 
-  private handleAccountsChanged = (accounts: string[]): void => {
+  public handleAccountsChanged = (accounts: string[]): void => {
     // Todo: toast reload message
     window.location.reload();
   }
 
-  private handleChainChanged = (chainId: number): void => {
+  public handleChainChanged = (chainId: number): void => {
     const parsedChange = this.parseChainId(chainId) 
     if(this.chainId !== parsedChange){
       console.log(`Chain Id changed to ${parsedChange}`);

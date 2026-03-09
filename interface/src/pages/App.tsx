@@ -28,6 +28,7 @@ import ApplicationUpdater from '../state/application/updater'
 import ListsUpdater from '../state/lists/updater'
 import MulticallUpdater from '../state/multicall/updater'
 import TransactionUpdater from '../state/transactions/updater'
+import { ToastContainer } from 'react-toastify'
 
 const AppWrapper = styled.div`
   display: flex;
@@ -149,6 +150,7 @@ export default function App() {
     <Suspense fallback={null}>
       <HashRouter>
         <AppWrapper>
+          <ToastContainer />
           <LanguageContext.Provider
             value={{ selectedLanguage, setSelectedLanguage: handleLanguageSelect, translatedLanguage, setTranslatedLanguage }}
           >
