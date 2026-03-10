@@ -36,8 +36,8 @@ jobs:
         env:
           GENERATE_SOURCEMAP: false
           REACT_APP_CHAIN_ID: "105105"
-          REACT_APP_WEB3AUTH_NETWORK: sapphire_mainnet
-          REACT_APP_WEB3AUTH_CLIENT_ID: ${{ secrets.WEB3AUTH_CLIENT_ID_PROD }}
+          REACT_APP_WEB3AUTH_NETWORK: sapphire_devnet
+          REACT_APP_WEB3AUTH_CLIENT_ID: ${{ secrets.WEB3AUTH_CLIENT_ID_DEV }}
 
       - name: Deploy to Cloudflare Pages
         run: npx wrangler pages deploy interface/build --project-name=xertraswap --branch=main
