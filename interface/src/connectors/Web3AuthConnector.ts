@@ -63,7 +63,7 @@ export class Web3AuthConnector{
       config: { chainConfig },
     })
 
-    const clientId = process.env.REACT_APP_WEB3AUTH_CLIENT_ID ?? ''
+    const clientId = process.env.REACT_APP_WEB3AUTH_CLIENT_ID || ''
     const clientNetwork = resolveWeb3AuthNetwork()
 
     this.web3auth = new Web3Auth({
