@@ -1,5 +1,8 @@
 import { MenuEntry } from 'uikit'
 
+const CHAIN_ID = parseInt(process.env.REACT_APP_CHAIN_ID ?? '105105', 10)
+const isTestnet = CHAIN_ID === 205205
+
 const config: MenuEntry[] = [
   {
     label: 'Exchange',
@@ -21,6 +24,15 @@ const config: MenuEntry[] = [
     icon: 'MoreIcon',
     href: 'https://wormhole.xertra.com/',
   },
+  ...(isTestnet
+    ? [
+        {
+          label: 'Faucet',
+          icon: 'TicketIcon' as const,
+          href: '/faucet',
+        },
+      ]
+    : []),
   // {
   //   label: 'Farms',
   //   icon: 'FarmIcon',

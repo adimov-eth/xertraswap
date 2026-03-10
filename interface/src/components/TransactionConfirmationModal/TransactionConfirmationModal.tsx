@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Modal from '../Modal'
-import { useActiveWeb3React } from '../../hooks'
 import ConfirmationPendingContent from './ConfirmationPendingContent'
 import TransactionSubmittedContent from './TransactionSubmittedContent'
+import Web3AuthContext from '../../pages/Web3AuthContext'
 
 interface ConfirmationModalProps {
   isOpen: boolean
@@ -21,7 +21,7 @@ const TransactionConfirmationModal = ({
   pendingText,
   content
 }: ConfirmationModalProps) => {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useContext(Web3AuthContext)
 
   if (!chainId) return null
 

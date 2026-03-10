@@ -1,15 +1,15 @@
 import { Currency, CurrencyAmount, Pair, Token, Trade } from '@xertra/sdk'
 import flatMap from 'lodash.flatmap'
-import { useMemo } from 'react'
+import { useContext, useMemo } from 'react'
 
 import { BASES_TO_CHECK_TRADES_AGAINST, CUSTOM_BASES } from '../constants'
 import { PairState, usePairs } from '../data/Reserves'
 import { wrappedCurrency } from '../utils/wrappedCurrency'
 
-import { useActiveWeb3React } from './index'
+import Web3AuthContext from '../pages/Web3AuthContext'
 
 function useAllCommonPairs(currencyA?: Currency, currencyB?: Currency): Pair[] {
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useContext(Web3AuthContext)
 
   // Base tokens for building intermediary trading routes
   const bases: Token[] = useMemo(() => (chainId ? BASES_TO_CHECK_TRADES_AGAINST[chainId] : []), [chainId])

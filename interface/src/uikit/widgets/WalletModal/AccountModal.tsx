@@ -5,7 +5,6 @@ import LinkExternal from '../../components/Link/LinkExternal'
 import Flex from '../../components/Box/Flex'
 import { Modal } from '../Modal'
 import CopyToClipboard from './CopyToClipboard'
-import { connectorLocalStorageKey } from './config'
 
 interface Props {
   account: string
@@ -34,7 +33,6 @@ const AccountModal: React.FC<Props> = ({ account, logout, onDismiss = () => null
         variant="secondary"
         onClick={() => {
           logout()
-          window.localStorage.removeItem(connectorLocalStorageKey)
           onDismiss()
         }}
       >

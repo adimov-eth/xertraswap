@@ -1,7 +1,6 @@
 import { Contract } from '@ethersproject/contracts'
-import { useEffect, useMemo, useRef } from 'react'
+import { useContext, useEffect, useMemo, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useActiveWeb3React } from '../../hooks'
 import { useMulticallContract } from '../../hooks/useContract'
 import useDebounce from '../../hooks/useDebounce'
 import chunkArray from '../../utils/chunkArray'
@@ -15,6 +14,7 @@ import {
   parseCallKey,
   updateMulticallResults,
 } from './actions'
+import Web3AuthContext from '../../pages/Web3AuthContext'
 
 // chunk calls so we do not exceed the gas limit
 const CALL_CHUNK_SIZE = 500
@@ -117,7 +117,7 @@ export default function Updater(): null {
   // wait for listeners to settle before triggering updates
   const debouncedListeners = useDebounce(state.callListeners, 100)
   const latestBlockNumber = useBlockNumber()
-  const { chainId } = useActiveWeb3React()
+  const { chainId } = useContext(Web3AuthContext)
   const multicallContract = useMulticallContract()
   const cancellations = useRef<{ blockNumber: number; cancellations: (() => void)[] }>()
 
@@ -134,6 +134,7 @@ export default function Updater(): null {
   ])
 
   useEffect(() => {
+    
     if (!latestBlockNumber || !chainId || !multicallContract) return
 
     const outdatedCallKeys: string[] = JSON.parse(serializedOutdatedCallKeys)
@@ -142,7 +143,6 @@ export default function Updater(): null {
     // .filter(item => item.address.toLowerCase() !== '0xDC29A634611914ed73261A71C8F20D828cA2c09F'.toLowerCase())
 
     const chunkedCalls = chunkArray(calls, CALL_CHUNK_SIZE)
-
     if (cancellations.current?.blockNumber !== latestBlockNumber) {
       cancellations.current?.cancellations?.forEach((c) => c())
     }

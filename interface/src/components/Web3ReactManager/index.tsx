@@ -1,76 +1,67 @@
-import React, { useState, useEffect } from 'react'
-import { useWeb3React } from '@web3-react/core'
-import styled from 'styled-components'
-import { useTranslation } from 'react-i18next'
+import { useEffect, useContext } from 'react'
+import { web3authConnector } from '../../connectors'
+import Web3AuthContext from '../../pages/Web3AuthContext'
+import { SupportedChainId } from '../../config/chains'
 
-import { network } from '../../connectors'
-import { useEagerConnect, useInactiveListener } from '../../hooks'
-import { NetworkContextName } from '../../constants'
-import Loader from '../Loader'
+export default function Web3AuthManager({ children }: { children: JSX.Element }) {
+  const { connection, connect, disconnect, switchChain } = useContext(Web3AuthContext)
 
-const MessageWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 20rem;
-`
-
-const Message = styled.h2`
-  color: ${({ theme }) => theme.colors.primaryDark};
-`
-
-export default function Web3ReactManager({ children }: { children: JSX.Element }) {
-  const { t } = useTranslation()
-  const { active } = useWeb3React()
-  const { active: networkActive, error: networkError, activate: activateNetwork } = useWeb3React(NetworkContextName)
-
-  // try to eagerly connect to an injected provider, if it exists and has granted access already
-  const triedEager = useEagerConnect()
-
-  // after eagerly trying injected, if the network connect ever isn't active or in an error state, activate itd
+  // Silently restore existing session on mount — never opens the modal
   useEffect(() => {
-    if (triedEager && !networkActive && !networkError && !active) {
-      activateNetwork(network)
-    }
-  }, [triedEager, networkActive, networkError, activateNetwork, active])
-
-  // when there's no account connected, react to logins (broadly speaking) on the injected provider, if it exists
-  useInactiveListener(!triedEager)
-
-  // handle delayed loader state
-  const [showLoader, setShowLoader] = useState(false)
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setShowLoader(true)
-    }, 600)
-
-    return () => {
-      clearTimeout(timeout)
-    }
+    web3authConnector
+      .reconnect()
+      .then((connectorState) => {
+        if (connectorState?.account) {
+          connect(connectorState.web3Provider, connectorState.account, connectorState.chainId as SupportedChainId)
+          console.info(`Web3Auth restored session: ${connectorState.account}`)
+        }
+      })
+      .catch((error) => {
+        console.error('Web3Auth reconnect failed:', error?.message || error)
+      })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // on page load, do nothing until we've tried to connect to the injected connector
-  if (!triedEager) {
-    return null
-  }
+  // Listen for provider events (chain changed, accounts changed, disconnect)
+  useEffect(() => {
+    if (connection.kind !== 'connected') return undefined
 
-  // if the account context isn't active, and there's an error on the network context, it's an irrecoverable error
-  if (!active && networkError) {
-    return (
-      <MessageWrapper>
-        <Message>{t('unknownError')}</Message>
-      </MessageWrapper>
-    )
-  }
+    const underlying = connection.provider.provider as any
+    if (!underlying?.on) return undefined
 
-  // if neither context is active, spin
-  if (!active && !networkActive) {
-    return showLoader ? (
-      <MessageWrapper>
-        <Loader />
-      </MessageWrapper>
-    ) : null
-  }
+    const handleChainChanged = (chainIdHex: string) => {
+      const newChainId = parseInt(chainIdHex, 16) as SupportedChainId
+      console.info('Chain changed:', newChainId)
+      switchChain(newChainId)
+    }
+
+    const handleAccountsChanged = (accounts: string[]) => {
+      if (accounts.length > 0) {
+        console.info('Account changed:', accounts[0])
+        connect(connection.provider, accounts[0], connection.chainId)
+      } else {
+        console.info('Account disconnected')
+        disconnect()
+      }
+    }
+
+    const handleDisconnect = () => {
+      console.info('Provider disconnected')
+      disconnect()
+    }
+
+    underlying.on('chainChanged', handleChainChanged)
+    underlying.on('accountsChanged', handleAccountsChanged)
+    underlying.on('disconnect', handleDisconnect)
+
+    return () => {
+      if (underlying.removeListener) {
+        underlying.removeListener('chainChanged', handleChainChanged)
+        underlying.removeListener('accountsChanged', handleAccountsChanged)
+        underlying.removeListener('disconnect', handleDisconnect)
+      }
+    }
+  }, [connection, connect, disconnect, switchChain])
 
   return children
 }

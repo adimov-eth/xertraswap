@@ -22,7 +22,6 @@ import ConnectWalletButton from 'components/ConnectWalletButton'
 import AddressInputPanel from 'components/AddressInputPanel'
 import { LinkStyledButton } from 'components/Shared'
 import { INITIAL_ALLOWED_SLIPPAGE } from 'constants/index'
-import { useActiveWeb3React } from 'hooks'
 import { ApprovalState, useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
 import { useSwapCallback } from 'hooks/useSwapCallback'
 import useWrapCallback, { WrapType } from 'hooks/useWrapCallback'
@@ -33,6 +32,7 @@ import { AppDispatch } from 'state'
 import { useExpertModeManager, useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from 'utils/prices'
+import Web3AuthContext from '../Web3AuthContext'
 
 const BodyWrapper = styled(Card)`
   position: relative;
@@ -74,11 +74,12 @@ const BackLink = styled(Link)`
 `
 
 export default function PoolDetails() {
+  const {account} = useContext(Web3AuthContext)
+
   const { currencyIdA, currencyIdB } = useParams<{ currencyIdA: string; currencyIdB: string }>()
   const pools = useAllPools()
   const userPoolData = useUserPairPosition(pools.map(p => p.pair))
   const TranslateString = useI18n()
-  const { account } = useActiveWeb3React()
   const theme = useContext(ThemeContext)
   const dispatch = useDispatch<AppDispatch>()
 

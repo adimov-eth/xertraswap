@@ -22,7 +22,6 @@ import { RowBetween, RowFixed } from '../../components/Row'
 import Slider from '../../components/Slider'
 import CurrencyLogo from '../../components/CurrencyLogo'
 import { ROUTER_ADDRESS } from '../../constants'
-import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
 import { usePairContract } from '../../hooks/useContract'
 
@@ -40,6 +39,7 @@ import { useBurnActionHandlers, useDerivedBurnInfo, useBurnState } from '../../s
 
 import { Field } from '../../state/burn/actions'
 import { useUserDeadline, useUserSlippageTolerance } from '../../state/user/hooks'
+import Web3AuthContext from '../Web3AuthContext'
 
 const OutlineCard = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.borderColor};
@@ -58,8 +58,10 @@ export default function RemoveLiquidity({
     params: { currencyIdA, currencyIdB },
   },
 }: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
+
+  const { connection, account, chainId } = useContext(Web3AuthContext)
+
   const [currencyA, currencyB] = [useCurrency(currencyIdA) ?? undefined, useCurrency(currencyIdB) ?? undefined]
-  const { account, chainId, library } = useActiveWeb3React()
   const TranslateString = useI18n()
   const [tokenA, tokenB] = useMemo(() => [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)], [
     currencyA,
@@ -108,11 +110,12 @@ export default function RemoveLiquidity({
   const [signatureData, setSignatureData] = useState<{ v: number; r: string; s: string; deadline: number } | null>(null)
   const [approval, approveCallback] = useApproveCallback(parsedAmounts[Field.LIQUIDITY], ROUTER_ADDRESS)
   async function onAttemptToApprove() {
-    if (!pairContract || !pair || !library) throw new Error('missing dependencies')
+    if (!pairContract || !pair || connection.kind !== 'connected') throw new Error('missing dependencies')
+    const { account: connectedAccount } = connection
     const liquidityAmount = parsedAmounts[Field.LIQUIDITY]
     if (!liquidityAmount) throw new Error('missing liquidity amount')
     // try to gather a signature for permission
-    const nonce = await pairContract.nonces(account)
+    const nonce = await pairContract.nonces(connectedAccount)
 
     const deadlineForSignature: number = Math.ceil(Date.now() / 1000) + deadline
 
@@ -136,7 +139,7 @@ export default function RemoveLiquidity({
       { name: 'deadline', type: 'uint256' },
     ]
     const message = {
-      owner: account,
+      owner: connectedAccount,
       spender: ROUTER_ADDRESS,
       value: liquidityAmount.raw.toString(),
       nonce: nonce.toHexString(),
@@ -152,8 +155,8 @@ export default function RemoveLiquidity({
       message,
     })
 
-    library
-      .send('eth_signTypedData_v4', [account, data])
+    connection.provider
+      .send('eth_signTypedData_v4', [connectedAccount, data])
       .then(splitSignature)
       .then((signature) => {
         setSignatureData({
@@ -187,12 +190,13 @@ export default function RemoveLiquidity({
   // tx sending
   const addTransaction = useTransactionAdder()
   async function onRemove() {
-    if (!chainId || !library || !account) throw new Error('missing dependencies')
+    if (connection.kind !== 'connected') throw new Error('missing dependencies')
+    const { account: connectedAccount } = connection
     const { [Field.CURRENCY_A]: currencyAmountA, [Field.CURRENCY_B]: currencyAmountB } = parsedAmounts
     if (!currencyAmountA || !currencyAmountB) {
       throw new Error('missing currency amounts')
     }
-    const router = getRouterContract(chainId, library, account)
+    const router = getRouterContract(chainId, connection.provider, connection.account)
 
     const amountsMin = {
       [Field.CURRENCY_A]: calculateSlippageAmount(currencyAmountA, allowedSlippage)[0],
@@ -221,7 +225,7 @@ export default function RemoveLiquidity({
           liquidityAmount.raw.toString(),
           amountsMin[currencyBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(),
           amountsMin[currencyBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(),
-          account,
+          connectedAccount,
           deadlineFromNow,
         ]
       }
@@ -234,7 +238,7 @@ export default function RemoveLiquidity({
           liquidityAmount.raw.toString(),
           amountsMin[Field.CURRENCY_A].toString(),
           amountsMin[Field.CURRENCY_B].toString(),
-          account,
+          connectedAccount,
           deadlineFromNow,
         ]
       }
@@ -249,7 +253,7 @@ export default function RemoveLiquidity({
           liquidityAmount.raw.toString(),
           amountsMin[currencyBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(),
           amountsMin[currencyBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(),
-          account,
+          connectedAccount,
           signatureData.deadline,
           false,
           signatureData.v,
@@ -266,7 +270,7 @@ export default function RemoveLiquidity({
           liquidityAmount.raw.toString(),
           amountsMin[Field.CURRENCY_A].toString(),
           amountsMin[Field.CURRENCY_B].toString(),
-          account,
+          connectedAccount,
           signatureData.deadline,
           false,
           signatureData.v,

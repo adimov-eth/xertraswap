@@ -1,5 +1,5 @@
 import { Currency, ETHER, JSBI, TokenAmount } from '@xertra/sdk'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { Button, ChevronDownIcon, AddIcon, CardBody, Text } from 'uikit'
 import { LightCard } from 'components/Card'
 import { AutoColumn, ColumnCenter } from 'components/Column'
@@ -8,7 +8,6 @@ import { FindPoolTabs } from 'components/NavigationTabs'
 import { MinimalPositionCard } from 'components/PositionCard'
 import CurrencySearchModal from 'components/SearchModal/CurrencySearchModal'
 import { PairState, usePair } from 'data/Reserves'
-import { useActiveWeb3React } from 'hooks'
 import { usePairAdder } from 'state/user/hooks'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { StyledInternalLink } from 'components/Shared'
@@ -16,6 +15,7 @@ import { currencyId } from 'utils/currencyId'
 import useI18n from 'hooks/useI18n'
 import AppBody from '../AppBody'
 import { Dots } from '../Pool/styleds'
+import Web3AuthContext from '../Web3AuthContext'
 
 enum Fields {
   TOKEN0 = 0,
@@ -23,7 +23,7 @@ enum Fields {
 }
 
 export default function PoolFinder() {
-  const { account } = useActiveWeb3React()
+  const {account} = useContext(Web3AuthContext)
 
   const [showSearch, setShowSearch] = useState<boolean>(false)
   const [activeField, setActiveField] = useState<number>(Fields.TOKEN1)
