@@ -1,49 +1,64 @@
-import React, { cloneElement, ElementType, isValidElement, JSX } from 'react'
+import React, { cloneElement, ElementType, isValidElement } from 'react'
 import getExternalLinkProps from '../../util/getExternalLinkProps'
 import StyledButton from './StyledButton'
 import { ButtonProps, scales, variants } from './types'
+import { JSX } from 'react/jsx-runtime'
 
-function Button<E extends ElementType = 'button'>({...rest}: ButtonProps<E>) : JSX.Element {
-
-  rest.scale = rest.scale ?? scales.MD
-  rest.variant = rest.variant ?? variants.PRIMARY
+const Button = <E extends ElementType = 'button'>( props: ButtonProps<E>): JSX.Element => {
+  const {
+    startIcon,
+    endIcon,
+    external = false,
+    className,
+    isLoading = false,
+    disabled = false,
+    scale = scales.MD,
+    children,
+    ...rest
+  } = props
 
   const internalProps = external ? getExternalLinkProps() : {}
-  const isDisabled = rest.isLoading || rest.disabled
-  const classNames = rest.className ? [rest.className] : []
+  const isDisabled = isLoading || disabled
+  const classNames = className ? [className] : []
 
-  if (rest.isLoading) {
+  if (isLoading) {
     classNames.push('pancake-button--loading')
   }
 
-  if (isDisabled && !rest.isLoading) {
+  if (isDisabled && !isLoading) {
     classNames.push('pancake-button--disabled')
   }
-  
+
   return (
     <StyledButton
-      isLoading={rest.isLoading}
-      external={external}
-      variant={rest.variant}
-      scale={rest.scale}
-      disabled={isDisabled}
+      $isLoading={isLoading}
       className={classNames.join(' ')}
+      disabled={isDisabled}
+      scale={scale} 
       {...internalProps}
       {...rest}
     >
       <>
-        {isValidElement(rest.startIcon) &&
-          cloneElement(rest.startIcon as React.ReactElement<any>, {
+        {isValidElement(startIcon) &&
+          cloneElement(startIcon as React.ReactElement<any>, {
             mr: '0.5rem',
           })}
-        {rest.children}
-        {isValidElement(rest.endIcon) &&
-          cloneElement(rest.endIcon as React.ReactElement<any>, {
+        {children}
+        {isValidElement(endIcon) &&
+          cloneElement(endIcon as React.ReactElement<any>, {
             ml: '0.5rem',
           })}
       </>
     </StyledButton>
   )
 }
+
+// Button.defaultProps = {
+//   isLoading: false,
+//   external: false,
+//   variant: variants.PRIMARY,
+//   scale: scales.MD,
+//   disabled: false,
+// }
 
 export default Button

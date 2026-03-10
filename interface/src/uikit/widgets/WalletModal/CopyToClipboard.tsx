@@ -33,8 +33,8 @@ function CopyToClipboard({ toCopy, children, ...props }: Props ) {
 
   return (
     <StyleButton
-      small
-      bold
+      $small
+      $bold
       onClick={() => {
         if (navigator.clipboard) {
           navigator.clipboard.writeText(toCopy)

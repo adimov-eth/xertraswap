@@ -39,7 +39,7 @@ export type PolymorphicComponent<P, D extends ElementType = 'button'> = <E exten
 export interface BaseButtonProps extends LayoutProps, SpaceProps {
   as?: 'a' | 'button' | typeof Link
   external?: boolean
-  isLoading?: boolean
+  $isLoading?: boolean
   scale?: Scale
   variant?: Variant
   disabled?: boolean

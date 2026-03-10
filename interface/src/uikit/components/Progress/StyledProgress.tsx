@@ -24,9 +24,7 @@ interface StyledProgressProps {
   variant: ProgressProps['variant']
 }
 
-const StyledProgress = styled.div
-.withConfig({ shouldForwardProp: (prop) => prop !== 'variant'})
-<StyledProgressProps>`
+const StyledProgress = styled.div<StyledProgressProps>`
   position: relative;
   background-color: ${({ theme }) => theme.colors.input};
   box-shadow: ${({ theme }) => theme.shadows.inset};

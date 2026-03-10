@@ -84,7 +84,7 @@ const Alert: React.FC<AlertProps> = ({ title, children, variant, onClick }) => {
         <Icon color="currentColor" width="24px" />
       </IconLabel>
       <Details hasHandler={!!onClick}>
-        <Text bold>{title}</Text>
+        <Text $bold>{title}</Text>
         {typeof children === 'string' ? <Text as="p">{children}</Text> : children}
       </Details>
       {onClick && (

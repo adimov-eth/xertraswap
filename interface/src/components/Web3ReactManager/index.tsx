@@ -1,4 +1,4 @@
-import { useEffect, useContext } from 'react'
+import { useEffect, useContext, JSX } from 'react'
 import { web3authConnector } from '../../connectors'
 import Web3AuthContext from '../../pages/Web3AuthContext'
 import { safeHandler } from 'utils'

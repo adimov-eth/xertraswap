@@ -1,5 +1,4 @@
 import { Currency } from '@xertra/sdk'
-import React from 'react'
 import styled from 'styled-components'
 import CurrencyLogo from '../CurrencyLogo'
 
@@ -19,7 +18,7 @@ interface DoubleCurrencyLogoProps {
   currency1?: Currency
 }
 
-const HigherLogo = styled(CurrencyLogo)`
+const HigherLogo = styled(CurrencyLogo).withConfig({ shouldForwardProp: (prop) => prop !== 'currency' })`
   z-index: 2;
 `
 const CoveredLogo = styled(CurrencyLogo)<{ sizeraw: number }>`

@@ -18,12 +18,12 @@ const AdvancedDetailsFooter = styled.div
   transition: transform 300ms ease-in-out;
 `
 
-export default function AdvancedSwapDetailsDropdown({ trade, ...rest }: AdvancedSwapDetailsProps) {
+export default function AdvancedSwapDetailsDropdown({ trade }: AdvancedSwapDetailsProps) {
   const lastTrade = useLastTruthy(trade)
 
   return (
     <AdvancedDetailsFooter show={Boolean(trade)}>
-      <AdvancedSwapDetails {...rest} trade={trade ?? lastTrade ?? undefined} />
+      <AdvancedSwapDetails trade={trade ?? lastTrade ?? undefined} />
     </AdvancedDetailsFooter>
   )
 }

@@ -89,7 +89,7 @@ export default function PopupItem({
 
   return (
     <Popup>
-      <StyledClose color={theme.colors.textSubtle} onClick={removeThisPopup} />
+      <StyledClose color={theme?.colors.textSubtle} onClick={removeThisPopup} />
       {popupContent}
       {removeAfterMs !== null ? <AnimatedFader style={faderStyle} /> : null}
     </Popup>

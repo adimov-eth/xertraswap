@@ -1,12 +1,14 @@
-import React from 'react'
 import styled from 'styled-components'
 import { CogIcon } from '../../../components/Svg'
 import IconButton from '../../../components/Button/IconButton'
-import { PanelProps, PushedProps } from '../types'
+import { PushedProps } from '../types'
 import StraxPrice from './StraxPrice'
 import SocialLinks from './SocialLinks'
 
-interface Props extends PanelProps, PushedProps {}
+interface PanelFooterProps extends PushedProps 
+{
+  cakePriceUsd?: number
+}
 
 const Container = styled.div`
   flex: none;
@@ -23,7 +25,7 @@ const SocialEntry = styled.div`
   padding: 0 16px;
 `
 
-const PanelFooter: React.FC<Props> = ({ isPushed, pushNav, cakePriceUsd }) => {
+function PanelFooter ({ isPushed, pushNav, cakePriceUsd } : PanelFooterProps) {
   if (!isPushed) {
     return (
       <Container>

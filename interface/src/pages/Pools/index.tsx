@@ -169,7 +169,7 @@ function SuggestedPoolRow({ tokenAddress, symbol }: { tokenAddress: string; symb
       <TokenInfo>
         <DoubleCurrencyLogo currency0={straxCurrency ?? undefined} currency1={currency ?? undefined} size={25} margin />
         <TokenSymbols>
-          <Text bold>STRAX-{symbol}</Text>
+          <Text $bold>STRAX-{symbol}</Text>
           {bridgeInfo && <Text fontSize="12px" color="textSubtle">{bridgeInfo}</Text>}
         </TokenSymbols>
       </TokenInfo>

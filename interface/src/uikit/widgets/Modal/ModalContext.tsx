@@ -59,7 +59,7 @@ function ModalProvider({children} : PropsWithChildren<{}>) {
     >
       {isOpen && (
         <ModalWrapper>
-          <Overlay show onClick={handleOverlayDismiss} />
+          <Overlay $show onClick={handleOverlayDismiss} />
           {React.isValidElement(modalNode) &&
             React.cloneElement(modalNode as React.ReactElement<any>, {
               onDismiss: handleDismiss,

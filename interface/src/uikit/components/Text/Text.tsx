@@ -11,16 +11,16 @@ const getColor = ({ color, theme }: ThemedProps) => {
   return getThemeValue(`colors.${color}`, color)(theme)
 }
 
-const getFontSize = ({ fontSize, small }: TextProps) => {
-  return small ? '14px' : fontSize || '16px'
+const getFontSize = ({ fontSize, $small }: TextProps) => {
+  return $small ? '14px' : fontSize || '16px'
 }
 
-const Text = styled.div
-.withConfig({ shouldForwardProp: (prop) => !['mr', 'textAlign', 'padding'].includes(prop)})
-<TextProps>`
+const Text = styled.div.withConfig({
+    shouldForwardProp: (prop) => prop !== 'textAlign',
+})<TextProps>`
   color: ${getColor};
   font-size: ${getFontSize};
-  font-weight: ${({ bold }) => (bold ? 600 : 400)};
+  font-weight: ${({ $bold }) => ($bold ? 600 : 400)};
   line-height: 1.5;
   ${({ textTransform }) => textTransform && `text-transform: ${textTransform};`}
   ${space}
@@ -29,7 +29,7 @@ const Text = styled.div
 
 Text.defaultProps = {
   color: 'text',
-  small: false,
+  $small: false,
 }
 
 export default Text

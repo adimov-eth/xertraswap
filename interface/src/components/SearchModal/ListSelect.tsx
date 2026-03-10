@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo, useRef, useState } from 'react'
+import { memo, useCallback, useMemo, useRef, useState } from 'react'
 import { ArrowLeft } from 'react-feather'
 import { usePopper } from 'react-popper'
 import { useDispatch, useSelector } from 'react-redux'
@@ -137,7 +137,7 @@ const ListRow = memo(function ListRow({ listUrl, onBack }: { listUrl: string; on
       )}
       <Column style={{ flex: '1' }}>
         <Row>
-          <Text bold={isSelected} fontSize="16px" style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <Text $bold={isSelected} fontSize="16px" style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {list.name}
           </Text>
         </Row>
@@ -285,7 +285,7 @@ export function ListSelect({ onDismiss, onBack }: { onDismiss: () => void; onBac
       <Separator />
 
       <PaddedColumn gap="14px">
-        <Text bold>
+        <Text $bold>
           Add a list{' '}
           <QuestionHelper
             text={TranslateString(

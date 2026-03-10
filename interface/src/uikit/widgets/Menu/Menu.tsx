@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import throttle from 'lodash/throttle'
 import Overlay from '../../components/Overlay/Overlay'
@@ -55,7 +55,9 @@ const Inner = styled.div.withConfig({
   }
 `
 
-const MobileOnlyOverlay = styled(Overlay)`
+const MobileOnlyOverlay = styled(Overlay).withConfig({
+  shouldForwardProp: (prop) => prop !== 'show',
+})`
   position: fixed;
   height: 100%;
 

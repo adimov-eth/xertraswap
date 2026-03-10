@@ -1,13 +1,19 @@
-import React from 'react'
 import styled from 'styled-components'
 import PanelBody from './PanelBody'
 import PanelFooter from './PanelFooter'
 import { SIDEBAR_WIDTH_REDUCED, SIDEBAR_WIDTH_FULL } from '../config'
-import { PanelProps, PushedProps } from '../types'
+import { LangType, MenuEntryProps, PushedProps } from '../types'
 
-interface Props extends PanelProps, PushedProps {
+interface Props extends PushedProps {
   showMenu: boolean
   isMobile: boolean
+  links: Array<MenuEntryProps>
+  cakePriceUsd?: number
+  isDark: boolean
+  toggleTheme: (isDark: boolean) => void
+  langs: LangType[]
+  setLang: (lang: LangType) => void
+  currentLang: string
 }
 
 const StyledPanel = styled.div
@@ -37,12 +43,21 @@ const StyledPanel = styled.div
   }
 `
 
-const Panel: React.FC<Props> = (props) => {
+function Panel(props: Props) {
   const { isPushed, showMenu } = props
+  
   return (
     <StyledPanel isPushed={isPushed} showMenu={showMenu}>
-      <PanelBody {...props} />
-      <PanelFooter {...props} />
+      <PanelBody 
+        isPushed={isPushed}
+        pushNav={props.pushNav}
+        isMobile={props.isMobile}
+        links={props.links} />
+      <PanelFooter 
+        isPushed={isPushed}
+        pushNav={props.pushNav}
+        cakePriceUsd={props.cakePriceUsd}
+      />
     </StyledPanel>
   )
 }

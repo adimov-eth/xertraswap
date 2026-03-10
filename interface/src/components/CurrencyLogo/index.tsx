@@ -16,7 +16,9 @@ const StyledBnbLogo = styled.img<{ size: string }>`
   border-radius: 24px;
 `
 
-const StyledLogo = styled(Logo)<{ size: string }>`
+const StyledLogo = styled(Logo).withConfig({
+  shouldForwardProp: (prop) => prop !== "size"
+})<{ size: string }>`
   width: ${({ size }) => size};
   height: ${({ size }) => size};
 `

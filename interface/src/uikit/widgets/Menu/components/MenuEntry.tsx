@@ -4,7 +4,7 @@ import { Text } from '../../../components/Text'
 import { Colors } from '../../../theme/types'
 import { MENU_ENTRY_HEIGHT } from '../config'
 
-export interface Props {
+export interface MenuEntryProps {
   secondary?: boolean
   isActive?: boolean
   theme: DefaultTheme
@@ -29,8 +29,8 @@ const LinkLabel = styled.div.withConfig({
 `;
 
 const MenuEntry = styled.div.withConfig({
-  shouldForwardProp: (prop) => prop !== 'isActive',
-})<Props>`
+  shouldForwardProp: (prop) => !['isActive', 'theme', 'secondary'].includes(prop),
+})<MenuEntryProps>`
   cursor: pointer;
   display: flex;
   align-items: center;

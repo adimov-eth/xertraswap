@@ -11,14 +11,9 @@ const Overlay = styled.div
   height: 100%;
   background-color: #452a7a;
   transition: opacity 0.4s;
-  opacity: ${({ show }) => (show ? 0.6 : 0)};
-  z-index: ${({ zIndex }) => zIndex};
-  pointer-events: ${({ show }) => (show ? 'initial' : 'none')};
+ opacity: ${({ $show = false }) => ($show ? 0.6 : 0)};
+  z-index: ${({ zIndex = 10 }) => zIndex};
+  pointer-events: ${({ $show }) => ($show ? 'initial' : 'none')};
 `
-
-Overlay.defaultProps = {
-  show: false,
-  zIndex: 10,
-}
 
 export default Overlay
