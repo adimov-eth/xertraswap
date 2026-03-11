@@ -4,7 +4,7 @@ import { Text } from '../../../components/Text'
 import { Colors } from '../../../theme/types'
 import { MENU_ENTRY_HEIGHT } from '../config'
 
-export interface Props {
+export interface MenuEntryProps {
   secondary?: boolean
   isActive?: boolean
   theme: DefaultTheme
@@ -20,13 +20,17 @@ const rainbowAnimation = keyframes`
   }
 `
 
-const LinkLabel = styled.div<{ isPushed: boolean }>`
+const LinkLabel = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'isPushed',
+})<{ isPushed?: boolean }>`
   color: ${({ isPushed, theme }) => (isPushed ? theme.colors.textSubtle : 'transparent')};
   transition: color 0.4s;
   flex-grow: 1;
-`
+`;
 
-const MenuEntry = styled.div<Props>`
+const MenuEntry = styled.div.withConfig({
+  shouldForwardProp: (prop) => !['isActive', 'theme', 'secondary'].includes(prop),
+})<MenuEntryProps>`
   cursor: pointer;
   display: flex;
   align-items: center;

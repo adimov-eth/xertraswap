@@ -1,3 +1,4 @@
+import { PropsWithChildren } from 'react'
 import { Colors } from '../../theme/types'
 import { Login } from '../WalletModal/types'
 
@@ -28,7 +29,7 @@ export interface MenuSubEntry {
   status?: LinkStatus
 }
 
-export interface MenuEntry {
+export interface MenuEntryProps {
   label: string
   icon: string
   items?: MenuSubEntry[]
@@ -38,18 +39,18 @@ export interface MenuEntry {
   status?: LinkStatus
 }
 
-export interface PanelProps {
+export interface PanelProps extends PropsWithChildren {
   isDark: boolean
   toggleTheme: (isDark: boolean) => void
   cakePriceUsd?: number
   currentLang: string
   langs: LangType[]
   setLang: (lang: LangType) => void
-  links: Array<MenuEntry>
+  links: Array<MenuEntryProps>
 }
 
 export interface NavProps extends PanelProps {
-  account?: string
+  account: string | undefined
   login: Login
   logout: () => void
 }

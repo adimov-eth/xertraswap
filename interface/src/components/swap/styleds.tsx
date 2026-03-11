@@ -1,5 +1,4 @@
 import { transparentize } from 'polished'
-import React from 'react'
 import { AlertTriangle } from 'react-feather'
 import { Text } from 'uikit'
 import styled, { css } from 'styled-components'
@@ -9,7 +8,9 @@ export const Wrapper = styled.div`
   position: relative;
 `
 
-export const ArrowWrapper = styled.div<{ clickable: boolean }>`
+export const ArrowWrapper = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'clickable',
+})<{ clickable: boolean }>`
   padding: 2px;
 
   ${({ clickable }) =>

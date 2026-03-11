@@ -60,10 +60,7 @@ module.exports = function override(config) {
     assert: require.resolve('assert'),
   })
 
-  // 4. Shim react-dom/client for React 17 — Web3Auth v8 UI uses createRoot
-  config.resolve.alias['react-dom/client'] = path.resolve(__dirname, 'src/shims/react-dom-client.js')
-
-  // 5. Handle .mjs files from @metamask/* packages.
+  // 4. Handle .mjs files from @metamask/* packages.
   //    @web3auth/ethereum-provider pulls in @metamask/eth-sig-util → @metamask/utils
   //    which ships .mjs files. Webpack 4 can't bridge ESM↔CJS named imports,
   //    so we force CJS resolution and treat .mjs files as regular JS.

@@ -23,7 +23,7 @@ const StraxPrice: React.FC<Props> = ({ straxPriceUsd, cakePriceUsd }) => {
   const price = straxPriceUsd ?? cakePriceUsd
   return price ? (
     <PriceLink href="https://www.coingecko.com/en/coins/stratis" target="_blank" rel="noopener noreferrer">
-      <Text color="textSubtle" bold>{`$${price.toFixed(3)}`}</Text>
+      <Text color="textSubtle" $bold>{`$${price.toFixed(3)}`}</Text>
     </PriceLink>
   ) : (
     <Skeleton width={80} height={24} />

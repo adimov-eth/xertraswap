@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import { ThemeProvider as SCThemeProvider } from 'styled-components'
 import { xertraDark } from './theme/xertraTheme'
 
@@ -14,7 +14,7 @@ const noop = () => {}
 // Dark mode only - matching xertra.com brand
 const ThemeContext = React.createContext<ThemeContextType>({ isDark: true, toggleTheme: noop })
 
-const ThemeContextProvider: React.FC = ({ children }) => {
+function ThemeContextProvider ({ children }: PropsWithChildren<{}>) {
   return (
     <ThemeContext.Provider value={{ isDark: true, toggleTheme: noop }}>
       <SCThemeProvider theme={xertraDark}>{children}</SCThemeProvider>

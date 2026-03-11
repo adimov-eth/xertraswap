@@ -1,18 +1,18 @@
 import styled, { DefaultTheme } from 'styled-components'
 import { space, layout, variant } from 'styled-system'
 import { scaleVariants, styleVariants } from './theme'
-import { BaseButtonProps } from './types'
+import { StyledButtonProps } from './types'
 
-interface ThemedButtonProps extends BaseButtonProps {
+interface ThemedButtonProps extends StyledButtonProps {
   theme: DefaultTheme
 }
 
 interface TransientButtonProps extends ThemedButtonProps {
-  $isLoading?: boolean
+  isLoading?: boolean
 }
 
-const getDisabledStyles = ({ $isLoading, theme }: TransientButtonProps) => {
-  if ($isLoading === true) {
+const getDisabledStyles = ({ isLoading, theme }: TransientButtonProps) => {
+  if (isLoading === true) {
     return `
       &:disabled,
       &.pancake-button--disabled {
@@ -39,11 +39,13 @@ const getDisabledStyles = ({ $isLoading, theme }: TransientButtonProps) => {
  * @see https://github.com/styled-components/styled-components/issues/135
  */
 
-const getOpacity = ({ $isLoading = false }: TransientButtonProps) => {
-  return $isLoading ? '.5' : '1'
+const getOpacity = ({ isLoading = false }: TransientButtonProps) => {
+  return isLoading ? '.5' : '1'
 }
 
-const StyledButton = styled.button<BaseButtonProps>`
+const StyledButton = styled.button.withConfig({
+  shouldForwardProp: (prop) => !['isLoading'].includes(prop)
+})<StyledButtonProps>`
   align-items: center;
   border: 0;
   border-radius: 16px;
@@ -74,6 +76,7 @@ const StyledButton = styled.button<BaseButtonProps>`
     variants: scaleVariants,
   })}
   ${variant({
+    prop: '$variant',
     variants: styleVariants,
   })}
   ${layout}

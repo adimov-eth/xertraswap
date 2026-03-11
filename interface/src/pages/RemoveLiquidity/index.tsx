@@ -339,7 +339,7 @@ export default function RemoveLiquidity({
           </RowFixed>
         </RowBetween>
         <RowFixed>
-          <Plus size="16" color={theme.colors.textSubtle} />
+          <Plus size="16" color={theme?.colors.textSubtle} />
         </RowFixed>
         <RowBetween align="flex-end">
           <Text fontSize="24px">{parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)}</Text>
@@ -351,7 +351,7 @@ export default function RemoveLiquidity({
           </RowFixed>
         </RowBetween>
 
-        <Text small color="textSubtle" textAlign="left" padding="12px 0 0 0" style={{ fontStyle: 'italic' }}>
+        <Text $small color="textSubtle" textAlign="left" padding="12px 0 0 0" style={{ fontStyle: 'italic' }}>
           {`Output is estimated. If the price changes by more than ${
             allowedSlippage / 100
           }% your transaction will revert.`}
@@ -527,7 +527,7 @@ export default function RemoveLiquidity({
             {!showDetailed && (
               <>
                 <ColumnCenter>
-                  <ArrowDown size="16" color={theme.colors.textSubtle} />
+                  <ArrowDown size="16" color={theme?.colors.textSubtle} />
                 </ColumnCenter>
                 <Body>
                   <OutlineCard>
@@ -592,7 +592,7 @@ export default function RemoveLiquidity({
                     id="liquidity-amount"
                   />
                   <ColumnCenter>
-                    <ArrowDown size="16" color={theme.colors.textSubtle} />
+                    <ArrowDown size="16" color={theme?.colors.textSubtle} />
                   </ColumnCenter>
                   <CurrencyInputPanel
                     hideBalance
@@ -606,7 +606,7 @@ export default function RemoveLiquidity({
                     id="remove-liquidity-tokena"
                   />
                   <ColumnCenter>
-                    <Plus size="16" color={theme.colors.textSubtle} />
+                    <Plus size="16" color={theme?.colors.textSubtle} />
                   </ColumnCenter>
                   <CurrencyInputPanel
                     hideBalance

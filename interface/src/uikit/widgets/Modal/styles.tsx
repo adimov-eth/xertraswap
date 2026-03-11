@@ -6,7 +6,9 @@ import { ArrowBackIcon, CloseIcon } from '../../components/Svg'
 import { IconButton } from '../../components/Button'
 import { ModalProps } from './types'
 
-export const ModalHeader = styled.div<{ background?: string }>`
+export const ModalHeader = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'background',
+})<{ background?: string }>`
   align-items: center;
   background: ${({ background }) => background || 'transparent'};
   border-bottom: 1px solid ${({ theme }) => theme.colors.borderColor};
@@ -39,7 +41,7 @@ export const ModalBackButton: React.FC<{ onBack: ModalProps['onBack'] }> = ({ on
   )
 }
 
-export const ModalContainer = styled(Box)<{ minWidth: string }>`
+export const ModalContainer = styled(Box)<{ $minWidth: string }>`
   background: ${({ theme }) => theme.modal.background};
   box-shadow: 0px 20px 36px -8px rgba(14, 14, 44, 0.1), 0px 1px 1px rgba(0, 0, 0, 0.05);
   border: 1px solid ${({ theme }) => theme.colors.borderColor};
@@ -49,7 +51,7 @@ export const ModalContainer = styled(Box)<{ minWidth: string }>`
 
   ${({ theme }) => theme.mediaQueries.xs} {
     width: auto;
-    min-width: ${({ minWidth }) => minWidth};
+    min-width: ${({ $minWidth }) => $minWidth };
     max-width: 100%;
   }
 `

@@ -1,5 +1,5 @@
-import React, { StrictMode } from 'react'
-import ReactDOM from 'react-dom'
+import React from 'react'
+import {createRoot} from 'react-dom/client';
 import { ResetCSS } from 'uikit'
 import GlobalStyle from './style/Global'
 import CSSVariables from './style/CSSVariables'
@@ -16,15 +16,15 @@ window.addEventListener('error', () => {
    localStorage?.removeItem('redux_localstorage_simple_lists')
 })
 
-ReactDOM.render(
-  <StrictMode>
-    <Providers>
-      <ResetCSS />
-      <GlobalStyle />
-      <CSSVariables />
-      <ButtonOverrides />
-      <App />
-    </Providers>
-  </StrictMode>,
-  document.getElementById('root')
-)
+const root = createRoot(document.getElementById("root")!);
+root.render(
+  <React.StrictMode>
+     <Providers>
+       <ResetCSS />
+       <GlobalStyle />
+       <CSSVariables />
+       <ButtonOverrides />
+       <App />
+     </Providers>
+  </React.StrictMode>
+);

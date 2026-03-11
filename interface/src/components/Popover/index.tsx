@@ -5,7 +5,8 @@ import styled from 'styled-components'
 import Portal from '@reach/portal'
 import useInterval from '../../hooks/useInterval'
 
-const PopoverContainer = styled.div<{ show: boolean }>`
+const PopoverContainer = styled.div
+.withConfig({ shouldForwardProp: (prop) => prop !== 'show' })<{ show: boolean }>`
   z-index: 9999;
 
   visibility: ${(props) => (props.show ? 'visible' : 'hidden')};

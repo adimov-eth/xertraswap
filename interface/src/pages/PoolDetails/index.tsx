@@ -312,7 +312,7 @@ export default function PoolDetails() {
             </RowBetween>
 
             <StatCard>
-              <Text fontSize="18px" bold mb="16px">Swap</Text>
+              <Text fontSize="18px" $bold mb="16px">Swap</Text>
               <CardBody style={{ padding: '16px' }}>
                 <AutoColumn gap="md">
                   <CurrencyInputPanel
@@ -373,7 +373,7 @@ export default function PoolDetails() {
                     <>
                       <AutoRow justify="space-between" style={{ padding: '0 1rem' }}>
                         <ArrowWrapper clickable={false}>
-                          <ArrowDown size="16" color={theme.colors.textSubtle} />
+                          <ArrowDown size="16" color={theme?.colors.textSubtle} />
                         </ArrowWrapper>
                         <LinkStyledButton id="remove-recipient-button" onClick={() => onChangeRecipient(null)}>
                           - Remove send
@@ -495,14 +495,14 @@ export default function PoolDetails() {
             </StatCard>
 
             <StatCard>
-              <Text fontSize="18px" bold mb="16px">Liquidity</Text>
+              <Text fontSize="18px" $bold mb="16px">Liquidity</Text>
               <StatRow>
                 <Text>{pair.token0.symbol}</Text>
-                <Text bold>{pair.reserve0.toSignificant(6)}</Text>
+                <Text $bold>{pair.reserve0.toSignificant(6)}</Text>
               </StatRow>
               <StatRow>
                 <Text>{pair.token1.symbol}</Text>
-                <Text bold>{pair.reserve1.toSignificant(6)}</Text>
+                <Text $bold>{pair.reserve1.toSignificant(6)}</Text>
               </StatRow>
               <StatRow>
                 <Text>LP Address</Text>
@@ -511,35 +511,35 @@ export default function PoolDetails() {
             </StatCard>
 
             <StatCard>
-              <Text fontSize="18px" bold mb="16px">Price</Text>
+              <Text fontSize="18px" $bold mb="16px">Price</Text>
               <StatRow>
                 <Text>1 {pair.token0.symbol}</Text>
-                <Text bold>{pair.token0Price.toSignificant(6)} {pair.token1.symbol}</Text>
+                <Text $bold>{pair.token0Price.toSignificant(6)} {pair.token1.symbol}</Text>
               </StatRow>
               <StatRow>
                 <Text>1 {pair.token1.symbol}</Text>
-                <Text bold>{pair.token1Price.toSignificant(6)} {pair.token0.symbol}</Text>
+                <Text $bold>{pair.token1Price.toSignificant(6)} {pair.token0.symbol}</Text>
               </StatRow>
             </StatCard>
 
             {userData && userData.poolBalance && !userData.poolBalance.equalTo(new TokenAmount(pair.liquidityToken, '0')) && (
               <StatCard>
-                <Text fontSize="18px" bold mb="16px">Your Position</Text>
+                <Text fontSize="18px" $bold mb="16px">Your Position</Text>
                 <StatRow>
                   <Text>{pair.token0.symbol}</Text>
-                  <Text bold>{userData.token0Deposited?.toSignificant(6) ?? '---'}</Text>
+                  <Text $bold>{userData.token0Deposited?.toSignificant(6) ?? '---'}</Text>
                 </StatRow>
                 <StatRow>
                   <Text>{pair.token1.symbol}</Text>
-                  <Text bold>{userData.token1Deposited?.toSignificant(6) ?? '---'}</Text>
+                  <Text $bold>{userData.token1Deposited?.toSignificant(6) ?? '---'}</Text>
                 </StatRow>
                 <StatRow>
                   <Text>LP Tokens</Text>
-                  <Text bold>{userData.poolBalance?.toSignificant(4) ?? '---'}</Text>
+                  <Text $bold>{userData.poolBalance?.toSignificant(4) ?? '---'}</Text>
                 </StatRow>
                 <StatRow>
                   <Text>Share of Pool</Text>
-                  <Text bold>{userData.poolPercentage ? `${userData.poolPercentage?.toFixed(2)}%` : '---'}</Text>
+                  <Text $bold>{userData.poolPercentage ? `${userData.poolPercentage?.toFixed(2)}%` : '---'}</Text>
                 </StatRow>
               </StatCard>
             )}

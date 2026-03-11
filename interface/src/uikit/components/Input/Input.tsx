@@ -8,12 +8,12 @@ interface StyledInputProps extends InputProps {
 /**
  * Priority: Warning --> Success
  */
-const getBoxShadow = ({ isSuccess = false, isWarning = false, theme }: StyledInputProps) => {
+const getBoxShadow = ({ $isSuccess = false, isWarning = false, theme }: StyledInputProps) => {
   if (isWarning) {
     return theme.shadows.warning
   }
 
-  if (isSuccess) {
+  if ($isSuccess) {
     return theme.shadows.success
   }
 
@@ -32,7 +32,8 @@ const getHeight = ({ scale = scales.MD }: StyledInputProps) => {
   }
 }
 
-const Input = styled.input<InputProps>`
+const Input = styled.input
+.withConfig({ shouldForwardProp: (prop) => prop !== 'isWarning' })<InputProps>`
   background-color: ${({ theme }) => theme.colors.input};
   border: 0;
   border-radius: 16px;
@@ -63,7 +64,7 @@ const Input = styled.input<InputProps>`
 
 Input.defaultProps = {
   scale: scales.MD,
-  isSuccess: false,
+  $isSuccess: false,
   isWarning: false,
 }
 

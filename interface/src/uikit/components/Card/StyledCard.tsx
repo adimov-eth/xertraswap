@@ -25,7 +25,9 @@ const getBoxShadow = ({ isActive, isSuccess, isWarning, theme }: StyledCardProps
   return theme.card.boxShadow
 }
 
-const StyledCard = styled.div<StyledCardProps>`
+const StyledCard = styled.div.withConfig({
+  shouldForwardProp: (prop) => !['isDisabled', 'isWarning', 'isSuccess', 'isActive'].includes(prop),
+})<StyledCardProps>`
   background-color: ${({ theme }) => theme.card.background};
   border: ${({ theme }) => theme.card.boxShadow};
   border-radius: 32px;

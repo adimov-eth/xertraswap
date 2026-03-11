@@ -1,4 +1,4 @@
-import { HTMLAttributes } from 'react'
+import { HTMLAttributes, PropsWithChildren } from 'react'
 import { SpaceProps } from 'styled-system'
 import { Colors } from '../../theme/types'
 
@@ -22,7 +22,7 @@ export type CardTheme = {
   dropShadow: string
 }
 
-export interface CardProps extends SpaceProps, HTMLAttributes<HTMLDivElement> {
+export interface CardProps extends PropsWithChildren, SpaceProps, HTMLAttributes<HTMLDivElement> {
   isActive?: boolean
   isSuccess?: boolean
   isWarning?: boolean

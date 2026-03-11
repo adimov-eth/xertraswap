@@ -62,7 +62,9 @@ const InputPanel = styled.div<{ hideInput?: boolean }>`
   background-color: ${({ theme }) => theme.colors.background};
   z-index: 1;
 `
-const Container = styled.div<{ hideInput: boolean }>`
+const Container = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'hideInput',
+})<{ hideInput: boolean }>`
   border-radius: 8px;
   background-color: ${({ theme }) => theme.colors.input};
   box-shadow: none;
