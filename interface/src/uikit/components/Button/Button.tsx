@@ -55,12 +55,4 @@ const Button = <E extends ElementType = 'button'>( props: ButtonProps<E>): JSX.E
   )
 }
 
-// Button.defaultProps = {
-//   isLoading: false,
-//   external: false,
-//   variant: variants.PRIMARY,
-//   scale: scales.MD,
-//   disabled: false,
-// }
-
 export default Button

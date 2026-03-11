@@ -16,7 +16,6 @@
   "resolutions": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",    
-    "@types/styled-components": "5.1.32",
     "@types/node": "18.19.68",
     "eslint-plugin-react": "7.37.5",
     "typescript": "~5.6.0"

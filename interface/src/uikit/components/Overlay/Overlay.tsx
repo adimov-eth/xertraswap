@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { OverlayProps } from './types'
 
 const Overlay = styled.div
-.withConfig({ shouldForwardProp: (prop) => prop !== 'zIndex' })
+.withConfig({ shouldForwardProp: (prop) => prop !== 'zIndex' && prop !== 'show' })
 .attrs({ role: 'presentation' })<OverlayProps>`
   position: fixed;
   top: 0px;
@@ -11,9 +11,9 @@ const Overlay = styled.div
   height: 100%;
   background-color: #452a7a;
   transition: opacity 0.4s;
- opacity: ${({ $show = false }) => ($show ? 0.6 : 0)};
+ opacity: ${({ show = false }) => (show ? 0.6 : 0)};
   z-index: ${({ zIndex = 10 }) => zIndex};
-  pointer-events: ${({ $show }) => ($show ? 'initial' : 'none')};
+  pointer-events: ${({ show }) => (show ? 'initial' : 'none')};
 `
 
 export default Overlay

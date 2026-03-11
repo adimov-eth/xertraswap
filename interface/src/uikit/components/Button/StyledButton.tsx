@@ -44,7 +44,7 @@ const getOpacity = ({ isLoading = false }: TransientButtonProps) => {
 }
 
 const StyledButton = styled.button.withConfig({
-  shouldForwardProp: (prop) => !['isLoading'].includes(prop)
+  shouldForwardProp: (prop) => !['isLoading', 'variant'].includes(prop)
 })<BaseButtonProps>`
   align-items: center;
   border: 0;

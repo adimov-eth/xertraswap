@@ -55,9 +55,7 @@ const Inner = styled.div.withConfig({
   }
 `
 
-const MobileOnlyOverlay = styled(Overlay).withConfig({
-  shouldForwardProp: (prop) => prop !== 'show',
-})`
+const MobileOnlyOverlay = styled(Overlay)`
   position: fixed;
   height: 100%;
 
@@ -147,7 +145,7 @@ function Menu({
         <Inner isPushed={isPushed} showMenu={showMenu}>
           {children}
         </Inner>
-        <MobileOnlyOverlay $show={isPushed} onClick={() => setIsPushed(false)} role="presentation" />
+        <MobileOnlyOverlay show={isPushed} onClick={() => setIsPushed(false)} role="presentation" />
       </BodyWrapper>
     </Wrapper>
   )

@@ -15,7 +15,7 @@ const Modal: React.FC<ModalProps> = ({
   ...props
 }) => (
   <ModalContainer $minWidth={minWidth} {...props}>
-    <ModalHeader $background={headerBackground}>
+    <ModalHeader background={headerBackground}>
       <ModalTitle>
         {onBack && <ModalBackButton onBack={onBack} />}
         <Heading>{title}</Heading>

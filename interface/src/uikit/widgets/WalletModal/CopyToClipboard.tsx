@@ -14,7 +14,9 @@ const StyleButton = styled(Text).attrs({ role: 'button' })`
   color: ${({ theme }) => theme.colors.primary};
 `
 
-const Tooltip = styled.div<{ isTooltipDisplayed: boolean }>`
+const Tooltip = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'isTooltipDisplayed',
+})<{ isTooltipDisplayed: boolean }>`
   display: ${({ isTooltipDisplayed }) => (isTooltipDisplayed ? 'block' : 'none')};
   position: absolute;
   bottom: -22px;

@@ -6,9 +6,11 @@ import { ArrowBackIcon, CloseIcon } from '../../components/Svg'
 import { IconButton } from '../../components/Button'
 import { ModalProps } from './types'
 
-export const ModalHeader = styled.div<{ $background?: string }>`
+export const ModalHeader = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'background',
+})<{ background?: string }>`
   align-items: center;
-  background: ${({ $background }) => $background || 'transparent'};
+  background: ${({ background }) => background || 'transparent'};
   border-bottom: 1px solid ${({ theme }) => theme.colors.borderColor};
   display: flex;
   padding: 12px 24px;
