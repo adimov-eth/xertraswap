@@ -1,4 +1,4 @@
-import React, { Suspense, useCallback, useEffect, useState } from 'react'
+import { Suspense, useCallback, useEffect, useState } from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 import { Web3Provider } from '@ethersproject/providers'

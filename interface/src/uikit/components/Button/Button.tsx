@@ -13,6 +13,7 @@ const Button = <E extends ElementType = 'button'>( props: ButtonProps<E>): JSX.E
     isLoading = false,
     disabled = false,
     scale = scales.MD,
+    variant = variants.PRIMARY,
     children,
     ...rest
   } = props
@@ -34,7 +35,8 @@ const Button = <E extends ElementType = 'button'>( props: ButtonProps<E>): JSX.E
       $isLoading={isLoading}
       className={classNames.join(' ')}
       disabled={isDisabled}
-      scale={scale} 
+      scale={scale}
+      variant={variant} 
       {...internalProps}
       {...rest}
     >
