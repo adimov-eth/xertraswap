@@ -27,6 +27,8 @@ const LangSelector: React.FC<Props> = ({ currentLang, langs, setLang }) => (
   >
     {langs.map((lang) => (
       <MenuButton
+        variant={'text'}
+        scale={'sm'}
         key={lang.code}
         fullWidth
         onClick={() => setLang(lang)}

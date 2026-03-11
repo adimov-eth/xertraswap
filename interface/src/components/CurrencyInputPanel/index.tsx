@@ -54,9 +54,7 @@ const Aligner = styled.span`
   align-items: center;
   justify-content: space-between;
 `
-const InputPanel = styled.div.withConfig({
-  shouldForwardProp: (prop) => prop !== 'hideInput',
-})<{ hideInput?: boolean }>`
+const InputPanel = styled.div<{ hideInput?: boolean }>`
   display: flex;
   flex-flow: column nowrap;
   position: relative;
