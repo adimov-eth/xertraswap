@@ -289,15 +289,20 @@ export default function Pools() {
                         <Button scale="sm" as={Link} to={`/add/${pool.pair.token0.address}/${pool.pair.token1.address}`}>
                           {TranslateString(168, 'Add Liquidity')}
                         </Button>
-                        <Button
-                          scale="sm"
-                          variant="secondary"
-                          as={Link}
-                          disabled={!userPoolData[i].poolBalance || userPoolData[i].poolBalance?.equalTo(new TokenAmount(pool.pair.liquidityToken, '0'))}
-                          to={`/remove/${pool.pair.token0.address}/${pool.pair.token1.address}`}
-                        >
-                          {TranslateString(168, 'Remove Liquidity')}
-                        </Button>
+                        {userPoolData[i].poolBalance && !userPoolData[i].poolBalance.equalTo(new TokenAmount(pool.pair.liquidityToken, '0')) ? (
+                          <Button
+                            scale="sm"
+                            variant="secondary"
+                            as={Link}
+                            to={`/remove/${pool.pair.token0.address}/${pool.pair.token1.address}`}
+                          >
+                            {TranslateString(168, 'Remove Liquidity')}
+                          </Button>
+                        ) : (
+                          <Button scale="sm" variant="secondary" disabled>
+                            {TranslateString(168, 'Remove Liquidity')}
+                          </Button>
+                        )}
                       </AutoColumn>
                     </Td>
                   </>

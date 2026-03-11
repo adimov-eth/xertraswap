@@ -1,6 +1,6 @@
 import { ChainId } from '@xertra/sdk'
-import React, { useContext } from 'react'
-import { ThemeContext } from 'styled-components'
+import React from 'react'
+import { useTheme } from 'styled-components'
 import { Button, LinkExternal } from 'uikit'
 import { ArrowUpCircle } from 'react-feather'
 import { AutoColumn } from '../Column'
@@ -14,7 +14,7 @@ type TransactionSubmittedContentProps = {
 }
 
 const TransactionSubmittedContent = ({ onDismiss, chainId, hash }: TransactionSubmittedContentProps) => {
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
   return (
     <Wrapper>

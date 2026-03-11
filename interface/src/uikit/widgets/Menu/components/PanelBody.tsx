@@ -4,14 +4,13 @@ import { useLocation } from 'react-router-dom'
 import { SvgProps } from '../../../components/Svg'
 import * as IconModule from '../icons'
 import Accordion from './Accordion'
-import { MenuEntry, LinkLabel, LinkStatus } from './MenuEntry'
+import { MenuEntry as MenuEntryItem, LinkLabel, LinkStatus } from './MenuEntry'
 import MenuLink from './MenuLink'
-import { MenuEntryProps, PushedProps } from '../types'
+import { MenuEntry as MenuEntryConfig, PushedProps } from '../types'
 
-interface PanelBodyProps extends PushedProps
-{
+interface PanelBodyProps extends PushedProps {
   isMobile: boolean
-  links: Array<MenuEntryProps>
+  links: Array<MenuEntryConfig>
 }
 
 const Icons = IconModule as unknown as { [key: string]: React.FC<SvgProps> }
@@ -72,7 +71,7 @@ function PanelBody({ isPushed, pushNav, isMobile, links } : PanelBodyProps) {
             >
               {isPushed &&
                 entry.items.map((item) => (
-                  <MenuEntry
+                  <MenuEntryItem
                     key={item.href}
                     secondary
                     isActive={isMenuItemActive(item.href, location.pathname)}
@@ -86,13 +85,13 @@ function PanelBody({ isPushed, pushNav, isMobile, links } : PanelBodyProps) {
                         </LinkStatus>
                       )}
                     </MenuLink>
-                  </MenuEntry>
+                  </MenuEntryItem>
                 ))}
             </Accordion>
           )
         }
         return (
-          <MenuEntry
+          <MenuEntryItem
             key={entry.label}
             isActive={entry.href ? isMenuItemActive(entry.href, location.pathname) : false}
             className={calloutClass}
@@ -106,7 +105,7 @@ function PanelBody({ isPushed, pushNav, isMobile, links } : PanelBodyProps) {
                 </LinkStatus>
               )}
             </MenuLink>
-          </MenuEntry>
+          </MenuEntryItem>
         )
       })}
     </Container>

@@ -8,8 +8,7 @@ import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, ETHER } from '
 import { ROUTER_ADDRESS } from '../constants'
 import { BLOCK_EXPLORER_URLS, CHAIN_IDS } from '../config/chains'
 import { TokenAddressMap } from '../state/lists/hooks'
-import { handleError } from './errorHandler'
-import { error } from 'console'
+import handleError from './errorHandler'
 
 const IUniswapV2Router02ABI  = v2Router.abi
 // returns the checksummed address if the address is valid, otherwise returns false

@@ -1,5 +1,5 @@
 import React from 'react'
-import {createRoot} from 'react-dom/client';
+import { createRoot } from 'react-dom/client'
 import { ResetCSS } from 'uikit'
 import GlobalStyle from './style/Global'
 import CSSVariables from './style/CSSVariables'
@@ -13,18 +13,24 @@ if ('ethereum' in window) {
 }
 
 window.addEventListener('error', () => {
-   localStorage?.removeItem('redux_localstorage_simple_lists')
+  localStorage?.removeItem('redux_localstorage_simple_lists')
 })
 
-const root = createRoot(document.getElementById("root")!);
+const rootElement = document.getElementById('root')
+
+if (!rootElement) {
+  throw new Error('Failed to find #root element')
+}
+
+const root = createRoot(rootElement)
 root.render(
   <React.StrictMode>
-     <Providers>
-       <ResetCSS />
-       <GlobalStyle />
-       <CSSVariables />
-       <ButtonOverrides />
-       <App />
-     </Providers>
-  </React.StrictMode>
-);
+    <Providers>
+      <ResetCSS />
+      <GlobalStyle />
+      <CSSVariables />
+      <ButtonOverrides />
+      <App />
+    </Providers>
+  </React.StrictMode>,
+)

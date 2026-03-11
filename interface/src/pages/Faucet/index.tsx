@@ -202,7 +202,7 @@ const Faucet: React.FC = () => {
               width="100%"
               onClick={handleClaim}
               disabled={!canClaim || claiming}
-              $isLoading={claiming}
+              isLoading={claiming}
             >
               {claiming ? 'Claiming...' : 'Claim Tokens'}
             </Button>

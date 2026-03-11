@@ -1,26 +1,33 @@
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify'
 
-export const handleError = (error: unknown): void => {
-  let message = "Something went wrong";
+const handleError = (error: unknown): void => {
+  let message = 'Something went wrong'
 
   if (error instanceof Error) {
-    message = error.message;
+    const { message: errorMessage } = error
+    message = errorMessage
   }
 
   // Handle API-style errors (Axios, fetch wrappers, etc.)
-  if (
-    typeof error === "object" &&
-    error !== null &&
-    "response" in error
-  ) {
-    const err = error as any;
-    message = err?.response?.data?.message ?? message;
+  if (typeof error === 'object' && error !== null && 'response' in error) {
+    const {
+      response: { data } = {},
+    } = error as {
+      response?: {
+        data?: {
+          message?: string
+        }
+      }
+    }
+    message = data?.message ?? message
   }
 
   toast.error(message, {
-    position: "top-right",
+    position: 'top-right',
     autoClose: 5000,
-  });
+  })
 
-  console.error("Global Error:", error);
-};
+  console.error('Global Error:', error)
+}
+
+export default handleError

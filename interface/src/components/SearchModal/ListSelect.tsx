@@ -96,9 +96,9 @@ const ListRow = memo(function ListRow({ listUrl, onBack }: { listUrl: string; on
   const isSelected = listUrl === selectedListUrl
 
   const [open, toggle] = useToggle(false)
-  const node = useRef<HTMLDivElement>()
-  const [referenceElement, setReferenceElement] = useState<HTMLDivElement | null>()
-  const [popperElement, setPopperElement] = useState<HTMLDivElement>()
+  const node = useRef<HTMLDivElement | null>(null)
+  const [referenceElement, setReferenceElement] = useState<HTMLDivElement | null>(null)
+  const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(null)
 
   const { styles, attributes } = usePopper(referenceElement, popperElement, {
     placement: 'auto',

@@ -1,5 +1,4 @@
 import { ComponentProps, ElementType, ReactElement, ReactNode } from 'react'
-import { Link } from 'react-router-dom'
 import { LayoutProps, SpaceProps } from 'styled-system'
 
 export const scales = {
@@ -28,7 +27,7 @@ export type AsProps<E extends ElementType = ElementType> = {
   as?: E
 }
 
-export type MergeProps<E extends ElementType> = AsProps<E> & Omit<ComponentProps<E>, keyof AsProps>
+export type MergeProps<E extends ElementType> = AsProps<E> & Omit<ComponentProps<E>, keyof AsProps | 'color'>
 
 export type PolymorphicComponentProps<E extends ElementType, P> = P & MergeProps<E>
 
@@ -37,7 +36,7 @@ export type PolymorphicComponent<P, D extends ElementType = 'button'> = <E exten
 ) => ReactElement | null
 
 export interface StyledButtonProps extends LayoutProps, SpaceProps {
-  as?: 'a' | 'button' | typeof Link
+  as?: ElementType
   external?: boolean
   $isLoading?: boolean
   scale?: Scale

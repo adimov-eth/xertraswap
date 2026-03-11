@@ -1,5 +1,5 @@
-import { PropsWithChildren, useContext } from 'react'
-import { Menu as UikitMenu} from 'uikit'
+import { ReactNode, useContext } from 'react'
+import { Menu as UikitMenu } from 'uikit'
 import { allLanguages } from '../../constants/localisation/languageCodes'
 import { LanguageContext } from '../../hooks/LanguageContext'
 import useGetPriceData from '../../hooks/useGetPriceData'
@@ -11,11 +11,11 @@ import Web3AuthContext from '../../pages/Web3AuthContext'
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const noop = () => {}
 
-function Menu({ children }: PropsWithChildren<{}>) {
-  const { login, logout } = useWeb3Auth();
+function Menu({ children }: { children: ReactNode }) {
+  const { login, logout } = useWeb3Auth()
   const { account } = useContext(Web3AuthContext)
-  const { selectedLanguage, setSelectedLanguage } = useContext(LanguageContext);
-  const priceData = useGetPriceData();
+  const { selectedLanguage, setSelectedLanguage } = useContext(LanguageContext)
+  const priceData = useGetPriceData()
   const cakePriceUsd = priceData ? Number(priceData.stratis?.usd) : undefined
 
   return (
@@ -30,8 +30,9 @@ function Menu({ children }: PropsWithChildren<{}>) {
       langs={allLanguages}
       setLang={setSelectedLanguage}
       cakePriceUsd={cakePriceUsd}
-      children={children}
-    />
+    >
+      {children}
+    </UikitMenu>
   )
 }
 

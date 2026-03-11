@@ -49,7 +49,7 @@ export function CurrencySearch({
   
   const theme = useContext(ThemeContext)
 
-  const fixedList = useRef<FixedSizeList>()
+  const fixedList = useRef<FixedSizeList | null>(null)
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [invertSearchOrder, setInvertSearchOrder] = useState<boolean>(false)
   const allTokens = useAllTokens()
@@ -109,7 +109,7 @@ export function CurrencySearch({
   }, [isOpen])
 
   // manage focus on modal show
-  const inputRef = useRef<HTMLInputElement>()
+  const inputRef = useRef<HTMLInputElement | null>(null)
   const handleInput = useCallback((event) => {
     const input = event.target.value
     const checksummedInput = isAddress(input)

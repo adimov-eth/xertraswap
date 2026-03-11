@@ -119,7 +119,7 @@ export default function Updater(): null {
   const latestBlockNumber = useBlockNumber()
   const { chainId } = useContext(Web3AuthContext)
   const multicallContract = useMulticallContract()
-  const cancellations = useRef<{ blockNumber: number; cancellations: (() => void)[] }>()
+  const cancellations = useRef<{ blockNumber: number; cancellations: (() => void)[] } | undefined>(undefined)
 
   const listeningKeys: { [callKey: string]: number } = useMemo(() => {
     return activeListeningKeys(debouncedListeners, chainId)

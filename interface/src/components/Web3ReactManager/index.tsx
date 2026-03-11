@@ -1,9 +1,9 @@
-import { useEffect, useContext } from 'react'
+import { useEffect, useContext, type ReactElement } from 'react'
 import { web3authConnector } from '../../connectors'
 import Web3AuthContext from '../../pages/Web3AuthContext'
 import { SupportedChainId } from '../../config/chains'
 
-export default function Web3AuthManager({ children }: { children: JSX.Element }) {
+export default function Web3AuthManager({ children }: { children: ReactElement }) {
   const { connection, connect, disconnect, switchChain } = useContext(Web3AuthContext)
 
   // Silently restore existing session on mount — never opens the modal
