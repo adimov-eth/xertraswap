@@ -28,16 +28,3 @@ root.render(
      </Providers>
   </React.StrictMode>
 );
-
-// ReactDOM.render(
-//   <StrictMode>
-//     <Providers>
-//       <ResetCSS />
-//       <GlobalStyle />
-//       <CSSVariables />
-//       <ButtonOverrides />
-//       <App />
-//     </Providers>
-//   </StrictMode>,
-//   document.getElementById('root')
-// )
