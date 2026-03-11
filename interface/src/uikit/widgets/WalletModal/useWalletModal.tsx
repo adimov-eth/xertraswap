@@ -1,3 +1,4 @@
+import React from 'react'
 import { useModal } from '../Modal'
 import AccountModal from './AccountModal'
 import { Login } from './types'

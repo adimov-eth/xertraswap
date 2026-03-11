@@ -11,20 +11,23 @@ import { MULTICALL_ABI, MULTICALL_NETWORKS } from '../constants/multicall'
 import { getContract } from '../utils'
 import Web3AuthContext from '../pages/Web3AuthContext'
 
-const IUniswapV2PairABI  = v2Pair.abi
-// returns null on errors
+const IUniswapV2PairABI = v2Pair.abi
+
 function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
-  const { account, library} = useContext(Web3AuthContext)
+  const { connection } = useContext(Web3AuthContext)
 
   return useMemo(() => {
-    if (!address || !ABI || !library) return null
+    if (!address || !ABI) return null
     try {
-      return getContract(address, ABI, library, withSignerIfPossible && account ? account : undefined)
+      if (withSignerIfPossible && connection.kind === 'connected') {
+        return getContract(address, ABI, connection.provider, connection.account)
+      }
+      return getContract(address, ABI, connection.provider)
     } catch (error) {
       console.error('Failed to get contract', error)
       return null
     }
-  }, [address, ABI, library, withSignerIfPossible, account])
+  }, [address, ABI, connection, withSignerIfPossible])
 }
 
 export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: boolean): Contract | null {

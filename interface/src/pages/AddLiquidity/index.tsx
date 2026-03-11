@@ -41,7 +41,7 @@ export default function AddLiquidity({
   },
   history,
 }: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
-  const { account, chainId, library } = useContext(Web3AuthContext)
+  const { connection, account, chainId } = useContext(Web3AuthContext)
   
   const currencyA = useCurrency(currencyIdA)
   const currencyB = useCurrency(currencyIdB)
@@ -116,8 +116,9 @@ export default function AddLiquidity({
   const addTransaction = useTransactionAdder()
 
   async function onAdd() {
-    if (!chainId || !library || !account) return
-    const router = getRouterContract(chainId, library, account)
+    if (connection.kind !== 'connected') return
+    const { account: connectedAccount } = connection
+    const router = getRouterContract(chainId, connection.provider, connectedAccount)
 
     const { [Field.CURRENCY_A]: parsedAmountA, [Field.CURRENCY_B]: parsedAmountB } = parsedAmounts
     if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB) {
@@ -144,7 +145,7 @@ export default function AddLiquidity({
         (tokenBIsSTRAX ? parsedAmountA : parsedAmountB).raw.toString(), // token desired
         amountsMin[tokenBIsSTRAX ? Field.CURRENCY_A : Field.CURRENCY_B].toString(), // token min
         amountsMin[tokenBIsSTRAX ? Field.CURRENCY_B : Field.CURRENCY_A].toString(), // eth min
-        account,
+        connectedAccount,
         deadlineFromNow,
       ]
       value = BigNumber.from((tokenBIsSTRAX ? parsedAmountB : parsedAmountA).raw.toString())
@@ -158,7 +159,7 @@ export default function AddLiquidity({
         parsedAmountB.raw.toString(),
         amountsMin[Field.CURRENCY_A].toString(),
         amountsMin[Field.CURRENCY_B].toString(),
-        account,
+        connectedAccount,
         deadlineFromNow,
       ]
       value = null

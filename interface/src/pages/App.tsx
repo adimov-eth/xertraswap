@@ -1,10 +1,13 @@
-import React, { Suspense, useEffect, useState } from 'react'
+import React, { Suspense, useCallback, useEffect, useState } from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
+import { Web3Provider } from '@ethersproject/providers'
 import { Credentials, StringTranslations } from '@crowdin/crowdin-api-client'
 import { LangType } from 'uikit'
+import { SupportedChainId } from 'config/chains'
 import Popups from '../components/Popups'
 import Web3AuthManager from '../components/Web3ReactManager'
+import ToastListener from '../components/ToastListener'
 import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from './AddLiquidity/redirects'
 import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
 import AddLiquidity from './AddLiquidity'
@@ -14,15 +17,14 @@ import PoolDetails from './PoolDetails'
 import PoolFinder from './PoolFinder'
 import RemoveLiquidity from './RemoveLiquidity'
 import Swap from './Swap'
+import Faucet from './Faucet'
 import { RedirectPathToSwapOnly } from './Swap/redirects'
 import { EN, allLanguages } from '../constants/localisation/languageCodes'
 import { LanguageContext } from '../hooks/LanguageContext'
 import { TranslationsContext } from '../hooks/TranslationsContext'
 import Menu from '../components/Menu'
 import useGetDocumentTitlePrice from '../hooks/useGetDocumentTitlePrice'
-import Web3AuthContext from './Web3AuthContext'
-import { Web3Provider } from '@ethersproject/providers'
-import ToastListener from '../components/ToastListener'
+import Web3AuthContext, { ConnectionState, INITIAL_STATE } from './Web3AuthContext'
 
 import ApplicationUpdater from '../state/application/updater'
 import ListsUpdater from '../state/lists/updater'
@@ -142,9 +144,34 @@ export default function App() {
 
   useGetDocumentTitlePrice()
 
-  const [account, setAccount] = useState<string | undefined>()
-  const [chainId, setChainId] = useState<number | undefined>(parseInt(process.env.REACT_APP_CHAIN_ID ?? '105105', 10))
-  const [library, setProvider] = useState<Web3Provider | undefined>()
+  const [connection, setConnection] = useState<ConnectionState>(INITIAL_STATE)
+
+  const connect = useCallback((provider: Web3Provider, account: string, chainId: SupportedChainId) => {
+    setConnection({
+      kind: 'connected',
+      provider,
+      signer: provider.getSigner(account),
+      account,
+      chainId,
+    })
+  }, [])
+
+  const disconnect = useCallback(() => {
+    setConnection(INITIAL_STATE)
+    localStorage.clear()
+  }, [])
+
+  const switchChain = useCallback((chainId: SupportedChainId) => {
+    setConnection((prev) =>
+      prev.kind === 'connected'
+        ? { ...prev, chainId }
+        : { ...prev, chainId }
+    )
+  }, [])
+
+  // Convenience accessors — derived, not independent state
+  const account = connection.kind === 'connected' ? connection.account : undefined
+  const { chainId, provider: library } = connection
 
   return (
     <Suspense fallback={null}>
@@ -156,7 +183,7 @@ export default function App() {
           >
             <TranslationsContext.Provider value={{ translations, setTranslations }}>              
 
-              <Web3AuthContext.Provider value={{account, setAccount, chainId, setChainId, library, setProvider}}>
+              <Web3AuthContext.Provider value={{connection, connect, disconnect, switchChain, account, chainId, library}}>
 
                 <ListsUpdater />
                 <ApplicationUpdater />
@@ -172,6 +199,7 @@ export default function App() {
                           <Route exact strict path="/" component={Swap} />
                           <Route exact strict path="/swap" component={Swap} />
                           <Route exact strict path="/find" component={PoolFinder} />
+                          <Route exact strict path="/faucet" component={Faucet} />
                           <Route exact strict path="/pool" component={Pool} />
                           <Route exact strict path="/pools" component={Pools} />
                           <Route exact strict path="/pool/:currencyIdA/:currencyIdB" component={PoolDetails} />

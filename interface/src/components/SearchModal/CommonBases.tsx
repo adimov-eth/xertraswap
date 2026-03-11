@@ -1,6 +1,6 @@
 import React from 'react'
 import { Text } from 'uikit'
-import { ChainId, Currency, currencyEquals, ETHER, Token } from '@xertra/sdk'
+import { Currency, currencyEquals, ETHER, Token } from '@xertra/sdk'
 import styled from 'styled-components'
 
 import useI18n from 'hooks/useI18n'

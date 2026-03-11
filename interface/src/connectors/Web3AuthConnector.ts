@@ -1,13 +1,10 @@
-import { AbstractConnector } from '@web3-react/abstract-connector'
-import type { ConnectorUpdate } from '@web3-react/types'
+import { Web3Provider } from '@ethersproject/providers'
 import { Web3Auth } from '@web3auth/modal'
-import { CHAIN_NAMESPACES, IProvider, WEB3AUTH_NETWORK } from '@web3auth/base'
+import { CHAIN_NAMESPACES, WEB3AUTH_NETWORK } from '@web3auth/base'
 import { EthereumPrivateKeyProvider } from '@web3auth/ethereum-provider'
 import { getDefaultExternalAdapters } from '@web3auth/default-evm-adapter'
 import { BLOCK_EXPLORER_URLS, RPC_URLS } from '../config/chains'
 import getLibrary from '../utils/getLibrary'
-import { Web3Provider } from '@ethersproject/providers'
-import { chain } from 'lodash'
 
 interface Eip1193ProviderLike {
   request?: (args: { method: string; params?: unknown[] | Record<string, unknown> }) => Promise<unknown>
@@ -31,18 +28,16 @@ export interface Web3AuthConnectorState {
 }
 
 // eslint-disable-next-line import/prefer-default-export
-export class Web3AuthConnector {
+export class Web3AuthConnector{
 
   private web3auth: Web3Auth | null = null
 
   private initialized = false
 
   private readonly chainId: number
-  private readonly chainIdHex: string
 
   constructor(chainId: number) {
     this.chainId = chainId;
-    this.chainIdHex = `0x${this.chainId.toString(16)}`
   }
 
   private async ensureInitialized(): Promise<Web3Auth | null> {
@@ -51,9 +46,11 @@ export class Web3AuthConnector {
       return this.web3auth
     }
 
+    const chainIdHex = `0x${this.chainId.toString(16)}`
+
     const chainConfig = {
       chainNamespace: CHAIN_NAMESPACES.EIP155,
-      chainId: this.chainIdHex,
+      chainId: chainIdHex,
       rpcTarget: RPC_URLS[this.chainId],
       displayName: 'Stratis EVM',
       ticker: 'STRAX',
@@ -66,8 +63,8 @@ export class Web3AuthConnector {
       config: { chainConfig },
     })
 
-    const clientId = process.env.REACT_APP_WEB3AUTH_CLIENT_ID!;
-    const clientNetwork =  resolveWeb3AuthNetwork();
+    const clientId = process.env.REACT_APP_WEB3AUTH_CLIENT_ID || ''
+    const clientNetwork = resolveWeb3AuthNetwork()
 
     this.web3auth = new Web3Auth({
       clientId,
@@ -87,11 +84,12 @@ export class Web3AuthConnector {
     });
 
     try {
-      const adapters = getDefaultExternalAdapters({ options: this.web3auth.options })
-      adapters.forEach((adapter) => this.web3auth!.configureAdapter(adapter))
+      const { web3auth } = this
+      const adapters = getDefaultExternalAdapters({ options: web3auth.options })
+      adapters.forEach((adapter) => web3auth.configureAdapter(adapter))
     } catch (err) {
       console.warn('Failed to configure external wallet adapters:', err)
-    }    
+    }
 
     await this.web3auth.initModal()
     this.initialized = true
@@ -99,61 +97,84 @@ export class Web3AuthConnector {
     return this.web3auth
   }
 
-  async connect(): Promise<Web3AuthConnectorState | null> {
-    if(!this.initialized)
-    {
-      console.log("web3auth initialization started")
-      await this.ensureInitialized()
-      console.log("web3auth initialization completed")
+  /**
+   * Reconnect silently if a session already exists (after initModal).
+   * Returns the existing session or null — never opens the modal.
+   */
+  async reconnect(): Promise<Web3AuthConnectorState | null> {
+    await this.ensureInitialized()
+
+    // After initModal(), web3auth.connected is true if a session was restored
+    if (!this.web3auth?.connected || !this.web3auth.provider) {
+      return null
     }
 
     try {
-      const provider = await this.web3auth?.connect()
-      const web3Provider = getLibrary(provider);
-      const account = await this.resolveAccount(provider  as Eip1193ProviderLike);
-
-      const { ethereum } = window
-
-      if (ethereum?.on) {
-        ethereum.on('chainChanged', this.handleChainChanged)
-        ethereum.on('accountsChanged', this.handleAccountsChanged)
-      }
-
-      return { account, chainId : this.chainId, web3Provider }
-
+      const { provider } = this.web3auth
+      const web3Provider = getLibrary(provider)
+      const account = await this.resolveAccount(provider as Eip1193ProviderLike)
+      const chainIdValue = (await this.request(provider as Eip1193ProviderLike, 'eth_chainId')) ?? (provider as Eip1193ProviderLike).chainId
+      const chainId = this.parseChainId(chainIdValue)
+      return { account, chainId, web3Provider }
     } catch (error) {
-      console.log(error);
+      console.error('Web3Auth reconnect failed:', error)
+      return null
+    }
+  }
+
+  /**
+   * Open the Web3Auth modal and connect. Use for explicit user login.
+   */
+  async connect(): Promise<Web3AuthConnectorState | null> {
+    await this.ensureInitialized()
+
+    try {
+      const provider = await this.web3auth?.connect()
+      const web3Provider = getLibrary(provider)
+      const account = await this.resolveAccount(provider as Eip1193ProviderLike)
+      const chainIdValue = (await this.request(provider as Eip1193ProviderLike, 'eth_chainId')) ?? (provider as Eip1193ProviderLike).chainId
+      const chainId = this.parseChainId(chainIdValue)
+      return { account, chainId, web3Provider }
+    } catch (error) {
+      console.error('Web3Auth connect failed:', error)
     }
 
     return null
   }
 
+
   async logout(): Promise<void> {
+    const provider = this.web3auth?.provider as Eip1193ProviderLike | null
+    if (provider) {
+      // provider.removeListener?.('accountsChanged', this.handleAccountsChanged as unknown as (...args: unknown[]) => void)
+      // provider.removeListener?.('chainChanged', this.handleChainChanged as unknown as (...args: unknown[]) => void)
+      // provider.removeListener?.('disconnect', this.handleDisconnect as unknown as (...args: unknown[]) => void)
+    }
 
     if (this.web3auth?.connected) {
-
-      const { ethereum } = window
-      if (ethereum && ethereum.removeListener) {
-        ethereum.removeListener('chainChanged', this.handleChainChanged)
-        ethereum.removeListener('accountsChanged', this.handleChainChanged)
-      }
-
+      // Fire-and-forget logout since deactivate is synchronous
       await this.web3auth.logout()
+      // .catch((err) => {
+      //   console.error('Web3Auth logout error', err)
+      // })
     }
   }
 
-  public handleAccountsChanged = (accounts: string[]): void => {
-    // Todo: toast reload message
-    window.location.reload();
-  }
+  // private handleAccountsChanged = (accounts: unknown): void => {
+  //   if (!Array.isArray(accounts) || accounts.length === 0) {
+  //     this.emitDeactivate()
+  //   } else {
+  //     this.emitUpdate({ account: String(accounts[0]) })
+  //   }
+  // }
 
-  public handleChainChanged = (chainId: number): void => {
-    const parsedChange = this.parseChainId(chainId) 
-    if(this.chainId !== parsedChange){
-      console.log(`Chain Id changed to ${parsedChange}`);
-      throw `Chain Id mismatch, please switch to ${this.chainId}`
-    }
-  }
+  // private handleChainChanged = (chainId: unknown): void => {
+  //   this.emitUpdate({ chainId: this.parseChainId(chainId) })
+  // }
+
+  // private handleDisconnect = (): void => {
+  //   this.emitDeactivate()
+  // }
 
   private async request(provider: Eip1193ProviderLike, method: string): Promise<unknown> {
     if (!provider.request) {
@@ -167,7 +188,7 @@ export class Web3AuthConnector {
     }
   }
 
-  private async resolveAccount(provider: Eip1193ProviderLike, requestAccess = true): Promise<string | null> {
+  private async resolveAccount(provider: Eip1193ProviderLike): Promise<string | null> {
     // Web3Auth v9 provider only supports eth_accounts — eth_coinbase and
     // eth_requestAccounts are not available on the private key provider.    
     const accounts = await this.request(provider, 'eth_accounts')

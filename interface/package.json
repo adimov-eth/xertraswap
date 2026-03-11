@@ -5,7 +5,6 @@
   "homepage": ".",
   "private": true,
   "dependencies": {
-    "@binance-chain/bsc-connector": "^1.0.0",
     "@crowdin/crowdin-api-client": "^1.8.16",
     "@ethersproject/experimental": "^5.0.1",
     "@metamask/safe-event-emitter": "^2.0.0",
@@ -28,10 +27,6 @@
     "@uniswap/token-lists": "1.0.0-beta.19",
     "@uniswap/v2-core": "1.0.0",
     "@uniswap/v2-periphery": "^1.1.0-beta.0",
-    "@web3-react/core": "^6.0.9",
-    "@web3-react/injected-connector": "^6.0.7",
-    "@web3-react/walletconnect-connector": "^6.1.1",
-    "@web3-react/walletlink-connector": "^6.0.9",
     "@web3auth/base": "9.7.0",
     "@web3auth/default-evm-adapter": "9.7.0",
     "@web3auth/ethereum-provider": "9.7.0",
@@ -117,8 +112,8 @@
     "@metamask/safe-event-emitter": "2.0.0"
   },
   "scripts": {
-    "start": "cross-env DISABLE_ESLINT_PLUGIN=true NODE_OPTIONS=--openssl-legacy-provider react-app-rewired start",
-    "build": "cross-env DISABLE_ESLINT_PLUGIN=true NODE_OPTIONS=--openssl-legacy-provider react-app-rewired build",
+    "start": "cross-env NODE_OPTIONS=--openssl-legacy-provider react-app-rewired start",
+    "build": "cross-env NODE_OPTIONS=--openssl-legacy-provider react-app-rewired build",
     "postinstall": "echo 'No patches required - using @xertra/sdk and @xertra/uikit'",
     "test": "react-app-rewired test --env=jsdom",
     "eject": "react-scripts eject",

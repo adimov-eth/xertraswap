@@ -1,38 +1,67 @@
-import { useEffect, useContext, JSX } from 'react'
+import { useEffect, useContext } from 'react'
 import { web3authConnector } from '../../connectors'
 import Web3AuthContext from '../../pages/Web3AuthContext'
-import { safeHandler } from 'utils'
+import { SupportedChainId } from '../../config/chains'
 
 export default function Web3AuthManager({ children }: { children: JSX.Element }) {
+  const { connection, connect, disconnect, switchChain } = useContext(Web3AuthContext)
 
-  const web3AuthContext = useContext(Web3AuthContext)
-  const { ethereum } = window
-
+  // Silently restore existing session on mount — never opens the modal
   useEffect(() => {
-    (async () => {  
-      const connectorState = await web3authConnector.connect()
-      if(connectorState?.account){
-        web3AuthContext.setAccount(connectorState.account)
-        web3AuthContext.setChainId(connectorState.chainId)
-        web3AuthContext.setProvider(connectorState.web3Provider)
-        console.log(`web3auth reconnected to ${connectorState.account} on chain ${connectorState.chainId}`)
-
-        if(ethereum?.on) {
-          ethereum.on("accountsChanged", safeHandler(web3authConnector.handleAccountsChanged))
-          ethereum.on("chainChanged", safeHandler(web3authConnector.handleChainChanged))
+    web3authConnector
+      .reconnect()
+      .then((connectorState) => {
+        if (connectorState?.account) {
+          connect(connectorState.web3Provider, connectorState.account, connectorState.chainId as SupportedChainId)
+          console.info(`Web3Auth restored session: ${connectorState.account}`)
         }
+      })
+      .catch((error) => {
+        console.error('Web3Auth reconnect failed:', error?.message || error)
+      })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Listen for provider events (chain changed, accounts changed, disconnect)
+  useEffect(() => {
+    if (connection.kind !== 'connected') return undefined
+
+    const underlying = connection.provider.provider as any
+    if (!underlying?.on) return undefined
+
+    const handleChainChanged = (chainIdHex: string) => {
+      const newChainId = parseInt(chainIdHex, 16) as SupportedChainId
+      console.info('Chain changed:', newChainId)
+      switchChain(newChainId)
+    }
+
+    const handleAccountsChanged = (accounts: string[]) => {
+      if (accounts.length > 0) {
+        console.info('Account changed:', accounts[0])
+        connect(connection.provider, accounts[0], connection.chainId)
+      } else {
+        console.info('Account disconnected')
+        disconnect()
       }
-      else
-        console.log("web3auth not connected...")      
-    })();
+    }
+
+    const handleDisconnect = () => {
+      console.info('Provider disconnected')
+      disconnect()
+    }
+
+    underlying.on('chainChanged', handleChainChanged)
+    underlying.on('accountsChanged', handleAccountsChanged)
+    underlying.on('disconnect', handleDisconnect)
 
     return () => {
-      if (ethereum?.removeListener) {
-        ethereum.removeListener('accountsChanged', web3authConnector.handleAccountsChanged)
-        ethereum.removeListener('chainChanged', web3authConnector.handleChainChanged)
+      if (underlying.removeListener) {
+        underlying.removeListener('chainChanged', handleChainChanged)
+        underlying.removeListener('accountsChanged', handleAccountsChanged)
+        underlying.removeListener('disconnect', handleDisconnect)
       }
-    };
-  }, []);
+    }
+  }, [connection, connect, disconnect, switchChain])
 
   return children
 }
