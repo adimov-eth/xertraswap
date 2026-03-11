@@ -173,15 +173,15 @@ const Faucet: React.FC = () => {
         </Text>
 
         <InfoBox>
-          <Text bold mb="8px">You will receive:</Text>
+          <Text $bold mb="8px">You will receive:</Text>
           <TokenRow>
             <Text>STRAX (native)</Text>
-            <Text bold>{nativeDrip} STRAX</Text>
+            <Text $bold>{nativeDrip} STRAX</Text>
           </TokenRow>
           {tokenDrips.map((drip) => (
             <TokenRow key={drip.address}>
               <Text>{drip.symbol}</Text>
-              <Text bold>{drip.amount} {drip.symbol}</Text>
+              <Text $bold>{drip.amount} {drip.symbol}</Text>
             </TokenRow>
           ))}
         </InfoBox>
@@ -202,7 +202,7 @@ const Faucet: React.FC = () => {
               width="100%"
               onClick={handleClaim}
               disabled={!canClaim || claiming}
-              isLoading={claiming}
+              $isLoading={claiming}
             >
               {claiming ? 'Claiming...' : 'Claim Tokens'}
             </Button>

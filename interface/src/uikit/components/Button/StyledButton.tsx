@@ -1,9 +1,9 @@
 import styled, { DefaultTheme } from 'styled-components'
 import { space, layout, variant } from 'styled-system'
 import { scaleVariants, styleVariants } from './theme'
-import { BaseButtonProps } from './types'
+import { StyledButtonProps } from './types'
 
-interface ThemedButtonProps extends BaseButtonProps {
+interface ThemedButtonProps extends StyledButtonProps {
   theme: DefaultTheme
 }
 
@@ -44,8 +44,8 @@ const getOpacity = ({ isLoading = false }: TransientButtonProps) => {
 }
 
 const StyledButton = styled.button.withConfig({
-  shouldForwardProp: (prop) => !['isLoading', 'variant'].includes(prop)
-})<BaseButtonProps>`
+  shouldForwardProp: (prop) => !['isLoading'].includes(prop)
+})<StyledButtonProps>`
   align-items: center;
   border: 0;
   border-radius: 16px;
@@ -76,6 +76,7 @@ const StyledButton = styled.button.withConfig({
     variants: scaleVariants,
   })}
   ${variant({
+    prop: '$variant',
     variants: styleVariants,
   })}
   ${layout}

@@ -36,15 +36,15 @@ export type PolymorphicComponent<P, D extends ElementType = 'button'> = <E exten
   props: PolymorphicComponentProps<E, P>
 ) => ReactElement | null
 
-export interface BaseButtonProps extends LayoutProps, SpaceProps {
+export interface StyledButtonProps extends LayoutProps, SpaceProps {
   as?: 'a' | 'button' | typeof Link
   external?: boolean
   $isLoading?: boolean
   scale?: Scale
-  variant?: Variant
+  $variant?: Variant
   disabled?: boolean
   startIcon?: ReactNode
   endIcon?: ReactNode
 }
 
-export type ButtonProps<P extends ElementType = 'button'> = PolymorphicComponentProps<P, BaseButtonProps>
+export type ButtonProps<P extends ElementType = 'button'> = PolymorphicComponentProps<P, StyledButtonProps>

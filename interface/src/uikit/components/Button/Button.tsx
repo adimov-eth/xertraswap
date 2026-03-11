@@ -1,10 +1,24 @@
-import React, { cloneElement, ElementType, isValidElement } from 'react'
+import React, { cloneElement, ElementType, isValidElement, ReactNode } from 'react'
 import getExternalLinkProps from '../../util/getExternalLinkProps'
 import StyledButton from './StyledButton'
-import { ButtonProps, scales, variants } from './types'
+import { PolymorphicComponentProps, Scale, scales, Variant, variants } from './types'
 import { JSX } from 'react/jsx-runtime'
+import { Link } from 'react-router-dom'
+import { LayoutProps, SpaceProps } from 'styled-system'
 
-const Button = <E extends ElementType = 'button'>( props: ButtonProps<E>): JSX.Element => {
+interface ButtonPropsInterface extends LayoutProps {
+  as?: 'a' | 'button' | typeof Link
+  variant?: Variant
+  scale?: Scale
+  isLoading?: boolean
+  startIcon?: ReactNode
+  endIcon?: ReactNode
+  external?: boolean
+}
+
+export type ButtonProps<P extends ElementType = 'button'> = PolymorphicComponentProps<P, ButtonPropsInterface>
+
+const Button = (props: ButtonProps): JSX.Element => {
   const {
     startIcon,
     endIcon,
@@ -33,10 +47,10 @@ const Button = <E extends ElementType = 'button'>( props: ButtonProps<E>): JSX.E
   return (
     <StyledButton
       $isLoading={isLoading}
+      $variant={variant} 
       className={classNames.join(' ')}
       disabled={isDisabled}
       scale={scale}
-      variant={variant} 
       {...internalProps}
       {...rest}
     >

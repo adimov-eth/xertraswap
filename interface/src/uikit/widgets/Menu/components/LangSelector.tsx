@@ -5,7 +5,7 @@ import Dropdown from '../../../components/Dropdown/Dropdown'
 import Button from '../../../components/Button/Button'
 import * as IconModule from '../icons'
 import { LangType } from '../types'
-import MenuButton from './MenuButton'
+import { DefaultTheme } from 'styled-components'
 
 const Icons = IconModule as unknown as { [key: string]: React.FC<SvgProps> }
 const { LanguageIcon } = Icons
@@ -14,9 +14,10 @@ interface Props {
   currentLang: string
   langs: LangType[]
   setLang: (lang: LangType) => void
+  theme : DefaultTheme
 }
 
-const LangSelector: React.FC<Props> = ({ currentLang, langs, setLang }) => (
+const LangSelector: React.FC<Props> = ({ currentLang, langs, setLang, theme }) => (
   <Dropdown
     position="top-right"
     target={
@@ -26,17 +27,16 @@ const LangSelector: React.FC<Props> = ({ currentLang, langs, setLang }) => (
     }
   >
     {langs.map((lang) => (
-      <MenuButton
+      <Button
         variant={'text'}
         scale={'sm'}
         key={lang.code}
-        fullWidth
         onClick={() => setLang(lang)}
         // Safari fix
-        style={{ minHeight: '32px', height: 'auto' }}
+        style={{ minHeight: '32px', height: 'auto', padding:'0 8px', color: theme.colors.text }}
       >
         {lang.language}
-      </MenuButton>
+      </Button>
     ))}
   </Dropdown>
 )
