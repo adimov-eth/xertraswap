@@ -100,12 +100,10 @@ export default function PoolDetails() {
   const [allowedSlippage] = useUserSlippageTolerance()
   const { independentField, typedValue, recipient } = useSwapState()
   const { v2Trade, currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedSwapInfo()
-  const [isBusy, setIsBusy] = useState(false)
-  const { wrapType, execute: onWrap, inputError: wrapInputError } = useWrapCallback(
+  const { wrapType, execute: onWrap, inputError: wrapInputError, isBusy } = useWrapCallback(
     currencies[Field.INPUT],
     currencies[Field.OUTPUT],
-    typedValue,
-    setIsBusy
+    typedValue
   )
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
   const trade = showWrap ? undefined : v2Trade
