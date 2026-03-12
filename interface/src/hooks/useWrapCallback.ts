@@ -1,5 +1,5 @@
 import { Currency, currencyEquals, ETHER, WETH } from '@xertra/sdk'
-import { useContext, useMemo } from 'react'
+import { useContext, useMemo, useState } from 'react'
 import { tryParseAmount } from '../state/swap/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'
 import { useCurrencyBalance } from '../state/wallet/hooks'
@@ -12,7 +12,6 @@ export enum WrapType {
   UNWRAP
 }
 
-const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
 /**
  * Given the selected input and output currency, return a wrap callback
  * @param inputCurrency the selected input currency
@@ -22,9 +21,9 @@ const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
 export default function useWrapCallback(
   inputCurrency: Currency | undefined,
   outputCurrency: Currency | undefined,
-  typedValue: string | undefined,
-  setIsBusy: React.Dispatch<React.SetStateAction<boolean>>
-): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
+  typedValue: string | undefined
+): {isBusy: boolean; wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string; } {
+
   const { account, chainId } = useContext(Web3AuthContext)
   
   const wethContract = useWETHContract()
@@ -32,14 +31,17 @@ export default function useWrapCallback(
   // we can always parse the amount typed as the input currency, since wrapping is 1:1
   const inputAmount = useMemo(() => tryParseAmount(typedValue, inputCurrency), [inputCurrency, typedValue])
   const addTransaction = useTransactionAdder()
+  const [isBusy, setIsBusy] = useState(false)
 
   return useMemo(() => {
-    if (!wethContract || !chainId || !inputCurrency || !outputCurrency) return NOT_APPLICABLE
+    if (!wethContract || !chainId || !inputCurrency || !outputCurrency) 
+      return {isBusy, wrapType: WrapType.NOT_APPLICABLE}
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
 
     if (inputCurrency === ETHER && currencyEquals(WETH[chainId], outputCurrency)) {
-      return {
+      return { 
+        isBusy,
         wrapType: WrapType.WRAP,
         execute:
           sufficientBalance && inputAmount
@@ -47,6 +49,7 @@ export default function useWrapCallback(
                 try {
                   setIsBusy(true)
                   const txReceipt = await wethContract.deposit({ value: `0x${inputAmount.raw.toString(16)}` })
+                  const receipt = await txReceipt.wait()
                   addTransaction(txReceipt, { summary: `Wrap ${inputAmount.toSignificant(6)} STRAX to WSTRAX` })
                 } catch (error) {
                   console.error('Could not deposit', error)
@@ -55,10 +58,13 @@ export default function useWrapCallback(
                 }
               }
             : undefined,
-        inputError: sufficientBalance ? undefined : 'Insufficient STRAX balance'
+        inputError: sufficientBalance ? undefined : 'Insufficient STRAX balance',   
       }
-    } if (currencyEquals(WETH[chainId], inputCurrency) && outputCurrency === ETHER) {
+    }
+    
+    if (currencyEquals(WETH[chainId], inputCurrency) && outputCurrency === ETHER) {
       return {
+        isBusy,
         wrapType: WrapType.UNWRAP,
         execute:
           sufficientBalance && inputAmount
@@ -66,6 +72,7 @@ export default function useWrapCallback(
                 try {
                   setIsBusy(true)
                   const txReceipt = await wethContract.withdraw(`0x${inputAmount.raw.toString(16)}`)
+                  const receipt = await txReceipt.wait()
                   addTransaction(txReceipt, { summary: `Unwrap ${inputAmount.toSignificant(6)} WSTRAX to STRAX` })
                 } catch (error) {
                   console.error('Could not withdraw', error)
@@ -77,8 +84,9 @@ export default function useWrapCallback(
             : undefined,
         inputError: sufficientBalance ? undefined : 'Insufficient WSTRAX balance'
       }
-    } 
-      return NOT_APPLICABLE
+    }
+    
+    return {isBusy, wrapType: WrapType.NOT_APPLICABLE}
     
   }, [wethContract, chainId, inputCurrency, outputCurrency, inputAmount, balance, addTransaction])
 }
