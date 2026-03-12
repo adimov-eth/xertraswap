@@ -49,8 +49,8 @@ export default function useWrapCallback(
                 try {
                   setIsBusy(true)
                   const txReceipt = await wethContract.deposit({ value: `0x${inputAmount.raw.toString(16)}` })
-                  const receipt = await txReceipt.wait()
                   addTransaction(txReceipt, { summary: `Wrap ${inputAmount.toSignificant(6)} STRAX to WSTRAX` })
+                  await txReceipt.wait()
                 } catch (error) {
                   console.error('Could not deposit', error)
                 } finally {
@@ -72,8 +72,8 @@ export default function useWrapCallback(
                 try {
                   setIsBusy(true)
                   const txReceipt = await wethContract.withdraw(`0x${inputAmount.raw.toString(16)}`)
-                  const receipt = await txReceipt.wait()
                   addTransaction(txReceipt, { summary: `Unwrap ${inputAmount.toSignificant(6)} WSTRAX to STRAX` })
+                  await txReceipt.wait()
                 } catch (error) {
                   console.error('Could not withdraw', error)
                 }
