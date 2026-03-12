@@ -100,10 +100,12 @@ export default function PoolDetails() {
   const [allowedSlippage] = useUserSlippageTolerance()
   const { independentField, typedValue, recipient } = useSwapState()
   const { v2Trade, currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedSwapInfo()
+  const [isBusy, setIsBusy] = useState(false)
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useWrapCallback(
     currencies[Field.INPUT],
     currencies[Field.OUTPUT],
-    typedValue
+    typedValue,
+    setIsBusy
   )
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
   const trade = showWrap ? undefined : v2Trade
@@ -410,7 +412,7 @@ export default function PoolDetails() {
                   {!account ? (
                     <ConnectWalletButton width="100%" />
                   ) : showWrap ? (
-                    <Button disabled={Boolean(wrapInputError)} onClick={onWrap} width="100%">
+                    <Button disabled={Boolean(wrapInputError) || isBusy} onClick={onWrap} width="100%">
                       {wrapInputError ??
                         (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
                     </Button>
