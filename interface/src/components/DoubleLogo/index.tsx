@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import CurrencyLogo from '../CurrencyLogo'
 
 const Wrapper = styled.div
-.withConfig({ shouldForwardProp: (prop) => !['sizeraw', 'margin'].includes(prop) })
+.withConfig({ shouldForwardProp: (prop) => !['margin', 'sizeraw'].includes(prop) })
 <{ margin: boolean; sizeraw: number }>`
   position: relative;
   display: flex;
@@ -18,14 +18,6 @@ interface DoubleCurrencyLogoProps {
   currency1?: Currency
 }
 
-const HigherLogo = styled(CurrencyLogo).withConfig({ shouldForwardProp: (prop) => prop !== 'currency' })`
-  z-index: 2;
-`
-const CoveredLogo = styled(CurrencyLogo)<{ sizeraw: number }>`
-  position: absolute;
-  left: ${({ sizeraw }) => `${(sizeraw / 2).toString()  }px`};
-`
-
 export default function DoubleCurrencyLogo({
   currency0,
   currency1,
@@ -34,8 +26,8 @@ export default function DoubleCurrencyLogo({
 }: DoubleCurrencyLogoProps) {
   return (
     <Wrapper sizeraw={size} margin={margin}>
-      {currency0 && <HigherLogo currency={currency0} size={`${size.toString()  }px`} />}
-      {currency1 && <CoveredLogo currency={currency1} size={`${size.toString()  }px`} sizeraw={size} />}
+      {currency0 && <CurrencyLogo currency={currency0} size={`${size.toString()}px`} style={{zIndex: 2}} />}
+      {currency1 && <CurrencyLogo currency={currency1} size={`${size.toString()}px`} style={{position: 'absolute', left: `${(size / 2).toString()  }px`}} />}
     </Wrapper>
   )
 }

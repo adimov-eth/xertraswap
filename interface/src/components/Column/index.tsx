@@ -11,7 +11,7 @@ export const ColumnCenter = styled(Column)`
 `
 
 export const AutoColumn = styled.div
-.withConfig({ shouldForwardProp: (prop) => prop !== 'gap' })
+.withConfig({ shouldForwardProp: (prop) => !['gap', 'justify'].includes(prop) })
 <{
   gap?: 'sm' | 'md' | 'lg' | string
   justify?: 'stretch' | 'center' | 'start' | 'end' | 'flex-start' | 'flex-end' | 'space-between'
