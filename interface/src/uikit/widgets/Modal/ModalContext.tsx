@@ -1,4 +1,4 @@
-import React, { createContext, PropsWithChildren, useState } from 'react'
+import React, { createContext, useState } from 'react'
 import styled from 'styled-components'
 import Overlay from '../../components/Overlay/Overlay'
 import { Handler } from './types'
@@ -28,7 +28,7 @@ export const Context = createContext<ModalsContext>({
   setCloseOnOverlayClick: () => true,
 })
 
-function ModalProvider({children} : PropsWithChildren<{}>) {
+function ModalProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false)
   const [modalNode, setModalNode] = useState<React.ReactNode>()
   const [closeOnOverlayClick, setCloseOnOverlayClick] = useState(true)
@@ -59,7 +59,7 @@ function ModalProvider({children} : PropsWithChildren<{}>) {
     >
       {isOpen && (
         <ModalWrapper>
-          <Overlay $show onClick={handleOverlayDismiss} />
+          <Overlay show onClick={handleOverlayDismiss} />
           {React.isValidElement(modalNode) &&
             React.cloneElement(modalNode as React.ReactElement<any>, {
               onDismiss: handleDismiss,

@@ -1,6 +1,6 @@
-import { PropsWithChildren } from "react"
+import { PropsWithChildren } from 'react'
 
-export interface TabMenuProps  {
+export interface TabMenuProps {
   activeIndex?: number
   onItemClick?: (index: number) => void
   children: React.ReactElement[]

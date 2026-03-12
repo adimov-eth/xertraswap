@@ -29,7 +29,7 @@ export interface MenuSubEntry {
   status?: LinkStatus
 }
 
-export interface MenuEntryProps {
+export interface MenuEntry {
   label: string
   icon: string
   items?: MenuSubEntry[]
@@ -46,7 +46,7 @@ export interface PanelProps extends PropsWithChildren {
   currentLang: string
   langs: LangType[]
   setLang: (lang: LangType) => void
-  links: Array<MenuEntryProps>
+  links: Array<MenuEntry>
 }
 
 export interface NavProps extends PanelProps {

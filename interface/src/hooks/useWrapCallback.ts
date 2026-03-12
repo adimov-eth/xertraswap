@@ -22,7 +22,8 @@ const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
 export default function useWrapCallback(
   inputCurrency: Currency | undefined,
   outputCurrency: Currency | undefined,
-  typedValue: string | undefined
+  typedValue: string | undefined,
+  setIsBusy: React.Dispatch<React.SetStateAction<boolean>>
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
   const { account, chainId } = useContext(Web3AuthContext)
   
@@ -44,10 +45,13 @@ export default function useWrapCallback(
           sufficientBalance && inputAmount
             ? async () => {
                 try {
+                  setIsBusy(true)
                   const txReceipt = await wethContract.deposit({ value: `0x${inputAmount.raw.toString(16)}` })
                   addTransaction(txReceipt, { summary: `Wrap ${inputAmount.toSignificant(6)} STRAX to WSTRAX` })
                 } catch (error) {
                   console.error('Could not deposit', error)
+                } finally {
+                  setIsBusy(false)
                 }
               }
             : undefined,
@@ -60,10 +64,14 @@ export default function useWrapCallback(
           sufficientBalance && inputAmount
             ? async () => {
                 try {
+                  setIsBusy(true)
                   const txReceipt = await wethContract.withdraw(`0x${inputAmount.raw.toString(16)}`)
                   addTransaction(txReceipt, { summary: `Unwrap ${inputAmount.toSignificant(6)} WSTRAX to STRAX` })
                 } catch (error) {
                   console.error('Could not withdraw', error)
+                }
+                finally{
+                  setIsBusy(false)
                 }
               }
             : undefined,

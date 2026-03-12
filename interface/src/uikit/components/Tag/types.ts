@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { PropsWithChildren, ReactNode } from 'react'
 import { SpaceProps } from 'styled-system'
 
 export const variants = {
@@ -19,7 +19,7 @@ export const scales = {
 export type Scale = (typeof scales)[keyof typeof scales]
 export type Variant = (typeof variants)[keyof typeof variants]
 
-export interface TagProps extends SpaceProps {
+export interface TagProps extends PropsWithChildren<SpaceProps> {
   variant?: Variant
   scale?: Scale
   startIcon?: ReactNode

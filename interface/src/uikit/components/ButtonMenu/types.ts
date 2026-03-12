@@ -1,7 +1,10 @@
-import { StyledButtonProps, Scale, variants } from '../Button/types'
+import { ElementType } from 'react'
+import { Scale, StyledButtonProps, variants } from '../Button/types'
 
 export interface ButtonMenuItemProps extends StyledButtonProps {
+  as?: ElementType
   isActive?: boolean
+  children?: React.ReactNode
 }
 
 export interface ButtonMenuProps {

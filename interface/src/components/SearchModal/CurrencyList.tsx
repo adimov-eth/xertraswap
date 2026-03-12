@@ -190,7 +190,7 @@ export default function CurrencyList({
   selectedCurrency?: Currency | null
   onCurrencySelect: (currency: Currency) => void
   otherCurrency?: Currency | null
-  fixedListRef?: MutableRefObject<FixedSizeList | undefined>
+  fixedListRef?: MutableRefObject<FixedSizeList | null>
   showETH: boolean
 }) {
   const itemData = useMemo(() => (showETH ? [Currency.ETHER, ...currencies] : [...currencies]), [currencies, showETH])

@@ -31,6 +31,9 @@ jobs:
       - name: Build SDK
         run: yarn workspace @xertra/sdk build
 
+      - name: Typecheck interface
+        run: yarn typecheck
+
       - name: Build interface
         run: yarn workspace @xertra/interface build
         env:
@@ -68,6 +71,9 @@ jobs:
 
       - name: Build SDK
         run: yarn workspace @xertra/sdk build
+
+      - name: Typecheck interface
+        run: yarn typecheck
 
       - name: Build interface
         run: yarn workspace @xertra/interface build

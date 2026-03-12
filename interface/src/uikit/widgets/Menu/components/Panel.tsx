@@ -2,12 +2,12 @@ import styled from 'styled-components'
 import PanelBody from './PanelBody'
 import PanelFooter from './PanelFooter'
 import { SIDEBAR_WIDTH_REDUCED, SIDEBAR_WIDTH_FULL } from '../config'
-import { LangType, MenuEntryProps, PushedProps } from '../types'
+import { LangType, MenuEntry, PushedProps } from '../types'
 
 interface Props extends PushedProps {
   showMenu: boolean
   isMobile: boolean
-  links: Array<MenuEntryProps>
+  links: Array<MenuEntry>
   cakePriceUsd?: number
   isDark: boolean
   toggleTheme: (isDark: boolean) => void
@@ -43,21 +43,31 @@ const StyledPanel = styled.div
   }
 `
 
-function Panel(props: Props) {
-  const { isPushed, showMenu } = props
-  
+function Panel({
+  isPushed,
+  showMenu,
+  pushNav,
+  links,
+  isMobile,
+  cakePriceUsd,
+  isDark,
+  toggleTheme,
+  langs,
+  setLang,
+  currentLang,
+}: Props) {
   return (
-    <StyledPanel isPushed={isPushed} showMenu={showMenu}>
-      <PanelBody 
-        isPushed={isPushed}
-        pushNav={props.pushNav}
-        isMobile={props.isMobile}
-        links={props.links} />
-      <PanelFooter 
-        isPushed={isPushed}
-        pushNav={props.pushNav}
-        cakePriceUsd={props.cakePriceUsd}
-      />
+    <StyledPanel
+      isPushed={isPushed}
+      showMenu={showMenu}
+      data-panel-dark={isDark ? '1' : '0'}
+      data-panel-theme-toggle='1'
+      data-panel-langs={langs.length}
+      data-panel-current-lang={currentLang}
+      data-panel-has-set-lang='1'
+    >
+      <PanelBody isPushed={isPushed} pushNav={pushNav} isMobile={isMobile} links={links} />
+      <PanelFooter isPushed={isPushed} pushNav={pushNav} cakePriceUsd={cakePriceUsd} />
     </StyledPanel>
   )
 }

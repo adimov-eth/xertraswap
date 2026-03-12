@@ -1,5 +1,5 @@
 import React from 'react'
-import styled, { useTheme } from 'styled-components'
+import styled, { useTheme, css } from 'styled-components'
 import { Link } from 'react-router-dom'
 import { LogoIcon } from '../../../components/Svg'
 import Flex from '../../../components/Box/Flex'
@@ -13,7 +13,7 @@ interface LogoProps {
   href: string
 }
 
-const StyledLink = styled(Link)`
+const logoLinkStyles = css`
   display: flex;
   align-items: center;
   .mobile-icon {
@@ -31,33 +31,41 @@ const StyledLink = styled(Link)`
   }
 `
 
-function Logo (props : LogoProps){
-  const isAbsoluteUrl = props.href.startsWith('http')
+const RouterLink = styled(Link)`
+  ${logoLinkStyles}
+`
+
+const ExternalLink = styled.a`
+  ${logoLinkStyles}
+`
+
+function Logo({ href, isDark, isPushed, togglePush }: LogoProps) {
+  const isAbsoluteUrl = href.startsWith('http')
   const theme = useTheme()
   const innerLogo = (
     <>
       <LogoIcon className="mobile-icon" />
-      <LogoWithText className="desktop-icon" isDark={props.isDark} />
+      <LogoWithText className="desktop-icon" isDark={isDark} />
     </>
   )
 
   return (
     <Flex>
-      <Button aria-label="Toggle menu" onClick={props.togglePush} mr="24px" $variant={'text'} style={{padding:'0 8px', color: theme.colors.text}}>
-        {props.isPushed ? (
+      <Button aria-label="Toggle menu" onClick={togglePush} mr="24px" variant="text" style={{ padding: '0 8px', color: theme.colors.text }}>
+        {isPushed ? (
           <HamburgerCloseIcon width="24px" color="textSubtle" />
         ) : (
           <HamburgerIcon width="24px" color="textSubtle" />
         )}
       </Button>
       {isAbsoluteUrl ? (
-        <StyledLink as="a" href={props.href} aria-label="Xertra home page">
+        <ExternalLink href={href} aria-label="Xertra home page">
           {innerLogo}
-        </StyledLink>
+        </ExternalLink>
       ) : (
-        <StyledLink to={props.href} aria-label="Xertra home page">
+        <RouterLink to={href} aria-label="Xertra home page">
           {innerLogo}
-        </StyledLink>
+        </RouterLink>
       )}
     </Flex>
   )

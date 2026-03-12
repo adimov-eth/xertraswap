@@ -1,9 +1,10 @@
 import { Suspense, useCallback, useEffect, useState } from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
-import { Web3Provider } from '@ethersproject/providers'
 import { Credentials, StringTranslations } from '@crowdin/crowdin-api-client'
+import { Web3Provider } from '@ethersproject/providers'
 import { LangType } from 'uikit'
+import { ToastContainer } from 'react-toastify'
 import { SupportedChainId } from 'config/chains'
 import Popups from '../components/Popups'
 import Web3AuthManager from '../components/Web3ReactManager'
@@ -30,7 +31,6 @@ import ApplicationUpdater from '../state/application/updater'
 import ListsUpdater from '../state/lists/updater'
 import MulticallUpdater from '../state/multicall/updater'
 import TransactionUpdater from '../state/transactions/updater'
-import { ToastContainer } from 'react-toastify'
 
 const AppWrapper = styled.div`
   display: flex;

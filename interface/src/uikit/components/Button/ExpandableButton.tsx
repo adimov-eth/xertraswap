@@ -1,12 +1,12 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import { ChevronDownIcon, ChevronUpIcon } from '../Svg'
 import Button from './Button'
 import IconButton from './IconButton'
 
-interface Props {
+type Props = PropsWithChildren<{
   onClick?: () => void
   expanded?: boolean
-}
+}>
 
 export const ExpandableButton: React.FC<Props> = ({ onClick, expanded, children }) => {
   return (
@@ -15,9 +15,6 @@ export const ExpandableButton: React.FC<Props> = ({ onClick, expanded, children 
       {expanded ? <ChevronUpIcon color="invertedContrast" /> : <ChevronDownIcon color="invertedContrast" />}
     </IconButton>
   )
-}
-ExpandableButton.defaultProps = {
-  expanded: false,
 }
 
 export const ExpandableLabel: React.FC<Props> = ({ onClick, expanded, children }) => {
@@ -31,7 +28,4 @@ export const ExpandableLabel: React.FC<Props> = ({ onClick, expanded, children }
       {children}
     </Button>
   )
-}
-ExpandableLabel.defaultProps = {
-  expanded: false,
 }
