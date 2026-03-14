@@ -1,5 +1,6 @@
 import { Currency, currencyEquals, ETHER, WETH } from '@xertra/sdk'
 import { useContext, useMemo, useState } from 'react'
+import { isSupportedChainId } from '../config/chains'
 import { tryParseAmount } from '../state/swap/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'
 import { useCurrencyBalance } from '../state/wallet/hooks'
@@ -34,8 +35,9 @@ export default function useWrapCallback(
   const [isBusy, setIsBusy] = useState(false)
 
   return useMemo(() => {
-    if (!wethContract || !chainId || !inputCurrency || !outputCurrency) 
-      return {isBusy, wrapType: WrapType.NOT_APPLICABLE}
+    if (!wethContract || !chainId || !isSupportedChainId(chainId) || !inputCurrency || !outputCurrency) {
+      return { isBusy, wrapType: WrapType.NOT_APPLICABLE }
+    }
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
 

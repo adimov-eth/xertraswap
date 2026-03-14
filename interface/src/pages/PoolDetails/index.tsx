@@ -19,6 +19,7 @@ import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWith
 import ProgressSteps from 'components/ProgressSteps'
 import Loader from 'components/Loader'
 import ConnectWalletButton from 'components/ConnectWalletButton'
+import WrongNetworkBanner from '../../components/WrongNetworkBanner'
 import AddressInputPanel from 'components/AddressInputPanel'
 import { LinkStyledButton } from 'components/Shared'
 import { INITIAL_ALLOWED_SLIPPAGE } from 'constants/index'
@@ -74,7 +75,7 @@ const BackLink = styled(Link)`
 `
 
 export default function PoolDetails() {
-  const {account} = useContext(Web3AuthContext)
+  const { account, isWrongNetwork } = useContext(Web3AuthContext)
 
   const { currencyIdA, currencyIdB } = useParams<{ currencyIdA: string; currencyIdB: string }>()
   const pools = useAllPools()
@@ -406,9 +407,14 @@ export default function PoolDetails() {
                     </Card>
                   )}
                 </AutoColumn>
+                <WrongNetworkBanner />
                 <BottomGrouping>
                   {!account ? (
                     <ConnectWalletButton width="100%" />
+                  ) : isWrongNetwork ? (
+                    <Button disabled width="100%" variant="danger">
+                      Wrong network
+                    </Button>
                   ) : showWrap ? (
                     <Button disabled={Boolean(wrapInputError) || isBusy} onClick={onWrap} width="100%">
                       {wrapInputError ??

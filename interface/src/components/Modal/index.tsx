@@ -6,7 +6,6 @@ import { isMobile } from 'react-device-detect'
 import '@reach/dialog/styles.css'
 
 const AnimatedDialogOverlay = animated(DialogOverlay)
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const StyledDialogOverlay = styled(AnimatedDialogOverlay)`
   &[data-reach-dialog-overlay] {
     z-index: 2;
@@ -22,13 +21,11 @@ const StyledDialogOverlay = styled(AnimatedDialogOverlay)`
 `
 
 const AnimatedDialogContent = animated(DialogContent)
-// destructure to not pass custom props to Dialog DOM element
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, ...rest }) => (
-  <AnimatedDialogContent {...rest} />
-)).attrs({
+const StyledDialogContent = styled(AnimatedDialogContent).withConfig({
+  shouldForwardProp: (prop) => !['$minHeight', '$maxHeight', '$mobile'].includes(String(prop)),
+}).attrs({
   'aria-label': 'dialog',
-})`
+})<{ $minHeight?: number | false; $maxHeight?: number; $mobile: boolean }>`
   &[data-reach-dialog-content] {
     margin: 0 0 2rem 0;
     border: 1px solid ${({ theme }) => theme.colors.borderColor};
@@ -38,18 +35,18 @@ const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, ...r
     width: 80%;
     overflow: hidden;
 
-    align-self: ${({ mobile }) => (mobile ? 'flex-end' : 'center')};
+    align-self: ${({ $mobile }) => ($mobile ? 'flex-end' : 'center')};
 
     max-width: 420px;
-    ${({ maxHeight }) =>
-      maxHeight &&
+    ${({ $maxHeight }) =>
+      $maxHeight &&
       css`
-        max-height: ${maxHeight}vh;
+        max-height: ${$maxHeight}vh;
       `}
-    ${({ minHeight }) =>
-      minHeight &&
+    ${({ $minHeight }) =>
+      $minHeight &&
       css`
-        min-height: ${minHeight}vh;
+        min-height: ${$minHeight}vh;
       `}
     display: flex;
     border-radius: 8px;
@@ -81,7 +78,7 @@ export default function Modal({
   children,
 }: ModalProps) {
   const fadeTransition = useTransition(isOpen, null, {
-    config: { duration: 200 },
+    config: { duration: 120 },
     from: { opacity: 0 },
     enter: { opacity: 1 },
     leave: { opacity: 0 },
@@ -93,12 +90,7 @@ export default function Modal({
         ({ item, key, props }) =>
           item && (
             <StyledDialogOverlay key={key} style={props} onDismiss={onDismiss} initialFocusRef={initialFocusRef}>
-              <StyledDialogContent
-                aria-label="dialog content"
-                minHeight={minHeight}
-                maxHeight={maxHeight}
-                mobile={isMobile}
-              >
+              <StyledDialogContent aria-label="dialog content" $minHeight={minHeight} $maxHeight={maxHeight} $mobile={isMobile}>
                 {/* prevents the automatic focusing of inputs on mobile by the reach dialog */}
                 {/* eslint-disable */}
                 {!initialFocusRef && isMobile ? <div tabIndex={1} /> : null}

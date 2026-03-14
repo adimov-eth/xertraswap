@@ -21,6 +21,7 @@ import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'state/m
 
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useIsExpertMode, useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
+import { isSupportedChainId } from 'config/chains'
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from 'utils'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
@@ -34,6 +35,7 @@ import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 import { PoolPriceBar } from './PoolPriceBar'
 import { ROUTER_ADDRESS } from '../../constants'
 import Web3AuthContext from '../Web3AuthContext'
+import WrongNetworkBanner from '../../components/WrongNetworkBanner'
 
 export default function AddLiquidity({
   match: {
@@ -41,7 +43,7 @@ export default function AddLiquidity({
   },
   history,
 }: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
-  const { connection, account, chainId } = useContext(Web3AuthContext)
+  const { connection, account, chainId, isWrongNetwork } = useContext(Web3AuthContext)
   
   const currencyA = useCurrency(currencyIdA)
   const currencyB = useCurrency(currencyIdB)
@@ -49,6 +51,7 @@ export default function AddLiquidity({
 
   const oneCurrencyIsWSTRAX = Boolean(
     chainId &&
+      isSupportedChainId(chainId) &&
       ((currencyA && currencyEquals(currencyA, WETH[chainId])) ||
         (currencyB && currencyEquals(currencyB, WETH[chainId])))
   )
@@ -313,6 +316,7 @@ export default function AddLiquidity({
             pendingText={pendingText}
           />
           <CardBody>
+            <WrongNetworkBanner />
             <AutoColumn gap="20px">
               {noLiquidity && (
                 <ColumnCenter>
@@ -381,6 +385,10 @@ export default function AddLiquidity({
 
               {!account ? (
                 <ConnectWalletButton width="100%" />
+              ) : isWrongNetwork ? (
+                <Button disabled width="100%" variant="danger">
+                  Wrong network
+                </Button>
               ) : (
                 <AutoColumn gap="md">
                   {(approvalA === ApprovalState.NOT_APPROVED ||

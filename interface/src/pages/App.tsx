@@ -5,7 +5,7 @@ import { Credentials, StringTranslations } from '@crowdin/crowdin-api-client'
 import { Web3Provider } from '@ethersproject/providers'
 import { LangType } from 'uikit'
 import { ToastContainer } from 'react-toastify'
-import { SupportedChainId } from 'config/chains'
+import { getCurrentChainId } from 'config/chains'
 import Popups from '../components/Popups'
 import Web3AuthManager from '../components/Web3ReactManager'
 import ToastListener from '../components/ToastListener'
@@ -146,7 +146,7 @@ export default function App() {
 
   const [connection, setConnection] = useState<ConnectionState>(INITIAL_STATE)
 
-  const connect = useCallback((provider: Web3Provider, account: string, chainId: SupportedChainId) => {
+  const connect = useCallback((provider: Web3Provider, account: string, chainId: number) => {
     setConnection({
       kind: 'connected',
       provider,
@@ -161,17 +161,28 @@ export default function App() {
     localStorage.clear()
   }, [])
 
-  const switchChain = useCallback((chainId: SupportedChainId) => {
-    setConnection((prev) =>
-      prev.kind === 'connected'
-        ? { ...prev, chainId }
-        : { ...prev, chainId }
-    )
+  const switchChain = useCallback((chainId: number) => {
+    setConnection((prev) => {
+      if (prev.kind !== 'connected') {
+        return { ...prev, chainId }
+      }
+
+      const nextProvider = new Web3Provider(prev.provider.provider)
+
+      return {
+        ...prev,
+        provider: nextProvider,
+        signer: nextProvider.getSigner(prev.account),
+        chainId,
+      }
+    })
   }, [])
 
   // Convenience accessors — derived, not independent state
   const account = connection.kind === 'connected' ? connection.account : undefined
   const { chainId, provider: library } = connection
+  const expectedChainId = getCurrentChainId()
+  const isWrongNetwork = connection.kind === 'connected' && chainId !== expectedChainId
 
   return (
     <Suspense fallback={null}>
@@ -183,7 +194,19 @@ export default function App() {
           >
             <TranslationsContext.Provider value={{ translations, setTranslations }}>              
 
-              <Web3AuthContext.Provider value={{connection, connect, disconnect, switchChain, account, chainId, library}}>
+              <Web3AuthContext.Provider
+                value={{
+                  connection,
+                  connect,
+                  disconnect,
+                  switchChain,
+                  account,
+                  chainId,
+                  library,
+                  expectedChainId,
+                  isWrongNetwork,
+                }}
+              >
 
                 <ListsUpdater />
                 <ApplicationUpdater />

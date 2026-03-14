@@ -22,7 +22,7 @@ const Container = styled.div`
 `
 
 const AccordionContent = styled.div.withConfig({
-  shouldForwardProp: (prop) => prop !== 'isPushed',
+  shouldForwardProp: (prop) => !['isPushed', 'isOpen', 'maxHeight'].includes(prop),
 })<{ isOpen: boolean; isPushed: boolean; maxHeight: number }>`
   max-height: ${({ isOpen, maxHeight }) => (isOpen ? `${maxHeight}px` : 0)};
   transition: max-height 0.3s ease-out;
