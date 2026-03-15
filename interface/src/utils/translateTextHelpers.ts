@@ -34,5 +34,5 @@ export const TranslateString = (translationId: number, fallback: string) => {
   if (translations.length > 0) {
     return getTranslation(translations, translationId, fallback)
   }
-  return null
+  return fallback
 }
