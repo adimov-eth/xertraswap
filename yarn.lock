@@ -3783,7 +3783,7 @@
     "@types/react" "*"
     csstype "^3.0.2"
 
-"@types/styled-system@*", "@types/styled-system@^5.1.10":
+"@types/styled-system@*":
   version "5.1.25"
   resolved "https://registry.yarnpkg.com/@types/styled-system/-/styled-system-5.1.25.tgz#bd16db29e463709a2adf52c4b0ffd46bbb8d12d4"
   integrity sha512-B1oyjE4oeAbVnkigcB0WqU2gPFuTwLV/KkLa/uJZWFB9JWVKq1Fs0QwodZXZ9Sq6cb9ngY4kDqRY/dictIchjA==

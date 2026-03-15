@@ -1,12 +1,22 @@
-import { SpaceProps } from 'styled-system'
+import { HTMLAttributes } from 'react'
+import { SpaceProps } from '../../util/styledProps'
 
-export interface ContainerProps {
+export interface WrapperProps extends SpaceProps, HTMLAttributes<HTMLDivElement> {
+  width: number
+  height: number
+}
+
+export interface ImageProps extends WrapperProps {
+  src: string
+  alt?: string
+}
+
+export interface BackgroundImageProps extends ImageProps {
+  loadingPlaceholder?: React.ReactNode
+}
+
+export interface ContainerProps extends SpaceProps {
   width: number
   height: number
   responsive?: boolean
-}
-
-export interface ImageProps extends ContainerProps, SpaceProps {
-  src: string
-  alt?: string
 }

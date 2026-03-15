@@ -1,8 +1,10 @@
 import styled from 'styled-components'
-import { space } from 'styled-system'
+import { spaceStyles, blockProps, SPACE_PROP_NAMES } from '../../util/styledProps'
 import { ContainerProps } from './types'
 
-const Wrapper = styled.div<ContainerProps>`
+const Wrapper = styled.div.withConfig({
+  shouldForwardProp: blockProps(SPACE_PROP_NAMES, ['responsive'] as const),
+})<ContainerProps>`
   position: relative;
   background-position: center center;
   background-repeat: no-repeat;
@@ -12,7 +14,7 @@ const Wrapper = styled.div<ContainerProps>`
   max-height: ${({ height }) => height}px;
   width: 100%;
   padding-top: ${({ width, height, responsive }) => (responsive ? (height / width) * 100 : 0)}%;
-  ${space}
+  ${spaceStyles}
 `
 
 export default Wrapper

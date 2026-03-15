@@ -1,5 +1,5 @@
 import { HTMLAttributes, PropsWithChildren } from 'react'
-import { SpaceProps } from 'styled-system'
+import { SpaceProps } from '../../util/styledProps'
 import { Colors } from '../../theme/types'
 
 export interface CardRibbonProps {

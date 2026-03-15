@@ -1,7 +1,7 @@
 import styled from 'styled-components'
-import { space, variant as StyledSystemVariant } from 'styled-system'
+import { spaceStyles, blockProps, SPACE_PROP_NAMES, SpaceProps } from '../../util/styledProps'
 import { styleVariants } from './themes'
-import { ProgressProps, variants } from './types'
+import { ProgressProps, variants, Variant } from './types'
 
 interface BarProps {
   primary?: boolean
@@ -20,11 +20,18 @@ Bar.defaultProps = {
   primary: false,
 }
 
-interface StyledProgressProps {
+interface StyledProgressProps extends SpaceProps {
   variant: ProgressProps['variant']
 }
 
-const StyledProgress = styled.div<StyledProgressProps>`
+const getVariantStyles = ({ variant = variants.ROUND }: { variant?: Variant }) => {
+  const s = styleVariants[variant] || styleVariants[variants.ROUND]
+  return s.borderRadius ? `border-radius: ${s.borderRadius};` : ''
+}
+
+const StyledProgress = styled.div.withConfig({
+  shouldForwardProp: blockProps(SPACE_PROP_NAMES, ['variant'] as const),
+})<StyledProgressProps>`
   position: relative;
   background-color: ${({ theme }) => theme.colors.input};
   box-shadow: ${({ theme }) => theme.shadows.inset};
@@ -36,10 +43,8 @@ const StyledProgress = styled.div<StyledProgressProps>`
     border-bottom-left-radius: ${({ variant }) => (variant === variants.FLAT ? '0' : '32px')};
   }
 
-  ${StyledSystemVariant({
-    variants: styleVariants,
-  })}
-  ${space}
+  ${getVariantStyles}
+  ${spaceStyles}
 `
 
 export default StyledProgress

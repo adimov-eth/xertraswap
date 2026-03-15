@@ -1,11 +1,13 @@
 import styled from 'styled-components'
-import { space, SpaceProps } from 'styled-system'
+import { spaceStyles, SpaceProps, blockProps, SPACE_PROP_NAMES } from '../../util/styledProps'
 
 export type CardFooterProps = SpaceProps
 
-const CardFooter = styled.div<CardFooterProps>`
+const CardFooter = styled.div.withConfig({
+  shouldForwardProp: blockProps(SPACE_PROP_NAMES),
+})<CardFooterProps>`
   border-top: 1px solid ${({ theme }) => theme.colors.borderColor};
-  ${space}
+  ${spaceStyles}
 `
 
 CardFooter.defaultProps = {
