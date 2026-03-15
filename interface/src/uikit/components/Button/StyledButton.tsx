@@ -85,9 +85,11 @@ const getVariantStyles = ({ $variant = variants.PRIMARY, theme }: { $variant?: V
 }
 
 const StyledButton = styled.button.withConfig({
-  shouldForwardProp: blockProps(SPACE_PROP_NAMES, LAYOUT_PROP_NAMES, [
-    '$isLoading', '$variant', 'scale', 'external',
-  ] as const),
+  shouldForwardProp: (prop) => {
+    if (prop.startsWith('$')) return true  // let SC v6 handle transient props in interpolation
+    if (prop === 'scale' || prop === 'external') return true  // needed by interpolation
+    return blockProps(SPACE_PROP_NAMES, LAYOUT_PROP_NAMES)(prop)
+  },
 })<StyledButtonProps>`
   align-items: center;
   border: 0;

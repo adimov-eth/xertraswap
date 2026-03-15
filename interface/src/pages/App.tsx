@@ -32,14 +32,18 @@ import ListsUpdater from '../state/lists/updater'
 import MulticallUpdater from '../state/multicall/updater'
 import TransactionUpdater from '../state/transactions/updater'
 
-const AppWrapper = styled.div`
+const AppWrapper = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'theme',
+})`
   display: flex;
   flex-flow: column;
   align-items: flex-start;
   overflow-x: hidden;
 `
 
-const BodyWrapper = styled.div`
+const BodyWrapper = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'theme',
+})`
   display: flex;
   flex-direction: column;
   width: 100%;

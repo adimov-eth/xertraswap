@@ -2,7 +2,9 @@ import React, { useCallback, useEffect, useRef } from 'react'
 import styled, { css } from 'styled-components'
 import { isMobile } from 'react-device-detect'
 
-const Overlay = styled.div<{ $visible: boolean }>`
+const Overlay = styled.div.withConfig({
+  shouldForwardProp: (prop) => !prop.startsWith('$'),
+})<{ $visible: boolean }>`
   position: fixed;
   top: 0;
   left: 0;
@@ -18,7 +20,9 @@ const Overlay = styled.div<{ $visible: boolean }>`
   transition: opacity 150ms ease, visibility 150ms ease;
 `
 
-const Content = styled.div<{ $minHeight?: number | false; $maxHeight?: number; $mobile: boolean; $visible: boolean }>`
+const Content = styled.div.withConfig({
+  shouldForwardProp: (prop) => !prop.startsWith('$'),
+})<{ $minHeight?: number | false; $maxHeight?: number; $mobile: boolean; $visible: boolean }>`
   margin: 0 0 2rem 0;
   border: 1px solid ${({ theme }) => theme.colors.borderColor};
   background-color: ${({ theme }) => theme.colors.card};
