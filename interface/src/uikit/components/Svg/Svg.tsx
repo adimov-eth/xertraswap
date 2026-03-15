@@ -1,5 +1,5 @@
 import styled, { css, keyframes } from 'styled-components'
-import { space } from 'styled-system'
+import { spaceStyles, blockProps, SPACE_PROP_NAMES } from '../../util/styledProps'
 import getThemeValue from '../../util/getThemeValue'
 import { SvgProps } from './types'
 
@@ -14,19 +14,19 @@ const spinStyle = css`
 
 const Svg = styled.svg
 .withConfig({
-  shouldForwardProp: (prop) => prop !== 'spin',
+  shouldForwardProp: blockProps(SPACE_PROP_NAMES, ['spin'] as const),
 })
 .attrs<SvgProps>((props) => ({
   color: props.color ?? 'text',
   width: props.width ?? '20px',
   xmlns: props.xmlns ?? 'http://www.w3.org/2000/svg',
   spin: props.spin ?? false,
-})) <SvgProps>`
+}))<SvgProps>`
   fill: ${({ theme, color }) => getThemeValue(`colors.${color}`, color)(theme)};
   flex-shrink: 0;
 
   ${({ spin }) => spin && spinStyle}
-  ${space}
+  ${spaceStyles}
 `
 
 export default Svg;

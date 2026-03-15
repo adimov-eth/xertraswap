@@ -29,7 +29,7 @@ const Inner = styled(Flex)`
 
 function ButtonMenu({ activeIndex = 0, onItemClick, children }: TabMenuProps) {
   return (
-    <Wrapper p={['0 4px', '0 16px']}>
+    <Wrapper p="0 16px">
       <Inner>
         {(children as ReactElement<TabProps>[]).map((child, index) => {
           return cloneElement(child, {

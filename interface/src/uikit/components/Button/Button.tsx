@@ -1,6 +1,6 @@
 import React, { cloneElement, ElementType, isValidElement, ReactNode } from 'react'
 import { JSX } from 'react/jsx-runtime'
-import { LayoutProps, SpaceProps } from 'styled-system'
+import { SpaceProps, LayoutProps } from '../../util/styledProps'
 import getExternalLinkProps from '../../util/getExternalLinkProps'
 import StyledButton from './StyledButton'
 import { PolymorphicComponentProps, Scale, scales, Variant, variants } from './types'

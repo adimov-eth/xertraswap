@@ -1,17 +1,5 @@
 import React from 'react'
-import { ThemeProvider as SCThemeProvider, StyleSheetManager } from 'styled-components'
-import isPropValid from '@emotion/is-prop-valid'
-
-/**
- * Prevent styled-components v6 from forwarding unknown props to the DOM.
- * Allow props that @emotion/is-prop-valid recognises as valid HTML attributes.
- * Always forward all props to custom (non-HTML) components.
- */
-function shouldForwardProp(prop: string, element: any) {
-  if (typeof element !== 'string') return true
-  if (prop.startsWith('$')) return true
-  return isPropValid(prop)
-}
+import { ThemeProvider as SCThemeProvider } from 'styled-components'
 import { xertraDark } from './theme/xertraTheme'
 
 export interface ThemeContextType {
@@ -43,9 +31,7 @@ const ThemeContext = React.createContext<ThemeContextType>({ isDark: true, toggl
 function ThemeContextProvider({ children }: { children: React.ReactNode }) {
   return (
     <ThemeContext.Provider value={{ isDark: true, toggleTheme: noop }}>
-      <StyleSheetManager shouldForwardProp={shouldForwardProp}>
-        <SCThemeProvider theme={xertraDark}>{children}</SCThemeProvider>
-      </StyleSheetManager>
+      <SCThemeProvider theme={xertraDark}>{children}</SCThemeProvider>
     </ThemeContext.Provider>
   )
 }

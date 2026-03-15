@@ -1,7 +1,13 @@
 import styled, { DefaultTheme } from 'styled-components'
-import { space, layout, variant } from 'styled-system'
+import {
+  spaceStyles,
+  layoutStyles,
+  blockProps,
+  SPACE_PROP_NAMES,
+  LAYOUT_PROP_NAMES,
+} from '../../util/styledProps'
 import { scaleVariants, styleVariants } from './theme'
-import { StyledButtonProps } from './types'
+import { StyledButtonProps, Scale, Variant, scales, variants } from './types'
 
 interface ThemedButtonProps extends StyledButtonProps {
   theme: DefaultTheme
@@ -33,18 +39,55 @@ const getDisabledStyles = ({ $isLoading, theme }: TransientButtonProps) => {
   `
 }
 
-/**
- * This is to get around an issue where if you use a Link component
- * React will throw a invalid DOM attribute error
- * @see https://github.com/styled-components/styled-components/issues/135
- */
-
 const getOpacity = ({ $isLoading = false }: TransientButtonProps) => {
   return $isLoading ? '.5' : '1'
 }
 
+const getScaleStyles = ({ scale = scales.MD }: { scale?: Scale }) => {
+  const s = scaleVariants[scale] || scaleVariants[scales.MD]
+  let css = ''
+  if ('height' in s) css += `height: ${s.height};`
+  if ('padding' in s) css += `padding: ${s.padding};`
+  if ('fontSize' in s) css += `font-size: ${(s as any).fontSize};`
+  return css
+}
+
+const getVariantStyles = ({ $variant = variants.PRIMARY, theme }: { $variant?: Variant; theme: DefaultTheme }) => {
+  const v = styleVariants[$variant] || styleVariants[variants.PRIMARY]
+  let css = ''
+  for (const [prop, value] of Object.entries(v)) {
+    if (prop === 'backgroundColor') {
+      const resolved = theme.colors[value as keyof typeof theme.colors] || value
+      css += `background-color: ${resolved};`
+    } else if (prop === 'color') {
+      const resolved = theme.colors[value as keyof typeof theme.colors] || value
+      css += `color: ${resolved};`
+    } else if (prop === 'borderColor') {
+      const resolved = theme.colors[value as keyof typeof theme.colors] || value
+      css += `border-color: ${resolved};`
+    } else if (prop === 'boxShadow') {
+      css += `box-shadow: ${value};`
+    } else if (prop === 'border') {
+      css += `border: ${value};`
+    } else if (prop === ':disabled') {
+      const nested = value as Record<string, string>
+      css += `&:disabled {`
+      for (const [np, nv] of Object.entries(nested)) {
+        if (np === 'backgroundColor') {
+          const r = theme.colors[nv as keyof typeof theme.colors] || nv
+          css += `background-color: ${r};`
+        }
+      }
+      css += `}`
+    }
+  }
+  return css
+}
+
 const StyledButton = styled.button.withConfig({
-  shouldForwardProp: (prop) => !['$isLoading'].includes(prop)
+  shouldForwardProp: blockProps(SPACE_PROP_NAMES, LAYOUT_PROP_NAMES, [
+    '$isLoading', '$variant', 'scale', 'external',
+  ] as const),
 })<StyledButtonProps>`
   align-items: center;
   border: 0;
@@ -71,16 +114,10 @@ const StyledButton = styled.button.withConfig({
   }
 
   ${getDisabledStyles}
-  ${variant({
-    prop: 'scale',
-    variants: scaleVariants,
-  })}
-  ${variant({
-    prop: '$variant',
-    variants: styleVariants,
-  })}
-  ${layout}
-  ${space}
+  ${getScaleStyles}
+  ${getVariantStyles}
+  ${spaceStyles}
+  ${layoutStyles}
 `
 
 export default StyledButton

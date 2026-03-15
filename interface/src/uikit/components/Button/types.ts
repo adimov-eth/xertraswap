@@ -1,5 +1,5 @@
 import { ComponentProps, ElementType, ReactElement, ReactNode } from 'react'
-import { LayoutProps, SpaceProps } from 'styled-system'
+import { SpaceProps, LayoutProps } from '../../util/styledProps'
 
 export const scales = {
   MD: 'md',
