@@ -6,7 +6,10 @@ import { isMobile } from 'react-device-detect'
 import '@reach/dialog/styles.css'
 
 const AnimatedDialogOverlay = animated(DialogOverlay)
-const StyledDialogOverlay = styled(AnimatedDialogOverlay)`
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const StyledDialogOverlay = styled(({ initialFocusRef, ...rest }: any) => (
+  <AnimatedDialogOverlay {...rest} initialFocusRef={initialFocusRef} />
+))`
   &[data-reach-dialog-overlay] {
     z-index: 2;
     background-color: transparent;
