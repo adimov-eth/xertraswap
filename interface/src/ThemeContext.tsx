@@ -4,14 +4,11 @@ import isPropValid from '@emotion/is-prop-valid'
 
 /**
  * Prevent styled-components v6 from forwarding unknown props to the DOM.
- * Allow props that @emotion/is-prop-valid recognises as valid HTML attributes,
- * plus any props starting with `$` (transient props) or props consumed by
- * third-party components like @reach/dialog (`initialFocusRef`, etc.).
+ * Allow props that @emotion/is-prop-valid recognises as valid HTML attributes.
+ * Always forward all props to custom (non-HTML) components.
  */
 function shouldForwardProp(prop: string, element: any) {
-  // Always forward to custom (non-HTML) components
   if (typeof element !== 'string') return true
-  // Allow transient props (shouldn't reach here, but safety net)
   if (prop.startsWith('$')) return true
   return isPropValid(prop)
 }
