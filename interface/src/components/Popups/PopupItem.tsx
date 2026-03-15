@@ -20,6 +20,7 @@ export const Popup = styled.div`
   width: 100%;
   padding: 1em;
   background-color: ${({ theme }) => theme.colors.invertedContrast};
+  border: 1px solid ${({ theme }) => theme.colors.borderColor};
   position: relative;
   border-radius: 10px;
   padding: 20px;
@@ -36,7 +37,9 @@ const shrink = keyframes`
   to { width: 0%; }
 `
 
-const Fader = styled.div<{ $duration: number }>`
+const Fader = styled.div.withConfig({
+  shouldForwardProp: (prop) => !prop.startsWith('$'),
+})<{ $duration: number }>`
   position: absolute;
   bottom: 0px;
   left: 0px;
