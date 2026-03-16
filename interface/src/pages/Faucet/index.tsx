@@ -37,13 +37,13 @@ const TokenRow = styled.div`
   border-bottom: 1px solid ${({ theme }) => theme.colors.borderColor};
 `
 
-const StatusBadge = styled.span<{ ready: boolean }>`
+const StatusBadge = styled.span<{ $ready: boolean }>`
   display: inline-block;
   padding: 4px 12px;
   border-radius: 16px;
   font-size: 14px;
   font-weight: 600;
-  background: ${({ ready }) => (ready ? '#2ecc71' : '#e74c3c')};
+  background: ${({ $ready }) => ($ready ? '#2ecc71' : '#e74c3c')};
   color: white;
 `
 
@@ -61,7 +61,7 @@ interface TokenDrip {
 }
 
 const Faucet: React.FC = () => {
-  const { connection, account, library } = useContext(Web3AuthContext)
+  const { connection, account, library, isWrongNetwork } = useContext(Web3AuthContext)
   const [canClaim, setCanClaim] = useState(false)
   const [timeLeft, setTimeLeft] = useState(0)
   const [tokenDrips, setTokenDrips] = useState<TokenDrip[]>([])
@@ -190,10 +190,14 @@ const Faucet: React.FC = () => {
           <Text color="textSubtle" textAlign="center">
             Connect your wallet to use the faucet
           </Text>
+        ) : isWrongNetwork ? (
+          <Button disabled width="100%" variant="danger">
+            Wrong network
+          </Button>
         ) : (
           <>
             <div style={{ textAlign: 'center', marginBottom: '16px' }}>
-              <StatusBadge ready={canClaim}>
+              <StatusBadge $ready={canClaim}>
                 {canClaim ? 'Ready to claim' : `Next claim in ${formatTime(timeLeft)}`}
               </StatusBadge>
             </div>

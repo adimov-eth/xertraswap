@@ -1,5 +1,5 @@
 import { PropsWithChildren, ReactNode } from 'react'
-import { SpaceProps } from 'styled-system'
+import { SpaceProps } from '../../util/styledProps'
 
 export const variants = {
   PRIMARY: 'primary',

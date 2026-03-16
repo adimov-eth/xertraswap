@@ -33,11 +33,14 @@ import Loader from 'components/Loader'
 import useI18n from 'hooks/useI18n'
 import PageHeader from 'components/PageHeader'
 import ConnectWalletButton from 'components/ConnectWalletButton'
+import WrongNetworkBanner from '../../components/WrongNetworkBanner'
+import WrongNetworkModal from '../../components/WrongNetworkModal'
 import AppBody from '../AppBody'
 import Web3AuthContext from '../Web3AuthContext'
 
 const Swap = () => {
-  const { account } = useContext(Web3AuthContext)
+  const { account, isWrongNetwork } = useContext(Web3AuthContext)
+  const [showWrongNetworkModal, setShowWrongNetworkModal] = useState(false)
 
   const loadedUrlParams = useDefaultsFromURLSearch()
   const TranslateString = useI18n()
@@ -273,8 +276,17 @@ const Swap = () => {
     [onCurrencySelection, checkForWarning]
   )
 
+  useEffect(() => {
+    if (account && isWrongNetwork) {
+      setShowWrongNetworkModal(true)
+    } else {
+      setShowWrongNetworkModal(false)
+    }
+  }, [account, isWrongNetwork])
+
   return (
     <>
+      <WrongNetworkModal isOpen={showWrongNetworkModal} onDismiss={() => setShowWrongNetworkModal(false)} />
       <TokenWarningModal
         isOpen={urlLoadedTokens.length > 0 && !dismissTokenWarning}
         tokens={urlLoadedTokens}
@@ -306,6 +318,7 @@ const Swap = () => {
             description={TranslateString(1192, 'Trade tokens in an instant')}
           />
           <CardBody>
+            <WrongNetworkBanner />
             <AutoColumn gap="md">
               <CurrencyInputPanel
                 label={
@@ -399,6 +412,10 @@ const Swap = () => {
             <BottomGrouping>
               {!account ? (
                 <ConnectWalletButton width="100%" />
+              ) : isWrongNetwork ? (
+                <Button disabled width="100%" variant="danger">
+                  Wrong network
+                </Button>
               ) : showWrap ? (
                 <Button disabled={Boolean(wrapInputError) || isBusy} onClick={onWrap} width="100%">
                   {

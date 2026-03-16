@@ -1,6 +1,6 @@
 import { createContext } from 'react'
 import { Web3Provider, JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
-import { getCurrentRpcUrl, getCurrentChainId, SupportedChainId } from 'config/chains'
+import { getCurrentRpcUrl, getCurrentChainId } from 'config/chains'
 
 // Read-only provider — always available, created once
 const READ_ONLY_PROVIDER = new JsonRpcProvider(getCurrentRpcUrl(), getCurrentChainId())
@@ -11,14 +11,14 @@ export type ConnectionState =
   | {
       kind: 'disconnected'
       provider: JsonRpcProvider
-      chainId: SupportedChainId
+      chainId: number
     }
   | {
       kind: 'connected'
       provider: Web3Provider
       signer: JsonRpcSigner
       account: string
-      chainId: SupportedChainId
+      chainId: number
     }
 
 const INITIAL_STATE: ConnectionState = {
@@ -31,14 +31,16 @@ const INITIAL_STATE: ConnectionState = {
 
 export interface Web3AuthContextState {
   connection: ConnectionState
-  connect: (provider: Web3Provider, account: string, chainId: SupportedChainId) => void
+  connect: (provider: Web3Provider, account: string, chainId: number) => void
   disconnect: () => void
-  switchChain: (chainId: SupportedChainId) => void
+  switchChain: (chainId: number) => void
 
   // Convenience accessors — derived from connection, no independent state
   account: string | undefined
-  chainId: SupportedChainId
+  chainId: number
   library: Web3Provider | JsonRpcProvider
+  expectedChainId: number
+  isWrongNetwork: boolean
 }
 
 const defaultState: Web3AuthContextState = {
@@ -49,6 +51,8 @@ const defaultState: Web3AuthContextState = {
   account: undefined,
   chainId: getCurrentChainId(),
   library: READ_ONLY_PROVIDER,
+  expectedChainId: getCurrentChainId(),
+  isWrongNetwork: false,
 }
 
 const Web3AuthContext = createContext<Web3AuthContextState>(defaultState)

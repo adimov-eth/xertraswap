@@ -1,7 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 import React, { Children, isValidElement, ReactNode } from 'react'
 import styled from 'styled-components'
-import { space } from 'styled-system'
+import { spaceStyles, blockProps, SPACE_PROP_NAMES, SpaceProps } from '../../util/styledProps'
 import ChevronRightIcon from '../Svg/Icons/ChevronRight'
 import { BreadcrumbsProps } from './types'
 
@@ -24,14 +24,15 @@ const Separator = styled.div`
   }
 `
 
-const StyledBreadcrumbs = styled.ul`
+const StyledBreadcrumbs = styled.ul.withConfig({
+  shouldForwardProp: blockProps(SPACE_PROP_NAMES),
+})<SpaceProps>`
   align-items: center;
   color: ${({ theme }) => theme.colors.textDisabled};
   display: flex;
   flex-wrap: wrap;
   list-style-type: none;
-
-  ${space}
+  ${spaceStyles}
 `
 
 const insertSeparators = (items: ReactNode[], separator: BreadcrumbsProps['separator']) =>

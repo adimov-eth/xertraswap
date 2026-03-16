@@ -1,4 +1,4 @@
-import { SpaceProps } from 'styled-system'
+import { SpaceProps } from '../../util/styledProps'
 
 export const scales = {
   SM: 'sm',

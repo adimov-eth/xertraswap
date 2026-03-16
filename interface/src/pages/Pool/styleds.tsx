@@ -6,9 +6,7 @@ export const Wrapper = styled.div`
 `
 
 export const ClickableText = styled(Text)`
-  :hover {
-    cursor: pointer;
-  }
+  cursor: pointer;
   color: ${({ theme }) => theme.colors.primary};
 `
 

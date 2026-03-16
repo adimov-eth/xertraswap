@@ -1,7 +1,6 @@
 import { useCallback, useContext } from 'react'
 import useToast from 'hooks/useToast'
 import { web3authConnector } from 'connectors'
-import { SupportedChainId } from 'config/chains'
 import Web3AuthContext from '../pages/Web3AuthContext'
 
 const useWeb3Auth = () => {
@@ -12,7 +11,7 @@ const useWeb3Auth = () => {
     try {
       const connectorState = await web3authConnector.connect()
       if (connectorState?.account) {
-        connect(connectorState.web3Provider, connectorState.account, connectorState.chainId as SupportedChainId)
+        connect(connectorState.web3Provider, connectorState.account, connectorState.chainId)
       }
     } catch (error: any) {
       if (error?.code === 4001 || error?.message?.includes('User closed')) {
@@ -34,7 +33,21 @@ const useWeb3Auth = () => {
     }
   }, [disconnect])
 
-  return { login, logout }
+  const switchToExpectedChain = useCallback(async (targetChainId: number) => {
+    try {
+      const switched = await web3authConnector.switchToChain(targetChainId)
+      if (!switched) {
+        toastError('Switch Failed', 'Could not switch network in wallet')
+      }
+      return switched
+    } catch (error: any) {
+      console.error('Switch chain failed:', error?.message || error)
+      toastError('Switch Failed', error?.message || 'Could not switch network in wallet')
+      return false
+    }
+  }, [toastError])
+
+  return { login, logout, switchToExpectedChain }
 }
 
 export default useWeb3Auth

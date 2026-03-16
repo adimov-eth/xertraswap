@@ -48,7 +48,7 @@ function useSwapCallArguments(
   const { connection, account, chainId } = useContext(Web3AuthContext)
 
   const { address: recipientAddress } = useENS(recipientAddressOrName)
-  const recipient = recipientAddressOrName === null ? account : recipientAddress
+  const recipient = recipientAddressOrName === null ? (account ? isAddress(account) : null) : recipientAddress
 
   return useMemo(() => {
     if (!trade || !recipient || connection.kind !== 'connected') return []
@@ -101,7 +101,7 @@ export function useSwapCallback(
   const addTransaction = useTransactionAdder()
 
   const { address: recipientAddress } = useENS(recipientAddressOrName)
-  const recipient = recipientAddressOrName === null ? account : recipientAddress
+  const recipient = recipientAddressOrName === null ? (account ? isAddress(account) : null) : recipientAddress
 
   return useMemo(() => {
     if (!trade || connection.kind !== 'connected') {
@@ -190,10 +190,10 @@ export function useSwapCallback(
 
             const base = `Swap ${inputAmount} ${inputSymbol} for ${outputAmount} ${outputSymbol}`
             const withRecipient =
-              recipient === account
+              !recipientAddressOrName || recipient === account
                 ? base
                 : `${base} to ${
-                    recipientAddressOrName && isAddress(recipientAddressOrName)
+                    isAddress(recipientAddressOrName)
                       ? shortenAddress(recipientAddressOrName)
                       : recipientAddressOrName
                   }`

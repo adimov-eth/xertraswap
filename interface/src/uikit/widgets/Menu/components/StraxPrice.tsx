@@ -26,7 +26,7 @@ const StraxPrice: React.FC<Props> = ({ straxPriceUsd, cakePriceUsd }) => {
       <Text color="textSubtle" $bold>{`$${price.toFixed(3)}`}</Text>
     </PriceLink>
   ) : (
-    <Skeleton width={80} height={24} />
+    <Skeleton width="80px" height="24px" />
   )
 }
 

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { space } from 'styled-system'
+import { spaceStyles, blockProps, SPACE_PROP_NAMES } from '../../util/styledProps'
 import { RadioProps, scales } from './types'
 
 const getScale = ({ scale }: RadioProps) => {
@@ -22,7 +22,9 @@ const getCheckedScale = ({ scale }: RadioProps) => {
   }
 }
 
-const Radio = styled.input.attrs({ type: 'radio' })<RadioProps>`
+const Radio = styled.input.withConfig({
+  shouldForwardProp: blockProps(SPACE_PROP_NAMES, ['scale'] as const),
+}).attrs({ type: 'radio' })<RadioProps>`
   appearance: none;
   overflow: hidden;
   cursor: pointer;
@@ -67,7 +69,7 @@ const Radio = styled.input.attrs({ type: 'radio' })<RadioProps>`
     cursor: default;
     opacity: 0.6;
   }
-  ${space}
+  ${spaceStyles}
 `
 
 Radio.defaultProps = {

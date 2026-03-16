@@ -10,6 +10,7 @@ import { RouteComponentProps } from 'react-router'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import ConnectWalletButton from '../../components/ConnectWalletButton'
+import WrongNetworkBanner from '../../components/WrongNetworkBanner'
 import useI18n from '../../hooks/useI18n'
 import { AutoColumn, ColumnCenter } from '../../components/Column'
 import TransactionConfirmationModal, { ConfirmationModalContent } from '../../components/TransactionConfirmationModal'
@@ -22,6 +23,7 @@ import { RowBetween, RowFixed } from '../../components/Row'
 import Slider from '../../components/Slider'
 import CurrencyLogo from '../../components/CurrencyLogo'
 import { ROUTER_ADDRESS } from '../../constants'
+import { isSupportedChainId } from '../../config/chains'
 import { useCurrency } from '../../hooks/Tokens'
 import { usePairContract } from '../../hooks/useContract'
 
@@ -59,7 +61,7 @@ export default function RemoveLiquidity({
   },
 }: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
 
-  const { connection, account, chainId } = useContext(Web3AuthContext)
+  const { connection, account, chainId, isWrongNetwork } = useContext(Web3AuthContext)
 
   const [currencyA, currencyB] = [useCurrency(currencyIdA) ?? undefined, useCurrency(currencyIdB) ?? undefined]
   const TranslateString = useI18n()
@@ -405,10 +407,11 @@ export default function RemoveLiquidity({
   )
 
   const oneCurrencyIsETH = currencyA === ETHER || currencyB === ETHER
+  const supportedWeth = chainId && isSupportedChainId(chainId) ? WETH[chainId] : undefined
   const oneCurrencyIsWETH = Boolean(
-    chainId &&
-      ((currencyA && currencyEquals(WETH[chainId], currencyA)) ||
-        (currencyB && currencyEquals(WETH[chainId], currencyB)))
+    supportedWeth &&
+      ((currencyA && currencyEquals(supportedWeth, currencyA)) ||
+        (currencyB && currencyEquals(supportedWeth, currencyB)))
   )
 
   const handleSelectCurrencyA = useCallback(
@@ -467,6 +470,7 @@ export default function RemoveLiquidity({
             )}
             pendingText={pendingText}
           />
+          <WrongNetworkBanner />
           <AutoColumn gap="md">
             <Body>
               <OutlineCard>
@@ -550,12 +554,12 @@ export default function RemoveLiquidity({
                           </Text>
                         </RowFixed>
                       </RowBetween>
-                      {chainId && (oneCurrencyIsWETH || oneCurrencyIsETH) ? (
+                      {supportedWeth && (oneCurrencyIsWETH || oneCurrencyIsETH) ? (
                         <RowBetween style={{ justifyContent: 'flex-end' }}>
                           {oneCurrencyIsETH ? (
                             <StyledInternalLink
-                              to={`/remove/${currencyA === ETHER ? WETH[chainId].address : currencyIdA}/${
-                                currencyB === ETHER ? WETH[chainId].address : currencyIdB
+                              to={`/remove/${currencyA === ETHER ? supportedWeth.address : currencyIdA}/${
+                                currencyB === ETHER ? supportedWeth.address : currencyIdB
                               }`}
                             >
                               {TranslateString(1188, 'Receive WSTRAX')}
@@ -563,8 +567,8 @@ export default function RemoveLiquidity({
                           ) : oneCurrencyIsWETH ? (
                             <StyledInternalLink
                               to={`/remove/${
-                                currencyA && currencyEquals(currencyA, WETH[chainId]) ? 'STRAX' : currencyIdA
-                              }/${currencyB && currencyEquals(currencyB, WETH[chainId]) ? 'STRAX' : currencyIdB}`}
+                                currencyA && supportedWeth && currencyEquals(currencyA, supportedWeth) ? 'STRAX' : currencyIdA
+                              }/${currencyB && supportedWeth && currencyEquals(currencyB, supportedWeth) ? 'STRAX' : currencyIdB}`}
                             >
                               {TranslateString(1190, 'Receive STRAX')}
                             </StyledInternalLink>
@@ -640,6 +644,10 @@ export default function RemoveLiquidity({
               <div style={{ position: 'relative' }}>
                 {!account ? (
                   <ConnectWalletButton width="100%" />
+                ) : isWrongNetwork ? (
+                  <Button disabled width="100%" variant="danger">
+                    Wrong network
+                  </Button>
                 ) : (
                   <RowBetween>
                     <Button
