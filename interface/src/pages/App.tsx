@@ -3,7 +3,7 @@ import { HashRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 import { Credentials, StringTranslations } from '@crowdin/crowdin-api-client'
 import { Web3Provider } from '@ethersproject/providers'
-import { LangType } from 'uikit'
+import { LangType, ModalProvider } from 'uikit'
 import { ToastContainer } from 'react-toastify'
 import { getCurrentChainId } from 'config/chains'
 import Popups from '../components/Popups'
@@ -208,6 +208,7 @@ export default function App() {
                 }}
               >
 
+                <ModalProvider>
                 <ListsUpdater />
                 <ApplicationUpdater />
                 <TransactionUpdater />
@@ -240,6 +241,7 @@ export default function App() {
                     </BodyWrapper>
                   </Menu>
                 </Web3AuthManager>
+                </ModalProvider>
               </Web3AuthContext.Provider>
             </TranslationsContext.Provider>
           </LanguageContext.Provider>

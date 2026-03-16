@@ -40,21 +40,29 @@ const GlobalStyle = createGlobalStyle`
     color: ${({ theme }) => theme.colors.text};
   }
 
-  /* Links */
-  a {
+  /* Links — zero specificity so component styles always win */
+  :where(a) {
     color: ${({ theme }) => theme.colors.primary};
     text-decoration: none;
     transition: color 150ms ease-in-out;
-
-    &:hover {
-      color: ${({ theme }) => theme.colors.primaryBright};
-    }
+  }
+  :where(a:hover) {
+    color: ${({ theme }) => theme.colors.primaryBright};
   }
 
-  /* Focus states - accessibility */
-  :focus-visible {
+  /* Focus states - accessibility (interactive elements only) */
+  a:focus-visible,
+  button:focus-visible,
+  [tabindex]:focus-visible {
     outline: 2px solid ${({ theme }) => theme.colors.primary};
     outline-offset: 2px;
+  }
+
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 1px solid ${({ theme }) => theme.colors.primary};
+    outline-offset: 0px;
   }
 
   /* Selection */

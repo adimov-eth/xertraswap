@@ -69,14 +69,12 @@ const RecentTransactionsModal = ({ onDismiss = defaultOnDismiss, translateString
           const { icon, color } = getRowStatus(sortedRecentTransaction)
 
           return (
-            <>
-              <Flex key={hash} alignItems="center" justifyContent="space-between" mb="4px">
-                <LinkExternal href={getBscScanLink(chainId, hash, 'transaction')} color={color}>
-                  {summary ?? hash}
-                </LinkExternal>
-                {icon}
-              </Flex>
-            </>
+            <Flex key={hash} alignItems="center" justifyContent="space-between" mb="4px">
+              <LinkExternal href={getBscScanLink(chainId, hash, 'transaction')} color={color}>
+                {summary ?? hash}
+              </LinkExternal>
+              {icon}
+            </Flex>
           )
         })}
     </Modal>

@@ -15,7 +15,9 @@ const Option = styled.div`
 const Options = styled.div`
   align-items: center;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
 
   ${Option}:first-child {
     padding-left: 0;
@@ -23,10 +25,6 @@ const Options = styled.div`
 
   ${Option}:last-child {
     padding-right: 0;
-  }
-
-  ${({ theme }) => theme.mediaQueries.sm} {
-    flex-direction: row;
   }
 `
 
@@ -85,36 +83,31 @@ const SlippageToleranceSettings = ({ translateString }: SlippageToleranceSetting
         />
       </Flex>
       <Options>
-        <Flex mb="8px" mr="0">
-          {predefinedValues.map(({ label, value: predefinedValue }) => {
-            const handleClick = () => setValue(predefinedValue)
-
-            return (
-              <Option key={predefinedValue}>
-                <Button variant={value === predefinedValue ? 'primary' : 'tertiary'} onClick={handleClick}>
-                  {label}
-                </Button>
-              </Option>
-            )
-          })}
-        </Flex>
-        <Flex alignItems="center">
-          <Option>
-            <Input
-              type="number"
-              scale="lg"
-              step={0.1}
-              min={0.1}
-              placeholder="5%"
-              value={value}
-              onChange={handleChange}
-              isWarning={error !== null}
-            />
-          </Option>
-          <Option>
-            <Text fontSize="18px">%</Text>
-          </Option>
-        </Flex>
+        {predefinedValues.map(({ label, value: predefinedValue }) => {
+          const handleClick = () => setValue(predefinedValue)
+          return (
+            <Option key={predefinedValue}>
+              <Button variant={value === predefinedValue ? 'primary' : 'tertiary'} onClick={handleClick}>
+                {label}
+              </Button>
+            </Option>
+          )
+        })}
+        <Option>
+          <Input
+            type="number"
+            scale="lg"
+            step={0.1}
+            min={0.1}
+            placeholder="5%"
+            value={value}
+            onChange={handleChange}
+            isWarning={error !== null}
+          />
+        </Option>
+        <Option>
+          <Text fontSize="18px">%</Text>
+        </Option>
       </Options>
       {error && (
         <Text mt="8px" color="failure">

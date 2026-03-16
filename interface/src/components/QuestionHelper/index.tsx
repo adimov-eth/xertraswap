@@ -16,8 +16,8 @@ const QuestionWrapper = styled.div`
   background-color: ${({ theme }) => theme.colors.invertedContrast};
   color: ${({ theme }) => theme.colors.textSubtle};
 
-  :hover,
-  :focus {
+  &:hover,
+  &:focus {
     opacity: 0.7;
   }
 `
