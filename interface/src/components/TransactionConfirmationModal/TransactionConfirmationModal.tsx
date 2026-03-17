@@ -11,6 +11,7 @@ interface ConfirmationModalProps {
   content: () => React.ReactNode
   attemptingTxn: boolean
   pendingText: string
+  transactionStateText: string
 }
 
 const TransactionConfirmationModal = ({
@@ -19,6 +20,7 @@ const TransactionConfirmationModal = ({
   attemptingTxn,
   hash,
   pendingText,
+  transactionStateText,
   content
 }: ConfirmationModalProps) => {
   const { chainId } = useContext(Web3AuthContext)
@@ -29,7 +31,7 @@ const TransactionConfirmationModal = ({
   return (
     <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90}>
       {attemptingTxn ? (
-        <ConfirmationPendingContent onDismiss={onDismiss} pendingText={pendingText} />
+        <ConfirmationPendingContent pendingText={pendingText} transactionStateText={transactionStateText}/>
       ) : hash ? (
         <TransactionSubmittedContent chainId={chainId} hash={hash} onDismiss={onDismiss} />
       ) : (

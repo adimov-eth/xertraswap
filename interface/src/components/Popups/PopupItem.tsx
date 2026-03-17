@@ -10,6 +10,7 @@ export const StyledClose = styled(X)`
   position: absolute;
   right: 10px;
   top: 10px;
+  width: 15px;
 
   &:hover {
     cursor: pointer;
@@ -26,6 +27,7 @@ export const Popup = styled.div`
   padding: 20px;
   padding-right: 35px;
   overflow: hidden;
+  margin-bottom: 20px;
 
   ${({ theme }) => theme.mediaQueries.sm} {
     min-width: 290px;

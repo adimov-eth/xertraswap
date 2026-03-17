@@ -79,6 +79,7 @@ export default function AddLiquidity({
   // modal and loading
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false) // clicked confirm
+  const [transactionStateText, setTransactionStateText] = useState("Confirm this transaction in your wallet")
 
   // txn values
   const [deadline] = useUserDeadline() // custom from users settings
@@ -122,7 +123,6 @@ export default function AddLiquidity({
     if (connection.kind !== 'connected') return
     const { account: connectedAccount } = connection
     const router = getRouterContract(chainId, connection.provider, connectedAccount)
-
     const { [Field.CURRENCY_A]: parsedAmountA, [Field.CURRENCY_B]: parsedAmountB } = parsedAmounts
     if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB) {
       return
@@ -168,32 +168,35 @@ export default function AddLiquidity({
       value = null
     }
 
-    setAttemptingTxn(true)
-    // const aa = await estimate(...args, value ? { value } : {})
-    await estimate(...args, value ? { value } : {})
-      .then((estimatedGasLimit) =>
-        method(...args, {
+      try {
+        setAttemptingTxn(true)
+        
+        const estimatedGasLimit = await estimate(...args, value ? { value } : {})
+        const transactionResponse = await method(...args, {
           ...(value ? { value } : {}),
           gasLimit: calculateGasMargin(estimatedGasLimit),
-        }).then((response) => {
-          setAttemptingTxn(false)
-
-          addTransaction(response, {
-            summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
-              currencies[Field.CURRENCY_A]?.symbol
-            } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`,
-          })
-
-          setTxHash(response.hash)
         })
-      )
-      .catch((e) => {
+
+        setTransactionStateText("Waiting for transaction to be confirmed on chain")
+
+        const response = await transactionResponse.wait()
+
+        setAttemptingTxn(false)
+
+        addTransaction(transactionResponse, {
+          summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
+            currencies[Field.CURRENCY_A]?.symbol
+          } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`,
+        })
+
+        setTxHash(response.transactionHash)
+      } catch (e : any) {
         setAttemptingTxn(false)
         // we only care if the error is something _other_ than the user rejected the tx
         if (e?.code !== 4001) {
           console.error(e)
         }
-      })
+      }
   }
 
   const modalHeader = () => {
@@ -314,6 +317,7 @@ export default function AddLiquidity({
               />
             )}
             pendingText={pendingText}
+            transactionStateText={transactionStateText}
           />
           <CardBody>
             <WrongNetworkBanner />
