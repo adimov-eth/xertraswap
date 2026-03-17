@@ -79,7 +79,6 @@ export default function AddLiquidity({
   // modal and loading
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false) // clicked confirm
-  const [transactionStateText, setTransactionStateText] = useState("Confirm this transaction in your wallet")
 
   // txn values
   const [deadline] = useUserDeadline() // custom from users settings
@@ -177,9 +176,9 @@ export default function AddLiquidity({
           gasLimit: calculateGasMargin(estimatedGasLimit),
         })
 
-        setTransactionStateText("Waiting for transaction to be confirmed on chain")
+        setTxHash(transactionResponse.hash)
 
-        const response = await transactionResponse.wait()
+        await transactionResponse.wait()
 
         setAttemptingTxn(false)
 
@@ -188,8 +187,6 @@ export default function AddLiquidity({
             currencies[Field.CURRENCY_A]?.symbol
           } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`,
         })
-
-        setTxHash(response.transactionHash)
       } catch (e : any) {
         setAttemptingTxn(false)
         // we only care if the error is something _other_ than the user rejected the tx
@@ -317,7 +314,6 @@ export default function AddLiquidity({
               />
             )}
             pendingText={pendingText}
-            transactionStateText={transactionStateText}
           />
           <CardBody>
             <WrongNetworkBanner />

@@ -82,7 +82,6 @@ export default function RemoveLiquidity({
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [showDetailed, setShowDetailed] = useState<boolean>(false)
   const [attemptingTxn, setAttemptingTxn] = useState(false) // clicked confirm
-  const [transactionStateText, setTransactionStateText] = useState("Confirm this transaction in your wallet")
 
   // txn values
   const [txHash, setTxHash] = useState<string>('')
@@ -314,9 +313,9 @@ export default function RemoveLiquidity({
 
         const transactionResponse = await router[methodName](...args, { gasLimit: safeGasEstimate})
 
-        setTransactionStateText("Waiting for transaction to be confirmed on chain")
+        setTxHash(transactionResponse.hash)
 
-        const result = await transactionResponse.wait()
+        await transactionResponse.wait()
 
         setAttemptingTxn(false)
 
@@ -324,10 +323,7 @@ export default function RemoveLiquidity({
           summary: `Remove ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
             currencyA?.symbol
           } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencyB?.symbol}`,
-        })
-
-        setTxHash(result.transactionHash)
-        
+        })        
       } catch (error: any) {
         // we only care if the error is something _other_ than the user rejected the tx
         setAttemptingTxn(false)
@@ -477,7 +473,6 @@ export default function RemoveLiquidity({
               />
             )}
             pendingText={pendingText}
-            transactionStateText={transactionStateText}
           />
           <WrongNetworkBanner />
           <AutoColumn gap="md">

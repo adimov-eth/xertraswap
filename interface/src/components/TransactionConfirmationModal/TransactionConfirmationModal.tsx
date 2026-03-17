@@ -3,6 +3,7 @@ import Modal from '../Modal'
 import ConfirmationPendingContent from './ConfirmationPendingContent'
 import TransactionSubmittedContent from './TransactionSubmittedContent'
 import Web3AuthContext from '../../pages/Web3AuthContext'
+import { has } from 'lodash'
 
 interface ConfirmationModalProps {
   isOpen: boolean
@@ -11,7 +12,6 @@ interface ConfirmationModalProps {
   content: () => React.ReactNode
   attemptingTxn: boolean
   pendingText: string
-  transactionStateText: string
 }
 
 const TransactionConfirmationModal = ({
@@ -20,7 +20,6 @@ const TransactionConfirmationModal = ({
   attemptingTxn,
   hash,
   pendingText,
-  transactionStateText,
   content
 }: ConfirmationModalProps) => {
   const { chainId } = useContext(Web3AuthContext)
@@ -31,7 +30,7 @@ const TransactionConfirmationModal = ({
   return (
     <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90}>
       {attemptingTxn ? (
-        <ConfirmationPendingContent pendingText={pendingText} transactionStateText={transactionStateText}/>
+        <ConfirmationPendingContent onDismiss={onDismiss} pendingText={pendingText} txHash={hash}/>
       ) : hash ? (
         <TransactionSubmittedContent chainId={chainId} hash={hash} onDismiss={onDismiss} />
       ) : (

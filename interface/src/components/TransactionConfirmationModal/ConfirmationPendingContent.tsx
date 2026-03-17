@@ -5,8 +5,9 @@ import { AutoColumn } from '../Column'
 import { Wrapper, Section, ConfirmedIcon, ContentHeader } from './helpers'
 
 type ConfirmationPendingContentProps = { 
+  onDismiss: () => void; 
   pendingText: string;
-  transactionStateText: string
+  txHash: string | undefined
 }
 
 const CustomLightSpinner = styled(Spinner)<{ size: string }>`
@@ -14,22 +15,21 @@ const CustomLightSpinner = styled(Spinner)<{ size: string }>`
   width: ${({ size }) => size};
 `
 
-const ConfirmationPendingContent = ({ pendingText, transactionStateText }: ConfirmationPendingContentProps) => {
+const ConfirmationPendingContent = ({ onDismiss, pendingText, txHash }: ConfirmationPendingContentProps) => {
   return (
     <Wrapper>
       <Section>
-        <AutoColumn gap="12px" justify="center">
-          <AutoColumn gap="12px" justify="center">
-            <Text fontSize="18px">
-              <strong>{pendingText}</strong>
-            </Text>
-          </AutoColumn>
-        </AutoColumn>
+        <ContentHeader onDismiss={onDismiss}>Waiting for confirmation</ContentHeader>
         <ConfirmedIcon>
           <CustomLightSpinner src="/images/blue-loader.svg" alt="loader" size="90px" />
         </ConfirmedIcon>
         <AutoColumn gap="12px" justify="center">
-          <Text fontSize="16px">{transactionStateText}</Text>
+          <AutoColumn gap="12px" justify="center">
+            <Text fontSize="14px">
+              <strong>{pendingText}</strong>
+            </Text>
+          </AutoColumn>
+          <Text fontSize="14px">{txHash ? 'Waiting for transaction to be confirmed on chain' : 'Confirm this transaction in your wallet'}</Text>
         </AutoColumn>
       </Section>
     </Wrapper>
