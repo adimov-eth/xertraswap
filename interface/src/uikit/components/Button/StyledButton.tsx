@@ -109,12 +109,19 @@ const StyledButton = styled.button.withConfig({
   outline: 0;
   transition: background-color 0.2s, opacity 0.2s;
 
-  &:hover:not(:disabled):not(.pancake-button--disabled):not(.pancake-button--disabled):not(:active) {
-    opacity: 0.9;
+  &:hover:not(:disabled):not(.pancake-button--disabled):not(:active) {
+    transform: translateY(-1px);
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2), 0px -1px 0px 0px rgba(14, 14, 44, 0.4) inset;
+    filter: brightness(1.15) saturate(1.1);
   }
 
-  &:active:not(:disabled):not(.pancake-button--disabled):not(.pancake-button--disabled) {
-    opacity: 0.85;
+  &:active:not(:disabled):not(.pancake-button--disabled) {
+    transform: translateY(1px);
+    box-shadow: none;
+  }
+
+  &:focus-visible {
+    outline: none;
   }
 
   ${getDisabledStyles}
@@ -122,6 +129,14 @@ const StyledButton = styled.button.withConfig({
   ${getVariantStyles}
   ${spaceStyles}
   ${layoutStyles}
+
+  &:link, &:visited, &:hover, &:active {
+    color: inherit;
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
 `
 
 export default StyledButton

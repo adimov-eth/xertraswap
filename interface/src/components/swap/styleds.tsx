@@ -16,7 +16,7 @@ export const ArrowWrapper = styled.div.withConfig({
   ${({ clickable }) =>
     clickable
       ? css`
-          :hover {
+          &:hover {
             cursor: pointer;
             opacity: 0.8;
           }
@@ -62,10 +62,10 @@ export const StyledBalanceMaxMini = styled.button`
   align-items: center;
   float: right;
 
-  :hover {
+  &:hover {
     background-color: ${({ theme }) => theme.colors.tertiary};
   }
-  :focus {
+  &:focus {
     background-color: ${({ theme }) => theme.colors.tertiary};
     outline: none;
   }

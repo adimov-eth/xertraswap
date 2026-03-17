@@ -12,7 +12,7 @@ export const FilterWrapper = styled(RowFixed)`
   & > * {
     user-select: none;
   }
-  :hover {
+  &:hover {
     cursor: pointer;
   }
 `

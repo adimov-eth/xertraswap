@@ -13,7 +13,7 @@ const PriceLink = styled.a`
   display: flex;
   align-items: center;
   text-decoration: none;
-  :hover {
+  &:hover {
     opacity: 0.8;
   }
 `

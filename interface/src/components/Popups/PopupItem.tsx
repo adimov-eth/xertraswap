@@ -11,7 +11,7 @@ export const StyledClose = styled(X)`
   right: 10px;
   top: 10px;
 
-  :hover {
+  &:hover {
     cursor: pointer;
   }
 `

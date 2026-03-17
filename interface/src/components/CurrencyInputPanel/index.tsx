@@ -31,8 +31,8 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
   border: none;
   padding: 0 0.5rem;
   transition: background-color 150ms ease-in-out;
-  :focus,
-  :hover {
+  &:focus,
+  &:hover {
     background-color: rgba(255, 255, 255, 0.05);
   }
 `
