@@ -315,15 +315,15 @@ export default function RemoveLiquidity({
 
         setTxHash(transactionResponse.hash)
 
-        await transactionResponse.wait()
-
-        setAttemptingTxn(false)
-
         addTransaction(transactionResponse, {
           summary: `Remove ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
             currencyA?.symbol
           } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencyB?.symbol}`,
-        })        
+        })
+
+        await transactionResponse.wait()
+
+        setAttemptingTxn(false)
       } catch (error: any) {
         // we only care if the error is something _other_ than the user rejected the tx
         setAttemptingTxn(false)

@@ -3,7 +3,6 @@ import Modal from '../Modal'
 import ConfirmationPendingContent from './ConfirmationPendingContent'
 import TransactionSubmittedContent from './TransactionSubmittedContent'
 import Web3AuthContext from '../../pages/Web3AuthContext'
-import { has } from 'lodash'
 
 interface ConfirmationModalProps {
   isOpen: boolean
