@@ -193,12 +193,16 @@ export default function PoolDetails() {
     }
     setSwapState((prevState) => ({ ...prevState, attemptingTxn: true, swapErrorMessage: undefined, txHash: undefined }))
     swapCallback()
-      .then((hash) => {
+      .then(async ({ hash, wait }) => {
+        setSwapState((prevState) => ({
+          ...prevState,
+          swapErrorMessage: undefined,
+          txHash: hash,
+        }))
+        await wait()
         setSwapState((prevState) => ({
           ...prevState,
           attemptingTxn: false,
-          swapErrorMessage: undefined,
-          txHash: hash,
         }))
       })
       .catch((error) => {

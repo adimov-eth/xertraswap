@@ -178,15 +178,15 @@ export default function AddLiquidity({
 
         setTxHash(transactionResponse.hash)
 
-        await transactionResponse.wait()
-
-        setAttemptingTxn(false)
-
         addTransaction(transactionResponse, {
           summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
             currencies[Field.CURRENCY_A]?.symbol
           } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`,
         })
+
+        await transactionResponse.wait()
+
+        setAttemptingTxn(false)
       } catch (e : any) {
         setAttemptingTxn(false)
         // we only care if the error is something _other_ than the user rejected the tx
