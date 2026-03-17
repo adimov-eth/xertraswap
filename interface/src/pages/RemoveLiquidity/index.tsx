@@ -1,8 +1,7 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import styled, { ThemeContext } from 'styled-components'
 import { splitSignature } from '@ethersproject/bytes'
 import { Contract } from '@ethersproject/contracts'
-import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, currencyEquals, ETHER, Percent, WETH } from '@xertra/sdk'
 import { Button, Flex, Text } from 'uikit'
 import { ArrowDown, Plus } from 'react-feather'
@@ -191,13 +190,15 @@ export default function RemoveLiquidity({
 
   // tx sending
   const addTransaction = useTransactionAdder()
+
   async function onRemove() {
-    if (connection.kind !== 'connected') throw new Error('missing dependencies')
-    const { account: connectedAccount } = connection
+    if (connection.kind !== 'connected') throw new Error('missing dependencies')      
+    const { account: connectedAccount } = connection  
     const { [Field.CURRENCY_A]: currencyAmountA, [Field.CURRENCY_B]: currencyAmountB } = parsedAmounts
     if (!currencyAmountA || !currencyAmountB) {
       throw new Error('missing currency amounts')
     }
+
     const router = getRouterContract(chainId, connection.provider, connection.account)
 
     const amountsMin = {
@@ -283,6 +284,7 @@ export default function RemoveLiquidity({
     } else {
       throw new Error('Attempting to confirm without approval or a signature. Please contact support.')
     }
+    
     const safeGasEstimates: (BigNumber | undefined)[] = await Promise.all(
       methodNames.map((methodName, index) =>
         router.estimateGas[methodName](...args)
@@ -302,29 +304,31 @@ export default function RemoveLiquidity({
     if (indexOfSuccessfulEstimation === -1) {
       console.error('This transaction would fail. Please contact support.')
     } else {
-      const methodName = methodNames[indexOfSuccessfulEstimation]
-      const safeGasEstimate = safeGasEstimates[indexOfSuccessfulEstimation]
 
-      setAttemptingTxn(true)
-      await router[methodName](...args, {
-        gasLimit: safeGasEstimate,
-      })
-        .then((response: TransactionResponse) => {
-          setAttemptingTxn(false)
+      try {
+        const methodName = methodNames[indexOfSuccessfulEstimation]
+        const safeGasEstimate = safeGasEstimates[indexOfSuccessfulEstimation]
 
-          addTransaction(response, {
-            summary: `Remove ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
-              currencyA?.symbol
-            } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencyB?.symbol}`,
-          })
+        setAttemptingTxn(true)
 
-          setTxHash(response.hash)
+        const transactionResponse = await router[methodName](...args, { gasLimit: safeGasEstimate})
+
+        setTxHash(transactionResponse.hash)
+
+        addTransaction(transactionResponse, {
+          summary: `Remove ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
+            currencyA?.symbol
+          } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencyB?.symbol}`,
         })
-        .catch((e: Error) => {
-          setAttemptingTxn(false)
-          // we only care if the error is something _other_ than the user rejected the tx
-          console.error(e)
-        })
+
+        await transactionResponse.wait()
+
+        setAttemptingTxn(false)
+      } catch (error: any) {
+        // we only care if the error is something _other_ than the user rejected the tx
+        setAttemptingTxn(false)
+        console.error(error)
+      }
     }
   }
 

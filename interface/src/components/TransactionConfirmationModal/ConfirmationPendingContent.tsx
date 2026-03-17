@@ -1,18 +1,21 @@
-import React from 'react'
 import styled from 'styled-components'
 import { Text } from 'uikit'
 import { Spinner } from '../Shared'
 import { AutoColumn } from '../Column'
 import { Wrapper, Section, ConfirmedIcon, ContentHeader } from './helpers'
 
-type ConfirmationPendingContentProps = { onDismiss: () => void; pendingText: string }
+type ConfirmationPendingContentProps = { 
+  onDismiss: () => void; 
+  pendingText: string;
+  txHash: string | undefined
+}
 
 const CustomLightSpinner = styled(Spinner)<{ size: string }>`
   height: ${({ size }) => size};
   width: ${({ size }) => size};
 `
 
-const ConfirmationPendingContent = ({ onDismiss, pendingText }: ConfirmationPendingContentProps) => {
+const ConfirmationPendingContent = ({ onDismiss, pendingText, txHash }: ConfirmationPendingContentProps) => {
   return (
     <Wrapper>
       <Section>
@@ -26,7 +29,7 @@ const ConfirmationPendingContent = ({ onDismiss, pendingText }: ConfirmationPend
               <strong>{pendingText}</strong>
             </Text>
           </AutoColumn>
-          <Text fontSize="14px">Confirm this transaction in your wallet</Text>
+          <Text fontSize="14px">{txHash ? 'Waiting for transaction to be confirmed on chain' : 'Confirm this transaction in your wallet'}</Text>
         </AutoColumn>
       </Section>
     </Wrapper>
