@@ -10,6 +10,7 @@ import { computeSlippageAdjustedAmounts } from '../utils/prices'
 import { calculateGasMargin } from '../utils'
 import { useTokenContract } from './useContract'
 import Web3AuthContext from '../pages/Web3AuthContext'
+import { TransactionActionPerformed } from '../state/transactions/actions'
 
 export enum ApprovalState {
   UNKNOWN,
@@ -22,7 +23,7 @@ export enum ApprovalState {
 export function useApproveCallback(
   amountToApprove?: CurrencyAmount,
   spender?: string
-): [ApprovalState, () => Promise<void>] {
+): [ApprovalState, (actionPerformed: TransactionActionPerformed) => Promise<void>] {
   const {account} = useContext(Web3AuthContext)
   const token = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
@@ -46,7 +47,7 @@ export function useApproveCallback(
   const tokenContract = useTokenContract(token?.address)
   const addTransaction = useTransactionAdder()
 
-  const approve = useCallback(async (): Promise<void> => {
+  const approve = useCallback(async (actionPerformed: TransactionActionPerformed): Promise<void> => {
     if (approvalState !== ApprovalState.NOT_APPROVED) {
       console.error('approve was called unnecessarily')
       return
@@ -84,7 +85,7 @@ export function useApproveCallback(
         gasLimit: calculateGasMargin(estimatedGas),
       })
       .then((response: TransactionResponse) => {
-        addTransaction(response, {
+        addTransaction(response, actionPerformed, {
           summary: `Approve ${amountToApprove.currency.symbol}`,
           approval: { tokenAddress: token.address, spender },
         })

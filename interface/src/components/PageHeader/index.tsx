@@ -4,11 +4,14 @@ import { Heading, IconButton, Text, Flex, useModal, TuneIcon, HistoryIcon } from
 import useI18n from 'hooks/useI18n'
 import SettingsModal from './SettingsModal'
 import RecentTransactionsModal from './RecentTransactionsModal'
+import { TransactionActionPerformed } from '../../state/transactions/actions'
+import { Handler } from '../../uikit/widgets/Modal/types'
 
 interface PageHeaderProps {
   title: ReactNode
   description?: ReactNode
   children?: ReactNode
+  modal? : Handler
 }
 
 const StyledPageHeader = styled.div`
@@ -20,10 +23,21 @@ const Details = styled.div`
   flex: 1;
 `
 
-const PageHeader = ({ title, description, children }: PageHeaderProps) => {
+export const PoolPageHeader = ({ title, description, children }: PageHeaderProps) => {
+  const TranslateString = useI18n()
+  const [onPresentRecentTransactions] = useModal(<RecentTransactionsModal actionPerformed={TransactionActionPerformed.Liquidity} translateString={TranslateString} />)
+  return (<PageHeader title={title} description={description} children={children} modal={onPresentRecentTransactions}/>)
+}
+
+export const SwapPageHeader = ({ title, description, children }: PageHeaderProps) => {
+  const TranslateString = useI18n()
+  const [onPresentRecentTransactions] = useModal(<RecentTransactionsModal actionPerformed={TransactionActionPerformed.Swap} translateString={TranslateString} />)
+  return (<PageHeader title={title} description={description} children={children} modal={onPresentRecentTransactions}/>)
+}
+
+const PageHeader = ({ title, description, children, modal }: PageHeaderProps) => {
   const TranslateString = useI18n()
   const [onPresentSettings] = useModal(<SettingsModal translateString={TranslateString} />)
-  const [onPresentRecentTransactions] = useModal(<RecentTransactionsModal translateString={TranslateString} />)
 
   return (
     <StyledPageHeader>
@@ -41,7 +55,7 @@ const PageHeader = ({ title, description, children }: PageHeaderProps) => {
         </IconButton>
         <IconButton
           variant="text"
-          onClick={onPresentRecentTransactions}
+          onClick={modal}
           title={TranslateString(1202, 'Recent transactions')}
         >
           <HistoryIcon width="24px" color="currentColor" />

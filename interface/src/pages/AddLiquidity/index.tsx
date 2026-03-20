@@ -36,6 +36,7 @@ import { PoolPriceBar } from './PoolPriceBar'
 import { ROUTER_ADDRESS } from '../../constants'
 import Web3AuthContext from '../Web3AuthContext'
 import WrongNetworkBanner from '../../components/WrongNetworkBanner'
+import { TransactionActionPerformed } from '../../state/transactions/actions'
 
 export default function AddLiquidity({
   match: {
@@ -178,7 +179,9 @@ export default function AddLiquidity({
 
         setTxHash(transactionResponse.hash)
 
-        addTransaction(transactionResponse, {
+        addTransaction(
+          transactionResponse, 
+          TransactionActionPerformed.Liquidity, {
           summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
             currencies[Field.CURRENCY_A]?.symbol
           } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`,
@@ -399,7 +402,7 @@ export default function AddLiquidity({
                       <RowBetween>
                         {approvalA !== ApprovalState.APPROVED && (
                           <Button
-                            onClick={approveACallback}
+                            onClick={()=> approveACallback(TransactionActionPerformed.ApproveAddLiquidity)}
                             disabled={approvalA === ApprovalState.PENDING}
                             style={{ width: approvalB !== ApprovalState.APPROVED ? '48%' : '100%' }}
                           >
@@ -412,7 +415,7 @@ export default function AddLiquidity({
                         )}
                         {approvalB !== ApprovalState.APPROVED && (
                           <Button
-                            onClick={approveBCallback}
+                            onClick={() => approveBCallback(TransactionActionPerformed.ApproveAddLiquidity)}
                             disabled={approvalB === ApprovalState.PENDING}
                             style={{ width: approvalA !== ApprovalState.APPROVED ? '48%' : '100%' }}
                           >

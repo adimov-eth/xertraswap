@@ -31,12 +31,13 @@ import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from 'utils/prices'
 import Loader from 'components/Loader'
 import useI18n from 'hooks/useI18n'
-import PageHeader from 'components/PageHeader'
+import { SwapPageHeader } from 'components/PageHeader'
 import ConnectWalletButton from 'components/ConnectWalletButton'
 import WrongNetworkBanner from '../../components/WrongNetworkBanner'
 import WrongNetworkModal from '../../components/WrongNetworkModal'
 import AppBody from '../AppBody'
 import Web3AuthContext from '../Web3AuthContext'
+import { TransactionActionPerformed } from '../../state/transactions/actions'
 
 const Swap = () => {
   const { account, isWrongNetwork } = useContext(Web3AuthContext)
@@ -317,7 +318,7 @@ const Swap = () => {
             swapErrorMessage={swapErrorMessage}
             onDismiss={handleConfirmDismiss}
           />
-          <PageHeader
+          <SwapPageHeader
             title={TranslateString(8, 'Exchange')}
             description={TranslateString(1192, 'Trade tokens in an instant')}
           />
@@ -436,7 +437,7 @@ const Swap = () => {
               ) : showApproveFlow ? (
                 <RowBetween>
                   <Button
-                    onClick={approveCallback}
+                    onClick={() => approveCallback(TransactionActionPerformed.ApproveSwap)}
                     disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
                     style={{ width: '48%' }}
                     variant={approval === ApprovalState.APPROVED ? 'success' : 'primary'}

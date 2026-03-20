@@ -1,14 +1,16 @@
 import React, { useContext, useMemo } from 'react'
 import { CheckmarkCircleIcon, ErrorIcon, Flex, LinkExternal, Text, Modal, Button } from 'uikit'
 import { getBscScanLink } from 'utils'
-import { isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
+import { isTransactionOfType, isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
 import { TransactionDetails } from 'state/transactions/reducer'
 import Loader from 'components/Loader'
 import Web3AuthContext from '../../pages/Web3AuthContext'
+import { TransactionActionPerformed } from '../../state/transactions/actions'
 
 type RecentTransactionsModalProps = {
   onDismiss?: () => void
   translateString: (translationId: number, fallback: string) => string
+  actionPerformed: TransactionActionPerformed
 }
 
 // TODO: Fix UI Kit typings
@@ -30,16 +32,18 @@ const getRowStatus = (sortedRecentTransaction: TransactionDetails) => {
   return { icon: <ErrorIcon color="failure" />, color: 'failure' }
 }
 
-const RecentTransactionsModal = ({ onDismiss = defaultOnDismiss, translateString }: RecentTransactionsModalProps) => {
+const RecentTransactionsModal = ({ onDismiss = defaultOnDismiss, translateString, actionPerformed }: RecentTransactionsModalProps) => {
   const { account, chainId } = useContext(Web3AuthContext)
   const allTransactions = useAllTransactions()
 
   // Logic taken from Web3Status/index.tsx line 175
-  const sortedRecentTransactions = useMemo(() => {
+  const sortedTransactionsByType = useMemo(() => {
     const txs = Object.values(allTransactions)
-    return txs.filter(isTransactionRecent).sort(newTransactionsFirst)
+    return txs
+      .filter(isTransactionRecent)
+      .filter(tx => isTransactionOfType(tx, actionPerformed))
+      .sort(newTransactionsFirst)
   }, [allTransactions])
-
   return (
     <Modal title={translateString(1202, 'Recent transactions')} onDismiss={onDismiss}>
       {!account && (
@@ -52,7 +56,7 @@ const RecentTransactionsModal = ({ onDismiss = defaultOnDismiss, translateString
           </Button>
         </Flex>
       )}
-      {account && chainId && sortedRecentTransactions.length === 0 && (
+      {account && chainId && sortedTransactionsByType.length === 0 && (
         <Flex justifyContent="center" flexDirection="column" alignItems="center">
           <Text mb="8px" $bold>
             No recent transactions
@@ -64,7 +68,7 @@ const RecentTransactionsModal = ({ onDismiss = defaultOnDismiss, translateString
       )}
       {account &&
         chainId &&
-        sortedRecentTransactions.map((sortedRecentTransaction) => {
+        sortedTransactionsByType.map((sortedRecentTransaction) => {
           const { hash, summary } = sortedRecentTransaction
           const { icon, color } = getRowStatus(sortedRecentTransaction)
 

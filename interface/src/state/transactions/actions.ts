@@ -12,19 +12,31 @@ export interface SerializableTransactionReceipt {
   status?: number
 }
 
+export enum TransactionActionPerformed {
+  'Swap',
+  'Liquidity',
+  'ApproveAddLiquidity',
+  'ApproveRemoveLiquidity',
+  'ApproveSwap'
+}
+
 export const addTransaction = createAction<{
   chainId: ChainId
   hash: string
   from: string
   approval?: { tokenAddress: string; spender: string }
+  actionPerformed : TransactionActionPerformed
   summary?: string
 }>('transactions/addTransaction')
+
 export const clearAllTransactions = createAction<{ chainId: ChainId }>('transactions/clearAllTransactions')
+
 export const finalizeTransaction = createAction<{
   chainId: ChainId
   hash: string
   receipt: SerializableTransactionReceipt
 }>('transactions/finalizeTransaction')
+
 export const checkedTransaction = createAction<{
   chainId: ChainId
   hash: string
