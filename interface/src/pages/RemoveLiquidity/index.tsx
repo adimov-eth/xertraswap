@@ -41,6 +41,7 @@ import { useBurnActionHandlers, useDerivedBurnInfo, useBurnState } from '../../s
 import { Field } from '../../state/burn/actions'
 import { useUserDeadline, useUserSlippageTolerance } from '../../state/user/hooks'
 import Web3AuthContext from '../Web3AuthContext'
+import { TransactionActionPerformed } from '../../state/transactions/actions'
 
 const OutlineCard = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.borderColor};
@@ -170,7 +171,7 @@ export default function RemoveLiquidity({
       .catch((e) => {
         // for all errors other than 4001 (EIP-1193 user rejected request), fall back to manual approve
         if (e?.code !== 4001) {
-          approveCallback()
+          approveCallback(TransactionActionPerformed.ApproveRemoveLiquidity)
         }
       })
   }
@@ -315,7 +316,9 @@ export default function RemoveLiquidity({
 
         setTxHash(transactionResponse.hash)
 
-        addTransaction(transactionResponse, {
+        addTransaction(
+          transactionResponse, 
+          TransactionActionPerformed.Liquidity, {
           summary: `Remove ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
             currencyA?.symbol
           } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencyB?.symbol}`,

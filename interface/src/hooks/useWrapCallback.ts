@@ -6,6 +6,7 @@ import { useTransactionAdder } from '../state/transactions/hooks'
 import { useCurrencyBalance } from '../state/wallet/hooks'
 import { useWETHContract } from './useContract'
 import Web3AuthContext from '../pages/Web3AuthContext'
+import { TransactionActionPerformed } from '../state/transactions/actions'
 
 export enum WrapType {
   NOT_APPLICABLE,
@@ -51,7 +52,7 @@ export default function useWrapCallback(
                 try {
                   setIsBusy(true)
                   const txReceipt = await wethContract.deposit({ value: `0x${inputAmount.raw.toString(16)}` })
-                  addTransaction(txReceipt, { summary: `Wrap ${inputAmount.toSignificant(6)} STRAX to WSTRAX` })
+                  addTransaction(txReceipt, TransactionActionPerformed.Swap, { summary: `Wrap ${inputAmount.toSignificant(6)} STRAX to WSTRAX` })
                   await txReceipt.wait()
                 } catch (error) {
                   console.error('Could not deposit', error)
@@ -74,7 +75,7 @@ export default function useWrapCallback(
                 try {
                   setIsBusy(true)
                   const txReceipt = await wethContract.withdraw(`0x${inputAmount.raw.toString(16)}`)
-                  addTransaction(txReceipt, { summary: `Unwrap ${inputAmount.toSignificant(6)} WSTRAX to STRAX` })
+                  addTransaction(txReceipt, TransactionActionPerformed.Swap,  { summary: `Unwrap ${inputAmount.toSignificant(6)} WSTRAX to STRAX` })
                   await txReceipt.wait()
                 } catch (error) {
                   console.error('Could not withdraw', error)

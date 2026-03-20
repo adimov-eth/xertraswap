@@ -8,6 +8,7 @@ import { calculateGasMargin, getRouterContract, isAddress, shortenAddress } from
 import isZero from '../utils/isZero'
 import useENS from './useENS'
 import Web3AuthContext from '../pages/Web3AuthContext'
+import { TransactionActionPerformed } from '../state/transactions/actions'
 
  enum SwapCallbackState {
   INVALID,
@@ -198,8 +199,8 @@ export function useSwapCallback(
                       : recipientAddressOrName
                   }`
 
-            addTransaction(response, {
-              summary: withRecipient,
+            addTransaction(response, TransactionActionPerformed.Swap, {
+              summary: withRecipient              
             })
 
             return { hash: response.hash, wait: () => response.wait() }

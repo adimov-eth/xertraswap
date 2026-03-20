@@ -34,6 +34,7 @@ import { useExpertModeManager, useUserDeadline, useUserSlippageTolerance } from 
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from 'utils/prices'
 import Web3AuthContext from '../Web3AuthContext'
+import { TransactionActionPerformed } from '../../state/transactions/actions'
 
 const BodyWrapper = styled(Card)`
   position: relative;
@@ -431,7 +432,7 @@ export default function PoolDetails() {
                   ) : showApproveFlow ? (
                     <RowBetween>
                       <Button
-                        onClick={approveCallback}
+                        onClick={() => approveCallback(TransactionActionPerformed.ApproveSwap)}
                         disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
                         style={{ width: '48%' }}
                         variant={approval === ApprovalState.APPROVED ? 'success' : 'primary'}

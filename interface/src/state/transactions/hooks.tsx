@@ -2,13 +2,14 @@ import { TransactionResponse } from '@ethersproject/providers'
 import { useCallback, useContext, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, AppState } from '../index'
-import { addTransaction } from './actions'
+import { addTransaction, TransactionActionPerformed } from './actions'
 import { TransactionDetails } from './reducer'
 import Web3AuthContext from '../../pages/Web3AuthContext'
 
 // helper that can take a ethers library transaction response and add it to the list of transactions
 export function useTransactionAdder(): (
   response: TransactionResponse,
+  actionPerformed: TransactionActionPerformed,
   customData?: { summary?: string; approval?: { tokenAddress: string; spender: string } }
 ) => void {
   const { account, chainId } = useContext(Web3AuthContext)
@@ -18,7 +19,8 @@ export function useTransactionAdder(): (
   return useCallback(
     (
       response: TransactionResponse,
-      { summary, approval }: { summary?: string; approval?: { tokenAddress: string; spender: string } } = {}
+      actionPerformed: TransactionActionPerformed,
+      { summary, approval }: { summary?: string; approval?: { tokenAddress: string; spender: string }; } = {}
     ) => {
       if (!account) return
       if (!chainId) return
@@ -27,7 +29,7 @@ export function useTransactionAdder(): (
       if (!hash) {
         throw Error('No transaction hash found.')
       }
-      dispatch(addTransaction({ hash, from: account, chainId, approval, summary }))
+      dispatch(addTransaction({ hash, from: account, chainId, approval, summary, actionPerformed }))
     },
     [dispatch, chainId, account]
   )
@@ -56,6 +58,14 @@ export function useIsTransactionPending(transactionHash?: string): boolean {
  */
 export function isTransactionRecent(tx: TransactionDetails): boolean {
   return new Date().getTime() - tx.addedTime < 86_400_000
+}
+
+/**
+ * Filters a transaction based on its type
+ * @param tx to check for type
+ */
+export function isTransactionOfType(tx: TransactionDetails, actionPerformed: TransactionActionPerformed): boolean {
+  return tx.actionPerformed == actionPerformed
 }
 
 // returns whether a token has a pending approval transaction

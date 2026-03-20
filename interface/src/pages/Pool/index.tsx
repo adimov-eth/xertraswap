@@ -14,7 +14,7 @@ import { usePairs } from 'data/Reserves'
 import { toV2LiquidityToken, useTrackedTokenPairs } from 'state/user/hooks'
 import { Dots } from 'components/swap/styleds'
 import useI18n from 'hooks/useI18n'
-import PageHeader from 'components/PageHeader'
+import { PoolPageHeader } from 'components/PageHeader'
 import AppBody from '../AppBody'
 import Web3AuthContext from '../Web3AuthContext'
 
@@ -56,14 +56,14 @@ export default function Pool() {
   return (
     <>
       <AppBody>
-        <PageHeader
+        <PoolPageHeader
           title={TranslateString(262, 'Liquidity')}
           description={TranslateString(1168, 'Add liquidity to receive LP tokens')}
         >
           <Button id="join-pool-button" as={Link} to="/add/STRAX">
             {TranslateString(168, 'Add Liquidity')}
           </Button>
-        </PageHeader>
+        </PoolPageHeader>
         <AutoColumn gap="lg" justify="center">
           <CardBody>
             <AutoColumn gap="12px" style={{ width: '100%' }}>

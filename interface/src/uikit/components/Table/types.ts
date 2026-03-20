@@ -1,3 +1,5 @@
+import { SpaceProps } from "../../util/styledProps"
+
 export type ColumnType<T extends DataType> = {
   name: string
   label?: string
@@ -144,3 +146,16 @@ export type TableAction<T extends DataType> =
   | { type: 'NEXT_PAGE' }
   | { type: 'PREV_PAGE' }
   | { type: 'TOGGLE_ALL' }
+
+  export interface TableHeaderProps extends SpaceProps {
+    color?: string
+    fontSize?: string
+    fontWeight?: string | number
+    lineHeight?: string | number
+    letterSpacing?: string
+    textAlign?: string
+    $bold?: boolean
+    $small?: boolean
+    textTransform?: 'uppercase' | 'lowercase' | 'capitalize'
+  }
+  
