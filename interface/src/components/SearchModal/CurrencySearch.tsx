@@ -1,5 +1,5 @@
 import { Currency, ETHER, Token } from '@xertra/sdk'
-import React, { KeyboardEvent, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { KeyboardEvent, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { Text, CloseIcon } from 'uikit'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
