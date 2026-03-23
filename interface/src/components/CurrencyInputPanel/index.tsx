@@ -60,7 +60,6 @@ const InputPanel = styled.div<{ hideInput?: boolean }>`
   position: relative;
   border-radius: 8px;
   background-color: ${({ theme }) => theme.colors.background};
-  z-index: 1;
 `
 const Container = styled.div.withConfig({
   shouldForwardProp: (prop) => prop !== 'hideInput',

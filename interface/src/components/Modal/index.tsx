@@ -10,7 +10,7 @@ const Overlay = styled.div.withConfig({
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 2;
+  z-index: 100;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
