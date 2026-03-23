@@ -10,7 +10,6 @@ import ConfirmSwapModal from 'components/swap/ConfirmSwapModal'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
 import { AutoRow, RowBetween } from 'components/Row'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
-import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
 import { ArrowWrapper, BottomGrouping, SwapCallbackError, Wrapper } from 'components/swap/styleds'
 import TradePrice from 'components/swap/TradePrice'
 import TokenWarningModal from 'components/TokenWarningModal'
@@ -176,12 +175,10 @@ const Swap = () => {
   const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
 
   const handleSwap = useCallback(() => {
-    if (priceImpactWithoutFee && !confirmPriceImpactWithoutFee(priceImpactWithoutFee)) {
-      return
-    }
     if (!swapCallback) {
       return
     }
+
     setSwapState((prevState) => ({ ...prevState, attemptingTxn: true, swapErrorMessage: undefined, txHash: undefined }))
     swapCallback()
       .then(async ({ hash, wait }) => {

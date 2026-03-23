@@ -16,6 +16,7 @@ import QuestionHelper from '../QuestionHelper'
 import { AutoRow, RowBetween, RowFixed } from '../Row'
 import FormattedPriceImpact from './FormattedPriceImpact'
 import { StyledBalanceMaxMini, SwapCallbackError } from './styleds'
+import PriceImpactBanner from '../TransactionConfirmationModal/PriceImpactBanner'
 
 export default function SwapModalFooter({
   trade,
@@ -35,7 +36,7 @@ export default function SwapModalFooter({
     allowedSlippage,
     trade,
   ])
-  const { priceImpactWithoutFee, realizedLPFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
+  const { priceImpactWithoutFee, realizedLPFee } = computeTradePriceBreakdown(trade)
   const severity = warningSeverity(priceImpactWithoutFee)
   const TranslateString = useI18n()
 
@@ -114,6 +115,13 @@ export default function SwapModalFooter({
         </RowBetween>
       </AutoColumn>
 
+      { severity > 2 ?
+        <AutoRow>
+          <PriceImpactBanner priceImpactWithoutFee={priceImpactWithoutFee!} />
+        </AutoRow>
+        : null
+      }
+      
       <AutoRow>
         <Button
           onClick={onConfirm}

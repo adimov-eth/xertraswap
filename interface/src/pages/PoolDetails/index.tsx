@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import styled, { ThemeContext } from 'styled-components'
 import { CurrencyAmount, JSBI, TokenAmount, Trade } from '@xertra/sdk'
@@ -15,7 +15,6 @@ import CurrencyInputPanel from 'components/CurrencyInputPanel'
 import ConfirmSwapModal from 'components/swap/ConfirmSwapModal'
 import TradePrice from 'components/swap/TradePrice'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
-import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
 import ProgressSteps from 'components/ProgressSteps'
 import Loader from 'components/Loader'
 import ConnectWalletButton from 'components/ConnectWalletButton'
@@ -186,12 +185,10 @@ export default function PoolDetails() {
   const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
 
   const handleSwap = useCallback(() => {
-    if (priceImpactWithoutFee && !confirmPriceImpactWithoutFee(priceImpactWithoutFee)) {
-      return
-    }
     if (!swapCallback) {
       return
     }
+
     setSwapState((prevState) => ({ ...prevState, attemptingTxn: true, swapErrorMessage: undefined, txHash: undefined }))
     swapCallback()
       .then(async ({ hash, wait }) => {
