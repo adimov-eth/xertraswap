@@ -11,6 +11,7 @@ import { Wrapper } from 'components/swap/styleds'
 import { AutoColumn } from 'components/Column'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
 import { useCurrency } from 'hooks/Tokens'
+import Loader from 'components/Loader'
 
 // Bridge info lookup by token address
 const BRIDGE_INFO: Record<string, string> = {
@@ -207,7 +208,7 @@ export default function Pools() {
               <tr key={pool.info.pid}>
                 {pool.state !== PairState.EXISTS || !pool.pair ? (
                   <Td colSpan={5} style={{ textAlign: 'center' }}>
-                    Loading
+                    <Loader />
                   </Td>
                 ) : (
                   <>
