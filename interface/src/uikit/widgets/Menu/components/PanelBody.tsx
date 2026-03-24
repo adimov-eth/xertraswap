@@ -96,7 +96,7 @@ function PanelBody({ isPushed, pushNav, isMobile, links } : PanelBodyProps) {
             isActive={entry.href ? isMenuItemActive(entry.href, location.pathname) : false}
             className={calloutClass}
           >
-            <MenuLink href={entry.href} onClick={handleClick}>
+            <MenuLink href={entry.href} onClick={handleClick} target={entry.target}>
               {iconElement}
               <LinkLabel isPushed={isPushed}>{entry.label}</LinkLabel>
               {entry.status && (
