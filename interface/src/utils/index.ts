@@ -106,3 +106,10 @@ export const safeHandler = (fn) => async (...args) => {
     handleError(error)
   }
 };
+
+export function handleKey(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      e.target.click();
+    }
+}
