@@ -37,7 +37,7 @@ const TransactionDeadlineSetting = ({ translateString }: TransactionDeadlineSett
         return;
       }
 
-      if (valueMins > 0 && valueMins <= 1440) {
+      if (valueMins > 0 && valueMins <= 20) {
         setDeadline(valueMins * 60) // Set value in seconds
         setError(null)
         return;
@@ -45,14 +45,14 @@ const TransactionDeadlineSetting = ({ translateString }: TransactionDeadlineSett
 
       if(valueMins < 1)
       {
-        setError(translateString(1150, 'A minium value of 1 is required.'))
+        setError(translateString(1150, 'A minimum value of 1 is required.'))
         return;
       }
 
-      if(valueMins > 1440)
+      if(valueMins > 20)
       {
-        setError(translateString(1150, 'Your transaction may remain pending for a very long time.'))
-        setDeadline(valueMins * 60) // Set value in seconds        
+        setValueMins(20)  
+        setDeadline(20 * 60) // Set value in seconds        
         return;
       }
 
@@ -66,11 +66,11 @@ const TransactionDeadlineSetting = ({ translateString }: TransactionDeadlineSett
       <Flex alignItems="center" mb="8px">
         <Text $bold>{translateString(90, 'Transaction deadline')}</Text>
         <QuestionHelper
-          text={translateString(188, 'Your transaction will revert if it is pending for more than this long.')}
+          text={translateString(188, 'Your transaction will revert if it is pending for more than the during specified. A maximum of 20 minutes is allowed.')}
         />
       </Flex>
       <Field>
-        <Input type="number" step="1" min="1" value={valueMins} onChange={handleChange} />
+        <Input type="number" step="1" min={"1"} max={"20"} value={valueMins} onChange={handleChange} />
         <Text fontSize="14px" ml="8px">
           Minutes
         </Text>
