@@ -19,28 +19,47 @@ type TransactionDeadlineSettingModalProps = {
 
 const TransactionDeadlineSetting = ({ translateString }: TransactionDeadlineSettingModalProps) => {
   const [deadline, setDeadline] = useUserDeadline()
-  const [value, setValue] = useState(deadline / 60) // deadline in minutes
+  const [valueMins, setValueMins] = useState(deadline / 60) // deadline in minutes
   const [error, setError] = useState<string | null>(null)
 
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const { value: inputValue } = evt.target
-    setValue(parseInt(inputValue, 10))
+    setValueMins(parseInt(inputValue, 10))
   }
 
   // Updates local storage if value is valid
   useEffect(() => {
     try {
-      const rawValue = value * 60
-      if (!Number.isNaN(rawValue) && rawValue > 0) {
-        setDeadline(rawValue)
-        setError(null)
-      } else {
+      
+      if(Number.isNaN(valueMins))
+      {
         setError(translateString(1150, 'Enter a valid deadline'))
+        return;
       }
+
+      if (valueMins > 0 && valueMins <= 1440) {
+        setDeadline(valueMins * 60) // Set value in seconds
+        setError(null)
+        return;
+      }
+
+      if(valueMins < 1)
+      {
+        setError(translateString(1150, 'A minium value of 1 is required.'))
+        return;
+      }
+
+      if(valueMins > 1440)
+      {
+        setError(translateString(1150, 'Your transaction may remain pending for a very long time.'))
+        setDeadline(valueMins * 60) // Set value in seconds        
+        return;
+      }
+
     } catch {
       setError(translateString(1150, 'Enter a valid deadline'))
     }
-  }, [value, setError, setDeadline, translateString])
+  }, [valueMins, setError, setDeadline, translateString])
 
   return (
     <Box mb="16px">
@@ -51,7 +70,7 @@ const TransactionDeadlineSetting = ({ translateString }: TransactionDeadlineSett
         />
       </Flex>
       <Field>
-        <Input type="number" step="1" min="1" value={value} onChange={handleChange} />
+        <Input type="number" step="1" min="1" value={valueMins} onChange={handleChange} />
         <Text fontSize="14px" ml="8px">
           Minutes
         </Text>
