@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react'
+import { useContext, useMemo } from 'react'
 import { CheckmarkCircleIcon, ErrorIcon, Flex, LinkExternal, Text, Modal, Button } from 'uikit'
 import { getBscScanLink } from 'utils'
 import { isTransactionOfType, isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
@@ -7,6 +7,9 @@ import Loader from 'components/Loader'
 import Web3AuthContext from '../../pages/Web3AuthContext'
 import { TransactionActionPerformed } from '../../state/transactions/actions'
 import { TableCell, TableHead, TableHeader, TableRow } from '../../uikit/components/Table/Table'
+import { AutoColumn } from 'components/Column'
+import { usePagination } from 'hooks/usePagination'
+import { AutoRow } from 'components/Row'
 
 type RecentTransactionsModalProps = {
   onDismiss?: () => void
@@ -46,6 +49,9 @@ const RecentTransactionsModal = ({ onDismiss = defaultOnDismiss, translateString
       .sort(newTransactionsFirst)
   }, [allTransactions])
 
+  const pageSize = 5;
+  const {page, setPage, maxPage, currentData } = usePagination(sortedTransactionsByType, pageSize);
+
   return (
 <Modal title={translateString(1202, 'Recent transactions')} onDismiss={onDismiss}>
     {!account && (
@@ -84,13 +90,13 @@ const RecentTransactionsModal = ({ onDismiss = defaultOnDismiss, translateString
           </TableHead>
 
           <tbody>
-            {sortedTransactionsByType.map((tx, index) => {
+            {currentData().map((tx, index) => {
               const { hash, summary, from, actionPerformed } = tx
               const { icon, color } = getRowStatus(tx)
 
               return (
                 <TableRow color="textSubtle" fontSize="14px" key={hash}>
-                  <TableCell><Text>{index + 1}</Text></TableCell>
+                  <TableCell><Text>{(index) + 1 + (pageSize * (page - 1))}</Text></TableCell>
                   <TableCell><Text>{TransactionActionPerformed[actionPerformed]}</Text></TableCell>
                   <TableCell>{summary}</TableCell>
                   <TableCell style={{ color }} textAlign='center'>{icon}</TableCell>
@@ -107,6 +113,21 @@ const RecentTransactionsModal = ({ onDismiss = defaultOnDismiss, translateString
             })}
           </tbody>
         </table>
+        <Flex padding={"10px"} justifyContent='center'>
+          <AutoColumn>
+            <AutoRow>
+              <Button variant='tertiary' scale="sm" onClick={() => setPage((p) => Math.max(p - 1, 1))}>
+              Prev
+              </Button>
+              <Flex padding={"10px"}>
+                <Text color="textSubtle" fontSize='14px'> Page {page} of {maxPage} </Text>
+              </Flex>
+              <Button variant='tertiary' scale="sm" onClick={() => setPage((p) => Math.min(p + 1, maxPage))}>
+              Next
+              </Button>
+            </AutoRow>
+          </AutoColumn>
+        </Flex>
       </div>
     )}
   </Modal>
