@@ -14,7 +14,7 @@ import CurrencyLogo from '../CurrencyLogo'
 import { MouseoverTooltip } from '../Tooltip'
 import { FadedSpan, MenuItem } from './styleds'
 import Loader from '../Loader'
-import { isTokenOnList } from '../../utils'
+import { handleKey, isTokenOnList } from '../../utils'
 import Web3AuthContext from '../../pages/Web3AuthContext'
 
 // Bridge info lookup by token address
@@ -132,6 +132,9 @@ function CurrencyRow({
       onClick={() => (isSelected ? null : onSelect())}
       disabled={isSelected}
       selected={otherSelected}
+      tabIndex={0}
+      role={'button'}
+      onKeyDown={handleKey}
     >
       <CurrencyLogo currency={currency} size="24px" />
       <Column>
