@@ -1,9 +1,11 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { ethers } from 'ethers'
-import { Button, Text, Heading } from 'uikit'
+import { Button, Text, Heading, Flex } from 'uikit'
 import Web3AuthContext from '../Web3AuthContext'
 import AppBody from '../AppBody'
+import ReCAPTCHA from 'react-google-recaptcha'
+import { AutoRow } from '../../components/Row'
 
 const FAUCET_ADDRESS = '0x474E5228faF0130CfA3c9657a46de3dFA46316C9'
 const CHAIN_ID = parseInt(process.env.REACT_APP_CHAIN_ID ?? '205205', 10)
@@ -70,6 +72,13 @@ const Faucet: React.FC = () => {
   const [txHash, setTxHash] = useState('')
   const [error, setError] = useState('')
 
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const recaptchaRef = useRef<ReCAPTCHA | null>(null);
+
+  const handleCaptchaChange = (token: string | null) => {
+    setCaptchaToken(token);
+  };
+  
   const isTestnet = CHAIN_ID === 205205
 
   const loadFaucetInfo = useCallback(async () => {
@@ -166,6 +175,7 @@ const Faucet: React.FC = () => {
   return (
     <AppBody>
       <Wrapper>
+        
         <Heading mb="8px">Testnet Faucet</Heading>
         <Text color="textSubtle" fontSize="14px" mb="16px">
           Get free test tokens to try Xertra Swap on Auroria testnet.
@@ -202,10 +212,29 @@ const Faucet: React.FC = () => {
               </StatusBadge>
             </div>
 
+            <Flex justifyContent='center' paddingBottom={'10px'}>
+              <AutoRow>
+                <ReCAPTCHA
+                  ref={recaptchaRef}
+                  sitekey={process.env.REACT_APP_RECAPTCHA_SITEKEY!}
+                  onChange={handleCaptchaChange}
+                  onExpired={() => setCaptchaToken(null)}
+                />
+              </AutoRow>
+            </Flex>
+
+            {!captchaToken && (
+              <Flex padding={"10px"} justifyContent='center'>
+                <Text color="danger">
+                  Please verify you're not a robot
+                </Text>
+              </Flex>
+            )}            
+
             <Button
               width="100%"
               onClick={handleClaim}
-              disabled={!canClaim || claiming}
+              disabled={!canClaim || claiming || !captchaToken}
               isLoading={claiming}
             >
               {claiming ? 'Claiming...' : 'Claim Tokens'}
