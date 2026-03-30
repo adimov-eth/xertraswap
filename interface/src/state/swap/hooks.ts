@@ -182,7 +182,8 @@ export function useDerivedSwapInfo(): {
     slippageAdjustedAmounts ? slippageAdjustedAmounts[Field.INPUT] : null,
   ]
 
-  if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
+  
+  if (balanceIn?.greaterThan(BigInt(0)) && amountIn?.greaterThan(BigInt(0)) && balanceIn.lessThan(amountIn)) {
     inputError = `Insufficient ${amountIn.currency.symbol} balance`
   }
 
