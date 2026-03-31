@@ -215,9 +215,9 @@ export default function Pools() {
                     <Td>
                       <AutoColumn gap="sm">
                         <DoubleCurrencyLogo currency0={pool.pair.token0} currency1={pool.pair.token1} size={25} margin />
-                        <Link to={`/pool/${pool.pair.token0.address}/${pool.pair.token1.address}`} style={{ textDecoration: 'none', fontWeight: 500 }}>
+                        <Text >
                           {pool.info.lpSymbol}
-                        </Link>
+                        </Text>
                         {(getBridgeInfo(pool.pair.token0.address, pool.pair.token0.name ?? '') || getBridgeInfo(pool.pair.token1.address, pool.pair.token1.name ?? '')) && (
                           <Text fontSize="11px" color="textSubtle">
                             {getBridgeInfo(pool.pair.token0.address, pool.pair.token0.name ?? '') || getBridgeInfo(pool.pair.token1.address, pool.pair.token1.name ?? '')}
@@ -287,7 +287,7 @@ export default function Pools() {
                     </TdHideLg>
                     <Td>
                       <AutoColumn gap="sm">
-                        <Button scale="sm" as={Link} to={`/add/${pool.pair.token0.address}/${pool.pair.token1.address}`}>
+                        <Button scale="sm" as={Link} to={`/add/${pool.pair.token0.address}/${pool.pair.token1.address}/pools`}>
                           {TranslateString(168, 'Add Liquidity')}
                         </Button>
                         {userPoolData[i].poolBalance && !userPoolData[i].poolBalance.equalTo(new TokenAmount(pool.pair.liquidityToken, '0')) ? (
@@ -295,7 +295,7 @@ export default function Pools() {
                             scale="sm"
                             variant="secondary"
                             as={Link}
-                            to={`/remove/${pool.pair.token0.address}/${pool.pair.token1.address}`}
+                            to={`/remove/${pool.pair.token0.address}/${pool.pair.token1.address}/pools`}
                           >
                             {TranslateString(168, 'Remove Liquidity')}
                           </Button>

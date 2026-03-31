@@ -40,14 +40,15 @@ import { TransactionActionPerformed } from '../../state/transactions/actions'
 
 export default function AddLiquidity({
   match: {
-    params: { currencyIdA, currencyIdB },
+    params: { currencyIdA, currencyIdB, from },
   },
   history,
-}: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
+}: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string; from?: string }>) {
   const { connection, account, chainId, isWrongNetwork } = useContext(Web3AuthContext)
   
   const currencyA = useCurrency(currencyIdA)
   const currencyB = useCurrency(currencyIdB)
+
   const TranslateString = useI18n()
 
   const oneCurrencyIsWSTRAX = Boolean(
@@ -297,7 +298,7 @@ export default function AddLiquidity({
   return (
     <>
       <AppBody>
-        <AddRemoveTabs adding />
+        <AddRemoveTabs adding from={from} />
         <Wrapper>
           <TransactionConfirmationModal
             isOpen={showConfirm}

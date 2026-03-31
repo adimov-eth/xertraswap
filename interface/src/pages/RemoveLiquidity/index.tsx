@@ -42,6 +42,7 @@ import { Field } from '../../state/burn/actions'
 import { useUserDeadline, useUserSlippageTolerance } from '../../state/user/hooks'
 import Web3AuthContext from '../Web3AuthContext'
 import { TransactionActionPerformed } from '../../state/transactions/actions'
+import { from } from 'stylis'
 
 const OutlineCard = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.borderColor};
@@ -57,9 +58,9 @@ const Body = styled.div`
 export default function RemoveLiquidity({
   history,
   match: {
-    params: { currencyIdA, currencyIdB },
+    params: { currencyIdA, currencyIdB, from },
   },
-}: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
+}: RouteComponentProps<{ currencyIdA: string; currencyIdB: string; from?: string; }>) {
 
   const { connection, account, chainId, isWrongNetwork } = useContext(Web3AuthContext)
 
@@ -460,7 +461,7 @@ export default function RemoveLiquidity({
   return (
     <>
       <AppBody>
-        <AddRemoveTabs adding={false} />
+        <AddRemoveTabs adding={false} from={from}/>
         <Wrapper>
           <TransactionConfirmationModal
             isOpen={showConfirm}
