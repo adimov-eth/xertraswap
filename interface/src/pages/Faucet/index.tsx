@@ -213,7 +213,7 @@ const Faucet: React.FC = () => {
             </div>
 
             <Flex justifyContent='center' paddingBottom={'10px'}>
-              <AutoRow>
+              <AutoRow justifyContent='center'>
                 <ReCAPTCHA
                   ref={recaptchaRef}
                   sitekey={process.env.REACT_APP_RECAPTCHA_SITEKEY!}

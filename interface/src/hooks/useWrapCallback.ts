@@ -40,7 +40,20 @@ export default function useWrapCallback(
       return { isBusy, wrapType: WrapType.NOT_APPLICABLE }
     }
 
-    const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
+    let inputError: string | undefined
+    let sufficientBalance = false
+
+    if (!inputAmount) {
+      inputError = inputError ?? 'Enter an amount'
+    }
+    else {
+      if(balance?.lessThan(inputAmount)) {
+        if(inputCurrency === ETHER) inputError = 'Insufficient STRAX balance'
+        if(outputCurrency === ETHER) inputError = 'Insufficient WSTRAX balance'
+      }
+      else 
+        sufficientBalance = true
+    }
 
     if (inputCurrency === ETHER && currencyEquals(WETH[chainId], outputCurrency)) {
       return { 
@@ -61,7 +74,7 @@ export default function useWrapCallback(
                 }
               }
             : undefined,
-        inputError: sufficientBalance ? undefined : 'Insufficient STRAX balance',   
+        inputError: sufficientBalance ? undefined : inputError,
       }
     }
     
@@ -85,7 +98,7 @@ export default function useWrapCallback(
                 }
               }
             : undefined,
-        inputError: sufficientBalance ? undefined : 'Insufficient WSTRAX balance'
+        inputError: sufficientBalance ? undefined : inputError
       }
     }
     
