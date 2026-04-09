@@ -130,6 +130,14 @@
       "address": "0xde05775bC57cD8447e3D9F0e9dC4712641cfAB15",
       "decimals": 18,
       "symbol": "xBTC"
+    },
+    {
+      "chainId": 105105,
+      "name": "SolPlex Token",
+      "symbol": "SPX",
+      "address": "0xD1f463d39164901e07AFED20c2ba1554915E0d2e",
+      "decimals": 6,
+      "logoURI": "/images/coins/0xD1f463d39164901e07AFED20c2ba1554915E0d2e.png"
     }
   ]
 }

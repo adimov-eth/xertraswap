@@ -77,6 +77,14 @@
       "lpAddress": "0xA9b70a3d233B04Ae46462c310991850EDCE1221d",
       "token": "0xE71d254C2F1430b597b53D83B3453d519F4C4564",
       "quoteToken": "0xd16Cab1e481eF8401Bfd8fb3BaC42Ce2918e9ad2"
-    }
+    },
+    {
+      "pid": 5,
+      "chainId": 105105,
+      "lpSymbol": "SPX-USDC LP",
+      "lpAddress": "0x7f358F8a8FA50dB454910F9f8C120E450C133920",
+      "token": "0xD1f463d39164901e07AFED20c2ba1554915E0d2e",
+      "quoteToken": "0xaa0e34a393dadaaf661132dea1edd834c5628e16"
+    }    
   ]
 }
