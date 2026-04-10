@@ -4,6 +4,7 @@ import { useContext, useMemo } from 'react'
 
 import { BASES_TO_CHECK_TRADES_AGAINST, CUSTOM_BASES } from '../constants'
 import { PairState, usePairs } from '../data/Reserves'
+import { isSupportedChainId } from '../config/chains'
 import { wrappedCurrency } from '../utils/wrappedCurrency'
 
 import Web3AuthContext from '../pages/Web3AuthContext'
@@ -12,7 +13,10 @@ function useAllCommonPairs(currencyA?: Currency, currencyB?: Currency): Pair[] {
   const { chainId } = useContext(Web3AuthContext)
 
   // Base tokens for building intermediary trading routes
-  const bases: Token[] = useMemo(() => (chainId ? BASES_TO_CHECK_TRADES_AGAINST[chainId] : []), [chainId])
+  const bases: Token[] = useMemo(
+    () => (chainId && isSupportedChainId(chainId) ? BASES_TO_CHECK_TRADES_AGAINST[chainId] ?? [] : []),
+    [chainId]
+  )
 
   // All pairs from base tokens
   const basePairs: [Token, Token][] = useMemo(
@@ -45,7 +49,7 @@ function useAllCommonPairs(currencyA?: Currency, currencyB?: Currency): Pair[] {
             // This filter will remove all the pairs that are not supported by the CUSTOM_BASES settings
             // This option is currently not used on Pancake swap
             .filter(([t0, t1]) => {
-              if (!chainId) return true
+              if (!chainId || !isSupportedChainId(chainId)) return true
               const customBases = CUSTOM_BASES[chainId]
               if (!customBases) return true
 

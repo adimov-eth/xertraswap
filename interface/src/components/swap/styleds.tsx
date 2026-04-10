@@ -1,5 +1,4 @@
 import { transparentize } from 'polished'
-import React from 'react'
 import { AlertTriangle } from 'react-feather'
 import { Text } from 'uikit'
 import styled, { css } from 'styled-components'
@@ -9,13 +8,15 @@ export const Wrapper = styled.div`
   position: relative;
 `
 
-export const ArrowWrapper = styled.div<{ clickable: boolean }>`
+export const ArrowWrapper = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'clickable',
+})<{ clickable: boolean }>`
   padding: 2px;
 
   ${({ clickable }) =>
     clickable
       ? css`
-          :hover {
+          &:hover {
             cursor: pointer;
             opacity: 0.8;
           }
@@ -61,10 +62,10 @@ export const StyledBalanceMaxMini = styled.button`
   align-items: center;
   float: right;
 
-  :hover {
+  &:hover {
     background-color: ${({ theme }) => theme.colors.tertiary};
   }
-  :focus {
+  &:focus {
     background-color: ${({ theme }) => theme.colors.tertiary};
     outline: none;
   }

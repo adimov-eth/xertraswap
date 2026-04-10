@@ -1,9 +1,11 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { ethers } from 'ethers'
-import { Button, Text, Heading } from 'uikit'
+import { Button, Text, Heading, Flex } from 'uikit'
 import Web3AuthContext from '../Web3AuthContext'
 import AppBody from '../AppBody'
+import ReCAPTCHA from 'react-google-recaptcha'
+import { AutoRow } from '../../components/Row'
 
 const FAUCET_ADDRESS = '0x474E5228faF0130CfA3c9657a46de3dFA46316C9'
 const CHAIN_ID = parseInt(process.env.REACT_APP_CHAIN_ID ?? '205205', 10)
@@ -37,13 +39,13 @@ const TokenRow = styled.div`
   border-bottom: 1px solid ${({ theme }) => theme.colors.borderColor};
 `
 
-const StatusBadge = styled.span<{ ready: boolean }>`
+const StatusBadge = styled.span<{ $ready: boolean }>`
   display: inline-block;
   padding: 4px 12px;
   border-radius: 16px;
   font-size: 14px;
   font-weight: 600;
-  background: ${({ ready }) => (ready ? '#2ecc71' : '#e74c3c')};
+  background: ${({ $ready }) => ($ready ? '#2ecc71' : '#e74c3c')};
   color: white;
 `
 
@@ -61,7 +63,7 @@ interface TokenDrip {
 }
 
 const Faucet: React.FC = () => {
-  const { connection, account, library } = useContext(Web3AuthContext)
+  const { connection, account, library, isWrongNetwork } = useContext(Web3AuthContext)
   const [canClaim, setCanClaim] = useState(false)
   const [timeLeft, setTimeLeft] = useState(0)
   const [tokenDrips, setTokenDrips] = useState<TokenDrip[]>([])
@@ -70,6 +72,13 @@ const Faucet: React.FC = () => {
   const [txHash, setTxHash] = useState('')
   const [error, setError] = useState('')
 
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const recaptchaRef = useRef<ReCAPTCHA | null>(null);
+
+  const handleCaptchaChange = (token: string | null) => {
+    setCaptchaToken(token);
+  };
+  
   const isTestnet = CHAIN_ID === 205205
 
   const loadFaucetInfo = useCallback(async () => {
@@ -166,6 +175,7 @@ const Faucet: React.FC = () => {
   return (
     <AppBody>
       <Wrapper>
+        
         <Heading mb="8px">Testnet Faucet</Heading>
         <Text color="textSubtle" fontSize="14px" mb="16px">
           Get free test tokens to try Xertra Swap on Auroria testnet.
@@ -173,15 +183,15 @@ const Faucet: React.FC = () => {
         </Text>
 
         <InfoBox>
-          <Text bold mb="8px">You will receive:</Text>
+          <Text $bold mb="8px">You will receive:</Text>
           <TokenRow>
             <Text>STRAX (native)</Text>
-            <Text bold>{nativeDrip} STRAX</Text>
+            <Text $bold>{nativeDrip} STRAX</Text>
           </TokenRow>
           {tokenDrips.map((drip) => (
             <TokenRow key={drip.address}>
               <Text>{drip.symbol}</Text>
-              <Text bold>{drip.amount} {drip.symbol}</Text>
+              <Text $bold>{drip.amount} {drip.symbol}</Text>
             </TokenRow>
           ))}
         </InfoBox>
@@ -190,18 +200,41 @@ const Faucet: React.FC = () => {
           <Text color="textSubtle" textAlign="center">
             Connect your wallet to use the faucet
           </Text>
+        ) : isWrongNetwork ? (
+          <Button disabled width="100%" variant="danger">
+            Wrong network
+          </Button>
         ) : (
           <>
             <div style={{ textAlign: 'center', marginBottom: '16px' }}>
-              <StatusBadge ready={canClaim}>
+              <StatusBadge $ready={canClaim}>
                 {canClaim ? 'Ready to claim' : `Next claim in ${formatTime(timeLeft)}`}
               </StatusBadge>
             </div>
 
+            <Flex justifyContent='center' paddingBottom={'10px'}>
+              <AutoRow justifyContent='center'>
+                <ReCAPTCHA
+                  ref={recaptchaRef}
+                  sitekey={process.env.REACT_APP_RECAPTCHA_SITEKEY!}
+                  onChange={handleCaptchaChange}
+                  onExpired={() => setCaptchaToken(null)}
+                />
+              </AutoRow>
+            </Flex>
+
+            {!captchaToken && (
+              <Flex padding={"10px"} justifyContent='center'>
+                <Text color="danger">
+                  Please verify you're not a robot
+                </Text>
+              </Flex>
+            )}            
+
             <Button
               width="100%"
               onClick={handleClaim}
-              disabled={!canClaim || claiming}
+              disabled={!canClaim || claiming || !captchaToken}
               isLoading={claiming}
             >
               {claiming ? 'Claiming...' : 'Claim Tokens'}

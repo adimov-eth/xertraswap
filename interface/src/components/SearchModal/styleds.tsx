@@ -22,7 +22,7 @@ export const MenuItem = styled(RowBetween)`
   pointer-events: ${({ disabled }) => disabled && 'none'};
   border-radius: 8px;
   transition: background-color 150ms ease-in-out;
-  :hover {
+  &:hover {
     background-color: ${({ disabled }) => !disabled && 'rgba(255, 255, 255, 0.05)'};
   }
   opacity: ${({ disabled, selected }) => (disabled || selected ? 0.5 : 1)};
@@ -50,7 +50,7 @@ export const SearchInput = styled.input`
     color: ${({ theme }) => theme.colors.textDisabled};
   }
   transition: border 150ms ease-in-out;
-  :focus {
+  &:focus {
     border: 1px solid ${({ theme }) => theme.colors.primary};
     outline: none;
   }

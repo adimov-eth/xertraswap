@@ -1,8 +1,4 @@
-import { SpaceProps } from 'styled-system'
-
-export type RadioTheme = {
-  handleBackground: string
-}
+import { SpaceProps } from '../../util/styledProps'
 
 export const scales = {
   SM: 'sm',
@@ -13,4 +9,8 @@ export type Scales = (typeof scales)[keyof typeof scales]
 
 export interface RadioProps extends SpaceProps {
   scale?: Scales
+}
+
+export interface RadioTheme {
+  handleBackground: string
 }

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, currencyEquals, ETHER, TokenAmount, WETH } from '@xertra/sdk'
@@ -21,6 +21,7 @@ import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'state/m
 
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useIsExpertMode, useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
+import { isSupportedChainId } from 'config/chains'
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from 'utils'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
@@ -34,21 +35,25 @@ import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 import { PoolPriceBar } from './PoolPriceBar'
 import { ROUTER_ADDRESS } from '../../constants'
 import Web3AuthContext from '../Web3AuthContext'
+import WrongNetworkBanner from '../../components/WrongNetworkBanner'
+import { TransactionActionPerformed } from '../../state/transactions/actions'
 
 export default function AddLiquidity({
   match: {
-    params: { currencyIdA, currencyIdB },
+    params: { currencyIdA, currencyIdB, from },
   },
   history,
-}: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
-  const { connection, account, chainId } = useContext(Web3AuthContext)
+}: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string; from?: string }>) {
+  const { connection, account, chainId, isWrongNetwork } = useContext(Web3AuthContext)
   
   const currencyA = useCurrency(currencyIdA)
   const currencyB = useCurrency(currencyIdB)
+
   const TranslateString = useI18n()
 
   const oneCurrencyIsWSTRAX = Boolean(
     chainId &&
+      isSupportedChainId(chainId) &&
       ((currencyA && currencyEquals(currencyA, WETH[chainId])) ||
         (currencyB && currencyEquals(currencyB, WETH[chainId])))
   )
@@ -119,7 +124,6 @@ export default function AddLiquidity({
     if (connection.kind !== 'connected') return
     const { account: connectedAccount } = connection
     const router = getRouterContract(chainId, connection.provider, connectedAccount)
-
     const { [Field.CURRENCY_A]: parsedAmountA, [Field.CURRENCY_B]: parsedAmountB } = parsedAmounts
     if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB) {
       return
@@ -165,32 +169,35 @@ export default function AddLiquidity({
       value = null
     }
 
-    setAttemptingTxn(true)
-    // const aa = await estimate(...args, value ? { value } : {})
-    await estimate(...args, value ? { value } : {})
-      .then((estimatedGasLimit) =>
-        method(...args, {
+      try {
+        setAttemptingTxn(true)
+        
+        const estimatedGasLimit = await estimate(...args, value ? { value } : {})
+        const transactionResponse = await method(...args, {
           ...(value ? { value } : {}),
           gasLimit: calculateGasMargin(estimatedGasLimit),
-        }).then((response) => {
-          setAttemptingTxn(false)
-
-          addTransaction(response, {
-            summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
-              currencies[Field.CURRENCY_A]?.symbol
-            } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`,
-          })
-
-          setTxHash(response.hash)
         })
-      )
-      .catch((e) => {
+
+        setTxHash(transactionResponse.hash)
+
+        addTransaction(
+          transactionResponse, 
+          TransactionActionPerformed.Liquidity, {
+          summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
+            currencies[Field.CURRENCY_A]?.symbol
+          } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`,
+        })
+
+        await transactionResponse.wait()
+
+        setAttemptingTxn(false)
+      } catch (e : any) {
         setAttemptingTxn(false)
         // we only care if the error is something _other_ than the user rejected the tx
         if (e?.code !== 4001) {
           console.error(e)
         }
-      })
+      }
   }
 
   const modalHeader = () => {
@@ -226,7 +233,7 @@ export default function AddLiquidity({
             {`${currencies[Field.CURRENCY_A]?.symbol}/${currencies[Field.CURRENCY_B]?.symbol} Pool Tokens`}
           </UIKitText>
         </Row>
-        <UIKitText small textAlign="left" padding="8px 0 0 0 " style={{ fontStyle: 'italic' }}>
+        <UIKitText $small textAlign="left" padding="8px 0 0 0 " style={{ fontStyle: 'italic' }}>
           {`Output is estimated. If the price changes by more than ${
             allowedSlippage / 100
           }% your transaction will revert.`}
@@ -291,7 +298,7 @@ export default function AddLiquidity({
   return (
     <>
       <AppBody>
-        <AddRemoveTabs adding />
+        <AddRemoveTabs adding from={from} />
         <Wrapper>
           <TransactionConfirmationModal
             isOpen={showConfirm}
@@ -313,6 +320,7 @@ export default function AddLiquidity({
             pendingText={pendingText}
           />
           <CardBody>
+            <WrongNetworkBanner />
             <AutoColumn gap="20px">
               {noLiquidity && (
                 <ColumnCenter>
@@ -381,6 +389,10 @@ export default function AddLiquidity({
 
               {!account ? (
                 <ConnectWalletButton width="100%" />
+              ) : isWrongNetwork ? (
+                <Button disabled width="100%" variant="danger">
+                  Wrong network
+                </Button>
               ) : (
                 <AutoColumn gap="md">
                   {(approvalA === ApprovalState.NOT_APPROVED ||
@@ -391,7 +403,7 @@ export default function AddLiquidity({
                       <RowBetween>
                         {approvalA !== ApprovalState.APPROVED && (
                           <Button
-                            onClick={approveACallback}
+                            onClick={()=> approveACallback(TransactionActionPerformed.ApproveAddLiquidity)}
                             disabled={approvalA === ApprovalState.PENDING}
                             style={{ width: approvalB !== ApprovalState.APPROVED ? '48%' : '100%' }}
                           >
@@ -404,7 +416,7 @@ export default function AddLiquidity({
                         )}
                         {approvalB !== ApprovalState.APPROVED && (
                           <Button
-                            onClick={approveBCallback}
+                            onClick={() => approveBCallback(TransactionActionPerformed.ApproveAddLiquidity)}
                             disabled={approvalB === ApprovalState.PENDING}
                             style={{ width: approvalA !== ApprovalState.APPROVED ? '48%' : '100%' }}
                           >

@@ -1,10 +1,35 @@
-import React, { cloneElement, ElementType, isValidElement } from 'react'
+import React, { cloneElement, ElementType, isValidElement, ReactNode } from 'react'
+import { JSX } from 'react/jsx-runtime'
+import { SpaceProps, LayoutProps } from '../../util/styledProps'
 import getExternalLinkProps from '../../util/getExternalLinkProps'
 import StyledButton from './StyledButton'
-import { ButtonProps, scales, variants } from './types'
+import { PolymorphicComponentProps, Scale, scales, Variant, variants } from './types'
+
+interface ButtonPropsInterface extends LayoutProps, SpaceProps {
+  variant?: Variant
+  scale?: Scale
+  isLoading?: boolean
+  startIcon?: ReactNode
+  endIcon?: ReactNode
+  external?: boolean
+}
+
+export type ButtonProps<P extends ElementType = 'button'> = PolymorphicComponentProps<P, ButtonPropsInterface>
 
 const Button = <E extends ElementType = 'button'>(props: ButtonProps<E>): JSX.Element => {
-  const { startIcon, endIcon, external, className, isLoading, disabled, children, ...rest } = props
+  const {
+    startIcon,
+    endIcon,
+    external = false,
+    className,
+    isLoading = false,
+    disabled = false,
+    scale = scales.MD,
+    variant = variants.PRIMARY,
+    children,
+    ...rest
+  } = props
+
   const internalProps = external ? getExternalLinkProps() : {}
   const isDisabled = isLoading || disabled
   const classNames = className ? [className] : []
@@ -20,8 +45,10 @@ const Button = <E extends ElementType = 'button'>(props: ButtonProps<E>): JSX.El
   return (
     <StyledButton
       $isLoading={isLoading}
+      $variant={variant}
       className={classNames.join(' ')}
       disabled={isDisabled}
+      scale={scale}
       {...internalProps}
       {...rest}
     >
@@ -38,14 +65,6 @@ const Button = <E extends ElementType = 'button'>(props: ButtonProps<E>): JSX.El
       </>
     </StyledButton>
   )
-}
-
-Button.defaultProps = {
-  isLoading: false,
-  external: false,
-  variant: variants.PRIMARY,
-  scale: scales.MD,
-  disabled: false,
 }
 
 export default Button

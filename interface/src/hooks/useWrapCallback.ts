@@ -1,10 +1,12 @@
 import { Currency, currencyEquals, ETHER, WETH } from '@xertra/sdk'
-import { useContext, useMemo } from 'react'
+import { useContext, useMemo, useState } from 'react'
+import { isSupportedChainId } from '../config/chains'
 import { tryParseAmount } from '../state/swap/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'
 import { useCurrencyBalance } from '../state/wallet/hooks'
 import { useWETHContract } from './useContract'
 import Web3AuthContext from '../pages/Web3AuthContext'
+import { TransactionActionPerformed } from '../state/transactions/actions'
 
 export enum WrapType {
   NOT_APPLICABLE,
@@ -12,7 +14,6 @@ export enum WrapType {
   UNWRAP
 }
 
-const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
 /**
  * Given the selected input and output currency, return a wrap callback
  * @param inputCurrency the selected input currency
@@ -23,7 +24,8 @@ export default function useWrapCallback(
   inputCurrency: Currency | undefined,
   outputCurrency: Currency | undefined,
   typedValue: string | undefined
-): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
+): {isBusy: boolean; wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string; } {
+
   const { account, chainId } = useContext(Web3AuthContext)
   
   const wethContract = useWETHContract()
@@ -31,46 +33,76 @@ export default function useWrapCallback(
   // we can always parse the amount typed as the input currency, since wrapping is 1:1
   const inputAmount = useMemo(() => tryParseAmount(typedValue, inputCurrency), [inputCurrency, typedValue])
   const addTransaction = useTransactionAdder()
+  const [isBusy, setIsBusy] = useState(false)
 
   return useMemo(() => {
-    if (!wethContract || !chainId || !inputCurrency || !outputCurrency) return NOT_APPLICABLE
+    if (!wethContract || !chainId || !isSupportedChainId(chainId) || !inputCurrency || !outputCurrency) {
+      return { isBusy, wrapType: WrapType.NOT_APPLICABLE }
+    }
 
-    const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
+    let inputError: string | undefined
+    let sufficientBalance = false
+
+    if (!inputAmount) {
+      inputError = inputError ?? 'Enter an amount'
+    }
+    else {
+      if(balance?.lessThan(inputAmount)) {
+        if(inputCurrency === ETHER) inputError = 'Insufficient STRAX balance'
+        if(outputCurrency === ETHER) inputError = 'Insufficient WSTRAX balance'
+      }
+      else 
+        sufficientBalance = true
+    }
 
     if (inputCurrency === ETHER && currencyEquals(WETH[chainId], outputCurrency)) {
-      return {
+      return { 
+        isBusy,
         wrapType: WrapType.WRAP,
         execute:
           sufficientBalance && inputAmount
             ? async () => {
                 try {
+                  setIsBusy(true)
                   const txReceipt = await wethContract.deposit({ value: `0x${inputAmount.raw.toString(16)}` })
-                  addTransaction(txReceipt, { summary: `Wrap ${inputAmount.toSignificant(6)} STRAX to WSTRAX` })
+                  addTransaction(txReceipt, TransactionActionPerformed.Swap, { summary: `Wrap ${inputAmount.toSignificant(6)} STRAX to WSTRAX` })
+                  await txReceipt.wait()
                 } catch (error) {
                   console.error('Could not deposit', error)
+                } finally {
+                  setIsBusy(false)
                 }
               }
             : undefined,
-        inputError: sufficientBalance ? undefined : 'Insufficient STRAX balance'
+        inputError: sufficientBalance ? undefined : inputError,
       }
-    } if (currencyEquals(WETH[chainId], inputCurrency) && outputCurrency === ETHER) {
+    }
+    
+    if (currencyEquals(WETH[chainId], inputCurrency) && outputCurrency === ETHER) {
       return {
+        isBusy,
         wrapType: WrapType.UNWRAP,
         execute:
           sufficientBalance && inputAmount
             ? async () => {
                 try {
+                  setIsBusy(true)
                   const txReceipt = await wethContract.withdraw(`0x${inputAmount.raw.toString(16)}`)
-                  addTransaction(txReceipt, { summary: `Unwrap ${inputAmount.toSignificant(6)} WSTRAX to STRAX` })
+                  addTransaction(txReceipt, TransactionActionPerformed.Swap,  { summary: `Unwrap ${inputAmount.toSignificant(6)} WSTRAX to STRAX` })
+                  await txReceipt.wait()
                 } catch (error) {
                   console.error('Could not withdraw', error)
                 }
+                finally{
+                  setIsBusy(false)
+                }
               }
             : undefined,
-        inputError: sufficientBalance ? undefined : 'Insufficient WSTRAX balance'
+        inputError: sufficientBalance ? undefined : inputError
       }
-    } 
-      return NOT_APPLICABLE
+    }
+    
+    return {isBusy, wrapType: WrapType.NOT_APPLICABLE}
     
   }, [wethContract, chainId, inputCurrency, outputCurrency, inputAmount, balance, addTransaction])
 }

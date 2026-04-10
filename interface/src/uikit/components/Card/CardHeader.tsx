@@ -1,14 +1,16 @@
 import styled from 'styled-components'
-import { space, SpaceProps } from 'styled-system'
+import { spaceStyles, SpaceProps, blockProps, SPACE_PROP_NAMES } from '../../util/styledProps'
 import { CardTheme } from './types'
 
 export interface CardHeaderProps extends SpaceProps {
   variant?: keyof CardTheme['cardHeaderBackground']
 }
 
-const CardHeader = styled.div<CardHeaderProps>`
+const CardHeader = styled.div.withConfig({
+  shouldForwardProp: blockProps(SPACE_PROP_NAMES, ['variant'] as const),
+})<CardHeaderProps>`
   background: ${({ theme, variant = 'default' }) => theme.card.cardHeaderBackground[variant]};
-  ${space}
+  ${spaceStyles}
 `
 
 CardHeader.defaultProps = {

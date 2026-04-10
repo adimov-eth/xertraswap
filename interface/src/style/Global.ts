@@ -1,9 +1,6 @@
 import { createGlobalStyle } from 'styled-components'
 
 const GlobalStyle = createGlobalStyle`
-  /* Inter font - using Google Fonts */
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
   /* Base styles */
   *, *::before, *::after {
     box-sizing: border-box;
@@ -43,21 +40,29 @@ const GlobalStyle = createGlobalStyle`
     color: ${({ theme }) => theme.colors.text};
   }
 
-  /* Links */
-  a {
+  /* Links — zero specificity so component styles always win */
+  :where(a) {
     color: ${({ theme }) => theme.colors.primary};
     text-decoration: none;
     transition: color 150ms ease-in-out;
-
-    &:hover {
-      color: ${({ theme }) => theme.colors.primaryBright};
-    }
+  }
+  :where(a:hover) {
+    color: ${({ theme }) => theme.colors.primaryBright};
   }
 
-  /* Focus states - accessibility */
-  :focus-visible {
+  /* Focus states - accessibility (interactive elements only) */
+  a:focus-visible,
+  button:focus-visible,
+  [tabindex]:focus-visible {
     outline: 2px solid ${({ theme }) => theme.colors.primary};
     outline-offset: 2px;
+  }
+
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 1px solid ${({ theme }) => theme.colors.primary};
+    outline-offset: 0px;
   }
 
   /* Selection */

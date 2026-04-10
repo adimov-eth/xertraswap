@@ -13,7 +13,7 @@ const PriceLink = styled.a`
   display: flex;
   align-items: center;
   text-decoration: none;
-  :hover {
+  &:hover {
     opacity: 0.8;
   }
 `
@@ -23,10 +23,10 @@ const StraxPrice: React.FC<Props> = ({ straxPriceUsd, cakePriceUsd }) => {
   const price = straxPriceUsd ?? cakePriceUsd
   return price ? (
     <PriceLink href="https://www.coingecko.com/en/coins/stratis" target="_blank" rel="noopener noreferrer">
-      <Text color="textSubtle" bold>{`$${price.toFixed(3)}`}</Text>
+      <Text color="textSubtle" $bold>{`$${price.toFixed(3)}`}</Text>
     </PriceLink>
   ) : (
-    <Skeleton width={80} height={24} />
+    <Skeleton width="80px" height="24px" />
   )
 }
 

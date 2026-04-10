@@ -1,10 +1,11 @@
-import React, { Suspense, useCallback, useEffect, useState } from 'react'
+import { Suspense, useCallback, useEffect, useState } from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
-import { Web3Provider } from '@ethersproject/providers'
 import { Credentials, StringTranslations } from '@crowdin/crowdin-api-client'
-import { LangType } from 'uikit'
-import { SupportedChainId } from 'config/chains'
+import { Web3Provider } from '@ethersproject/providers'
+import { LangType, ModalProvider } from 'uikit'
+import { ToastContainer } from 'react-toastify'
+import { getCurrentChainId } from 'config/chains'
 import Popups from '../components/Popups'
 import Web3AuthManager from '../components/Web3ReactManager'
 import ToastListener from '../components/ToastListener'
@@ -145,7 +146,7 @@ export default function App() {
 
   const [connection, setConnection] = useState<ConnectionState>(INITIAL_STATE)
 
-  const connect = useCallback((provider: Web3Provider, account: string, chainId: SupportedChainId) => {
+  const connect = useCallback((provider: Web3Provider, account: string, chainId: number) => {
     setConnection({
       kind: 'connected',
       provider,
@@ -160,29 +161,54 @@ export default function App() {
     localStorage.clear()
   }, [])
 
-  const switchChain = useCallback((chainId: SupportedChainId) => {
-    setConnection((prev) =>
-      prev.kind === 'connected'
-        ? { ...prev, chainId }
-        : { ...prev, chainId }
-    )
+  const switchChain = useCallback((chainId: number) => {
+    setConnection((prev) => {
+      if (prev.kind !== 'connected') {
+        return { ...prev, chainId }
+      }
+
+      const nextProvider = new Web3Provider(prev.provider.provider)
+
+      return {
+        ...prev,
+        provider: nextProvider,
+        signer: nextProvider.getSigner(prev.account),
+        chainId,
+      }
+    })
   }, [])
 
   // Convenience accessors — derived, not independent state
   const account = connection.kind === 'connected' ? connection.account : undefined
   const { chainId, provider: library } = connection
+  const expectedChainId = getCurrentChainId()
+  const isWrongNetwork = connection.kind === 'connected' && chainId !== expectedChainId
 
   return (
     <Suspense fallback={null}>
       <HashRouter>
         <AppWrapper>
+          <ToastContainer />
           <LanguageContext.Provider
             value={{ selectedLanguage, setSelectedLanguage: handleLanguageSelect, translatedLanguage, setTranslatedLanguage }}
           >
             <TranslationsContext.Provider value={{ translations, setTranslations }}>              
 
-              <Web3AuthContext.Provider value={{connection, connect, disconnect, switchChain, account, chainId, library}}>
+              <Web3AuthContext.Provider
+                value={{
+                  connection,
+                  connect,
+                  disconnect,
+                  switchChain,
+                  account,
+                  chainId,
+                  library,
+                  expectedChainId,
+                  isWrongNetwork,
+                }}
+              >
 
+                <ModalProvider>
                 <ListsUpdater />
                 <ApplicationUpdater />
                 <TransactionUpdater />
@@ -203,10 +229,12 @@ export default function App() {
                           <Route exact strict path="/pool/:currencyIdA/:currencyIdB" component={PoolDetails} />
                           <Route exact path="/add" component={AddLiquidity} />
                           <Route exact strict path="/remove/:currencyIdA/:currencyIdB" component={RemoveLiquidity} />
+                          <Route exact strict path="/remove/:currencyIdA/:currencyIdB/:from" component={RemoveLiquidity} />
 
                           {/* Redirection: These old routes are still used in the code base */}
                           <Route exact path="/add/:currencyIdA" component={RedirectOldAddLiquidityPathStructure} />
                           <Route exact path="/add/:currencyIdA/:currencyIdB" component={RedirectDuplicateTokenIds} />
+                          <Route exact path="/add/:currencyIdA/:currencyIdB/:from" component={RedirectDuplicateTokenIds} />
                           <Route exact strict path="/remove/:tokens" component={RedirectOldRemoveLiquidityPathStructure} />
 
                           <Route component={RedirectPathToSwapOnly} />
@@ -215,6 +243,7 @@ export default function App() {
                     </BodyWrapper>
                   </Menu>
                 </Web3AuthManager>
+                </ModalProvider>
               </Web3AuthContext.Provider>
             </TranslationsContext.Provider>
           </LanguageContext.Provider>

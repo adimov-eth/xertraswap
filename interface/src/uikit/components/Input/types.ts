@@ -1,4 +1,4 @@
-import { SpaceProps } from 'styled-system'
+import { SpaceProps } from '../../util/styledProps'
 
 export const scales = {
   SM: 'sm',
@@ -10,6 +10,6 @@ export type Scales = (typeof scales)[keyof typeof scales]
 
 export interface InputProps extends SpaceProps {
   scale?: Scales
-  isSuccess?: boolean
+  $isSuccess?: boolean
   isWarning?: boolean
 }

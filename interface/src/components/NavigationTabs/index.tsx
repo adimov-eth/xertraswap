@@ -40,12 +40,12 @@ export function FindPoolTabs() {
   )
 }
 
-export function AddRemoveTabs({ adding }: { adding: boolean }) {
+export function AddRemoveTabs({ adding, from }: { adding: boolean, from? : string }) {
   const TranslateString = useI18n()
   return (
     <Tabs>
       <RowBetween style={{ padding: '1rem' }}>
-        <HistoryLink to="/pool">
+        <HistoryLink to={from ? `/${from}` : '/pool'}>
           <StyledArrowLeft />
         </HistoryLink>
         <ActiveText>{adding ? TranslateString(258, 'Add') : TranslateString(260, 'Remove')} Liquidity</ActiveText>

@@ -1,14 +1,20 @@
-import React, { useContext, useMemo } from 'react'
+import { useContext, useMemo } from 'react'
 import { CheckmarkCircleIcon, ErrorIcon, Flex, LinkExternal, Text, Modal, Button } from 'uikit'
 import { getBscScanLink } from 'utils'
-import { isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
+import { isTransactionOfType, isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
 import { TransactionDetails } from 'state/transactions/reducer'
 import Loader from 'components/Loader'
 import Web3AuthContext from '../../pages/Web3AuthContext'
+import { TransactionActionPerformed } from '../../state/transactions/actions'
+import { TableCell, TableHead, TableHeader, TableRow } from '../../uikit/components/Table/Table'
+import { AutoColumn } from 'components/Column'
+import { usePagination } from 'hooks/usePagination'
+import { AutoRow } from 'components/Row'
 
 type RecentTransactionsModalProps = {
   onDismiss?: () => void
   translateString: (translationId: number, fallback: string) => string
+  actionPerformed: TransactionActionPerformed
 }
 
 // TODO: Fix UI Kit typings
@@ -30,56 +36,101 @@ const getRowStatus = (sortedRecentTransaction: TransactionDetails) => {
   return { icon: <ErrorIcon color="failure" />, color: 'failure' }
 }
 
-const RecentTransactionsModal = ({ onDismiss = defaultOnDismiss, translateString }: RecentTransactionsModalProps) => {
+const RecentTransactionsModal = ({ onDismiss = defaultOnDismiss, translateString, actionPerformed }: RecentTransactionsModalProps) => {
   const { account, chainId } = useContext(Web3AuthContext)
   const allTransactions = useAllTransactions()
 
   // Logic taken from Web3Status/index.tsx line 175
-  const sortedRecentTransactions = useMemo(() => {
+  const sortedTransactionsByType = useMemo(() => {
     const txs = Object.values(allTransactions)
-    return txs.filter(isTransactionRecent).sort(newTransactionsFirst)
+    return txs
+      .filter(isTransactionRecent)
+      .filter(tx => isTransactionOfType(tx, actionPerformed))
+      .sort(newTransactionsFirst)
   }, [allTransactions])
 
-  return (
-    <Modal title={translateString(1202, 'Recent transactions')} onDismiss={onDismiss}>
-      {!account && (
-        <Flex justifyContent="center" flexDirection="column" alignItems="center">
-          <Text mb="8px" bold>
-            Please connect your wallet to view your recent transactions
-          </Text>
-          <Button variant="tertiary" scale="sm" onClick={onDismiss}>
-            Close
-          </Button>
-        </Flex>
-      )}
-      {account && chainId && sortedRecentTransactions.length === 0 && (
-        <Flex justifyContent="center" flexDirection="column" alignItems="center">
-          <Text mb="8px" bold>
-            No recent transactions
-          </Text>
-          <Button variant="tertiary" scale="sm" onClick={onDismiss}>
-            Close
-          </Button>
-        </Flex>
-      )}
-      {account &&
-        chainId &&
-        sortedRecentTransactions.map((sortedRecentTransaction) => {
-          const { hash, summary } = sortedRecentTransaction
-          const { icon, color } = getRowStatus(sortedRecentTransaction)
+  const pageSize = 5;
+  const {page, setPage, maxPage, currentData } = usePagination(sortedTransactionsByType, pageSize);
 
-          return (
-            <>
-              <Flex key={hash} alignItems="center" justifyContent="space-between" mb="4px">
-                <LinkExternal href={getBscScanLink(chainId, hash, 'transaction')} color={color}>
-                  {summary ?? hash}
-                </LinkExternal>
-                {icon}
+  return (
+<Modal title={translateString(1202, 'Recent transactions')} onDismiss={onDismiss}>
+    {!account && (
+      <Flex justifyContent="center" flexDirection="column" alignItems="center">
+        <Text mb="8px" $bold>
+          Please connect your wallet to view your recent transactions
+        </Text>
+        <Button variant="tertiary" scale="sm" onClick={onDismiss}>
+          Close
+        </Button>
+      </Flex>
+    )}
+
+    {account && chainId && sortedTransactionsByType.length === 0 && (
+      <Flex justifyContent="center" flexDirection="column" alignItems="center">
+        <Text mb="8px" $bold>
+          No recent transactions
+        </Text>
+        <Button variant="tertiary" scale="sm" onClick={onDismiss}>
+          Close
+        </Button>
+      </Flex>
+    )}
+
+    {account && chainId && sortedTransactionsByType.length > 0 && (
+      <div style={{ overflowX: 'auto' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <TableHead>
+            <TableRow>
+              <TableHeader>#</TableHeader>
+              <TableHeader>Type</TableHeader>
+              <TableHeader>Summary</TableHeader>
+              <TableHeader>Status</TableHeader>
+              <TableHeader>Tx</TableHeader>
+            </TableRow>
+          </TableHead>
+
+          <tbody>
+            {currentData().map((tx, index) => {
+              const { hash, summary, from, actionPerformed } = tx
+              const { icon, color } = getRowStatus(tx)
+
+              return (
+                <TableRow color="textSubtle" fontSize="14px" key={hash}>
+                  <TableCell><Text>{(index) + 1 + (pageSize * (page - 1))}</Text></TableCell>
+                  <TableCell><Text>{TransactionActionPerformed[actionPerformed]}</Text></TableCell>
+                  <TableCell>{summary}</TableCell>
+                  <TableCell style={{ color }} textAlign='center'>{icon}</TableCell>
+                  <TableCell>
+                    <LinkExternal
+                      href={getBscScanLink(chainId, hash, 'transaction')}                    
+                      $bold={false}
+                    >
+                      {hash.slice(0, 10) + '...'}
+                    </LinkExternal>
+                  </TableCell>
+                </TableRow>
+              )
+            })}
+          </tbody>
+        </table>
+        <Flex padding={"10px"} justifyContent='center'>
+          <AutoColumn>
+            <AutoRow>
+              <Button variant='tertiary' scale="sm" onClick={() => setPage((p) => Math.max(p - 1, 1))}>
+              Prev
+              </Button>
+              <Flex padding={"10px"}>
+                <Text color="textSubtle" fontSize='14px'> Page {page} of {maxPage} </Text>
               </Flex>
-            </>
-          )
-        })}
-    </Modal>
+              <Button variant='tertiary' scale="sm" onClick={() => setPage((p) => Math.min(p + 1, maxPage))}>
+              Next
+              </Button>
+            </AutoRow>
+          </AutoColumn>
+        </Flex>
+      </div>
+    )}
+  </Modal>
   )
 }
 

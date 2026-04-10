@@ -31,8 +31,8 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
   border: none;
   padding: 0 0.5rem;
   transition: background-color 150ms ease-in-out;
-  :focus,
-  :hover {
+  &:focus,
+  &:hover {
     background-color: rgba(255, 255, 255, 0.05);
   }
 `
@@ -60,9 +60,10 @@ const InputPanel = styled.div<{ hideInput?: boolean }>`
   position: relative;
   border-radius: 8px;
   background-color: ${({ theme }) => theme.colors.background};
-  z-index: 1;
 `
-const Container = styled.div<{ hideInput: boolean }>`
+const Container = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'hideInput',
+})<{ hideInput: boolean }>`
   border-radius: 8px;
   background-color: ${({ theme }) => theme.colors.input};
   box-shadow: none;

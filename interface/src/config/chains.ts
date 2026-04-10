@@ -80,3 +80,24 @@ export function getBadRecipientAddresses(): string[] {
 
 // Supported chain IDs for wallet connectors
 export const SUPPORTED_CHAIN_IDS: SupportedChainId[] = [CHAIN_IDS.MAINNET, CHAIN_IDS.TESTNET]
+
+export function isSupportedChainId(chainId: number | undefined | null): chainId is SupportedChainId {
+  return chainId === CHAIN_IDS.MAINNET || chainId === CHAIN_IDS.TESTNET
+}
+
+export function toSupportedChainId(chainId: number | undefined | null): SupportedChainId | undefined {
+  return isSupportedChainId(chainId) ? chainId : undefined
+}
+
+export function getNetworkContracts(chainId: number | undefined | null): NetworkContracts | undefined {
+  const supportedChainId = toSupportedChainId(chainId)
+  return supportedChainId ? NETWORK_CONTRACTS[supportedChainId] : undefined
+}
+
+export function getWstraxAddress(chainId: number | undefined | null): string | undefined {
+  return getNetworkContracts(chainId)?.WSTRAX
+}
+
+export function getMulticallAddress(chainId: number | undefined | null): string | undefined {
+  return getNetworkContracts(chainId)?.MULTICALL
+}

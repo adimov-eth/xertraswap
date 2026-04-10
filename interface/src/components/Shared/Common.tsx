@@ -12,16 +12,16 @@ export const LinkStyledButton = styled.button<{ disabled?: boolean }>`
   color: ${({ theme, disabled }) => (disabled ? theme.colors.textSubtle : theme.colors.primary)};
   font-weight: 500;
 
-  :hover {
+  &:hover {
     text-decoration: ${({ disabled }) => (disabled ? null : 'underline')};
   }
 
-  :focus {
+  &:focus {
     outline: none;
     text-decoration: ${({ disabled }) => (disabled ? null : 'underline')};
   }
 
-  :active {
+  &:active {
     text-decoration: none;
   }
 `
@@ -33,16 +33,16 @@ export const StyledInternalLink = styled(Link)`
   color: ${({ theme }) => theme.colors.primary};
   font-weight: 500;
 
-  :hover {
+  &:hover {
     text-decoration: underline;
   }
 
-  :focus {
+  &:focus {
     outline: none;
     text-decoration: underline;
   }
 
-  :active {
+  &:active {
     text-decoration: none;
   }
 `
@@ -53,16 +53,16 @@ const StyledLink = styled.a`
   color: ${({ theme }) => theme.colors.primary};
   font-weight: 500;
 
-  :hover {
+  &:hover {
     text-decoration: underline;
   }
 
-  :focus {
+  &:focus {
     outline: none;
     text-decoration: underline;
   }
 
-  :active {
+  &:active {
     text-decoration: none;
   }
 `

@@ -1,5 +1,5 @@
-import { HTMLAttributes } from 'react'
-import { SpaceProps } from 'styled-system'
+import { HTMLAttributes, PropsWithChildren } from 'react'
+import { SpaceProps } from '../../util/styledProps'
 import { Colors } from '../../theme/types'
 
 export interface CardRibbonProps {
@@ -22,7 +22,7 @@ export type CardTheme = {
   dropShadow: string
 }
 
-export interface CardProps extends SpaceProps, HTMLAttributes<HTMLDivElement> {
+export interface CardProps extends PropsWithChildren, SpaceProps, HTMLAttributes<HTMLDivElement> {
   isActive?: boolean
   isSuccess?: boolean
   isWarning?: boolean

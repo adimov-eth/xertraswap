@@ -1,14 +1,13 @@
 import React from 'react'
 import { Provider } from 'react-redux'
-import { ModalProvider } from 'uikit'
 import store from './state'
 import { ThemeContextProvider } from './ThemeContext'
 
-const Providers: React.FC = ({ children }) => {
+const Providers = ({ children } : { children : React.ReactNode}) => {
   return (
     <Provider store={store}>
       <ThemeContextProvider>
-        <ModalProvider>{children}</ModalProvider>
+        {children}
       </ThemeContextProvider>
     </Provider>
   )

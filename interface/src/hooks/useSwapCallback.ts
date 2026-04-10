@@ -8,6 +8,7 @@ import { calculateGasMargin, getRouterContract, isAddress, shortenAddress } from
 import isZero from '../utils/isZero'
 import useENS from './useENS'
 import Web3AuthContext from '../pages/Web3AuthContext'
+import { TransactionActionPerformed } from '../state/transactions/actions'
 
  enum SwapCallbackState {
   INVALID,
@@ -48,7 +49,7 @@ function useSwapCallArguments(
   const { connection, account, chainId } = useContext(Web3AuthContext)
 
   const { address: recipientAddress } = useENS(recipientAddressOrName)
-  const recipient = recipientAddressOrName === null ? account : recipientAddress
+  const recipient = recipientAddressOrName === null ? (account ? isAddress(account) : null) : recipientAddress
 
   return useMemo(() => {
     if (!trade || !recipient || connection.kind !== 'connected') return []
@@ -93,7 +94,7 @@ export function useSwapCallback(
   allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
   deadline: number = DEFAULT_DEADLINE_FROM_NOW, // in seconds from now
   recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
-): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
+): { state: SwapCallbackState; callback: null | (() => Promise<{ hash: string; wait: () => Promise<any> }>); error: string | null } {
   const { connection, account } = useContext(Web3AuthContext)
 
   const swapCalls = useSwapCallArguments(trade, allowedSlippage, deadline, recipientAddressOrName)
@@ -101,7 +102,7 @@ export function useSwapCallback(
   const addTransaction = useTransactionAdder()
 
   const { address: recipientAddress } = useENS(recipientAddressOrName)
-  const recipient = recipientAddressOrName === null ? account : recipientAddress
+  const recipient = recipientAddressOrName === null ? (account ? isAddress(account) : null) : recipientAddress
 
   return useMemo(() => {
     if (!trade || connection.kind !== 'connected') {
@@ -116,7 +117,7 @@ export function useSwapCallback(
 
     return {
       state: SwapCallbackState.VALID,
-      callback: async function onSwap(): Promise<string> {
+      callback: async function onSwap(): Promise<{ hash: string; wait: () => Promise<any> }> {
         const estimatedCalls: EstimatedSwapCall[] = await Promise.all(
           swapCalls.map((call) => {
             const {
@@ -190,19 +191,19 @@ export function useSwapCallback(
 
             const base = `Swap ${inputAmount} ${inputSymbol} for ${outputAmount} ${outputSymbol}`
             const withRecipient =
-              recipient === account
+              !recipientAddressOrName || recipient === account
                 ? base
                 : `${base} to ${
-                    recipientAddressOrName && isAddress(recipientAddressOrName)
+                    isAddress(recipientAddressOrName)
                       ? shortenAddress(recipientAddressOrName)
                       : recipientAddressOrName
                   }`
 
-            addTransaction(response, {
-              summary: withRecipient,
+            addTransaction(response, TransactionActionPerformed.Swap, {
+              summary: withRecipient              
             })
 
-            return response.hash
+            return { hash: response.hash, wait: () => response.wait() }
           })
           .catch((error: any) => {
             // if the user rejected the tx, pass this along

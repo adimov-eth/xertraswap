@@ -1,5 +1,7 @@
-import { SpaceProps } from 'styled-system'
+import { ReactNode } from 'react'
+import { SpaceProps } from '../../util/styledProps'
 
 export interface BreadcrumbsProps extends SpaceProps {
-  separator?: React.ReactNode
+  separator?: ReactNode
+  children: ReactNode
 }

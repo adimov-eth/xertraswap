@@ -1,8 +1,7 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import styled, { ThemeContext } from 'styled-components'
 import { splitSignature } from '@ethersproject/bytes'
 import { Contract } from '@ethersproject/contracts'
-import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, currencyEquals, ETHER, Percent, WETH } from '@xertra/sdk'
 import { Button, Flex, Text } from 'uikit'
 import { ArrowDown, Plus } from 'react-feather'
@@ -10,6 +9,7 @@ import { RouteComponentProps } from 'react-router'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import ConnectWalletButton from '../../components/ConnectWalletButton'
+import WrongNetworkBanner from '../../components/WrongNetworkBanner'
 import useI18n from '../../hooks/useI18n'
 import { AutoColumn, ColumnCenter } from '../../components/Column'
 import TransactionConfirmationModal, { ConfirmationModalContent } from '../../components/TransactionConfirmationModal'
@@ -22,6 +22,7 @@ import { RowBetween, RowFixed } from '../../components/Row'
 import Slider from '../../components/Slider'
 import CurrencyLogo from '../../components/CurrencyLogo'
 import { ROUTER_ADDRESS } from '../../constants'
+import { isSupportedChainId } from '../../config/chains'
 import { useCurrency } from '../../hooks/Tokens'
 import { usePairContract } from '../../hooks/useContract'
 
@@ -40,6 +41,8 @@ import { useBurnActionHandlers, useDerivedBurnInfo, useBurnState } from '../../s
 import { Field } from '../../state/burn/actions'
 import { useUserDeadline, useUserSlippageTolerance } from '../../state/user/hooks'
 import Web3AuthContext from '../Web3AuthContext'
+import { TransactionActionPerformed } from '../../state/transactions/actions'
+import { from } from 'stylis'
 
 const OutlineCard = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.borderColor};
@@ -55,11 +58,11 @@ const Body = styled.div`
 export default function RemoveLiquidity({
   history,
   match: {
-    params: { currencyIdA, currencyIdB },
+    params: { currencyIdA, currencyIdB, from },
   },
-}: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
+}: RouteComponentProps<{ currencyIdA: string; currencyIdB: string; from?: string; }>) {
 
-  const { connection, account, chainId } = useContext(Web3AuthContext)
+  const { connection, account, chainId, isWrongNetwork } = useContext(Web3AuthContext)
 
   const [currencyA, currencyB] = [useCurrency(currencyIdA) ?? undefined, useCurrency(currencyIdB) ?? undefined]
   const TranslateString = useI18n()
@@ -169,7 +172,7 @@ export default function RemoveLiquidity({
       .catch((e) => {
         // for all errors other than 4001 (EIP-1193 user rejected request), fall back to manual approve
         if (e?.code !== 4001) {
-          approveCallback()
+          approveCallback(TransactionActionPerformed.ApproveRemoveLiquidity)
         }
       })
   }
@@ -189,13 +192,15 @@ export default function RemoveLiquidity({
 
   // tx sending
   const addTransaction = useTransactionAdder()
+
   async function onRemove() {
-    if (connection.kind !== 'connected') throw new Error('missing dependencies')
-    const { account: connectedAccount } = connection
+    if (connection.kind !== 'connected') throw new Error('missing dependencies')      
+    const { account: connectedAccount } = connection  
     const { [Field.CURRENCY_A]: currencyAmountA, [Field.CURRENCY_B]: currencyAmountB } = parsedAmounts
     if (!currencyAmountA || !currencyAmountB) {
       throw new Error('missing currency amounts')
     }
+
     const router = getRouterContract(chainId, connection.provider, connection.account)
 
     const amountsMin = {
@@ -281,6 +286,7 @@ export default function RemoveLiquidity({
     } else {
       throw new Error('Attempting to confirm without approval or a signature. Please contact support.')
     }
+    
     const safeGasEstimates: (BigNumber | undefined)[] = await Promise.all(
       methodNames.map((methodName, index) =>
         router.estimateGas[methodName](...args)
@@ -300,29 +306,33 @@ export default function RemoveLiquidity({
     if (indexOfSuccessfulEstimation === -1) {
       console.error('This transaction would fail. Please contact support.')
     } else {
-      const methodName = methodNames[indexOfSuccessfulEstimation]
-      const safeGasEstimate = safeGasEstimates[indexOfSuccessfulEstimation]
 
-      setAttemptingTxn(true)
-      await router[methodName](...args, {
-        gasLimit: safeGasEstimate,
-      })
-        .then((response: TransactionResponse) => {
-          setAttemptingTxn(false)
+      try {
+        const methodName = methodNames[indexOfSuccessfulEstimation]
+        const safeGasEstimate = safeGasEstimates[indexOfSuccessfulEstimation]
 
-          addTransaction(response, {
-            summary: `Remove ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
-              currencyA?.symbol
-            } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencyB?.symbol}`,
-          })
+        setAttemptingTxn(true)
 
-          setTxHash(response.hash)
+        const transactionResponse = await router[methodName](...args, { gasLimit: safeGasEstimate})
+
+        setTxHash(transactionResponse.hash)
+
+        addTransaction(
+          transactionResponse, 
+          TransactionActionPerformed.Liquidity, {
+          summary: `Remove ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
+            currencyA?.symbol
+          } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencyB?.symbol}`,
         })
-        .catch((e: Error) => {
-          setAttemptingTxn(false)
-          // we only care if the error is something _other_ than the user rejected the tx
-          console.error(e)
-        })
+
+        await transactionResponse.wait()
+
+        setAttemptingTxn(false)
+      } catch (error: any) {
+        // we only care if the error is something _other_ than the user rejected the tx
+        setAttemptingTxn(false)
+        console.error(error)
+      }
     }
   }
 
@@ -339,7 +349,7 @@ export default function RemoveLiquidity({
           </RowFixed>
         </RowBetween>
         <RowFixed>
-          <Plus size="16" color={theme.colors.textSubtle} />
+          <Plus size="16" color={theme?.colors.textSubtle} />
         </RowFixed>
         <RowBetween align="flex-end">
           <Text fontSize="24px">{parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)}</Text>
@@ -351,7 +361,7 @@ export default function RemoveLiquidity({
           </RowFixed>
         </RowBetween>
 
-        <Text small color="textSubtle" textAlign="left" padding="12px 0 0 0" style={{ fontStyle: 'italic' }}>
+        <Text $small color="textSubtle" textAlign="left" padding="12px 0 0 0" style={{ fontStyle: 'italic' }}>
           {`Output is estimated. If the price changes by more than ${
             allowedSlippage / 100
           }% your transaction will revert.`}
@@ -405,10 +415,11 @@ export default function RemoveLiquidity({
   )
 
   const oneCurrencyIsETH = currencyA === ETHER || currencyB === ETHER
+  const supportedWeth = chainId && isSupportedChainId(chainId) ? WETH[chainId] : undefined
   const oneCurrencyIsWETH = Boolean(
-    chainId &&
-      ((currencyA && currencyEquals(WETH[chainId], currencyA)) ||
-        (currencyB && currencyEquals(WETH[chainId], currencyB)))
+    supportedWeth &&
+      ((currencyA && currencyEquals(supportedWeth, currencyA)) ||
+        (currencyB && currencyEquals(supportedWeth, currencyB)))
   )
 
   const handleSelectCurrencyA = useCallback(
@@ -450,7 +461,7 @@ export default function RemoveLiquidity({
   return (
     <>
       <AppBody>
-        <AddRemoveTabs adding={false} />
+        <AddRemoveTabs adding={false} from={from}/>
         <Wrapper>
           <TransactionConfirmationModal
             isOpen={showConfirm}
@@ -467,6 +478,7 @@ export default function RemoveLiquidity({
             )}
             pendingText={pendingText}
           />
+          <WrongNetworkBanner />
           <AutoColumn gap="md">
             <Body>
               <OutlineCard>
@@ -527,7 +539,7 @@ export default function RemoveLiquidity({
             {!showDetailed && (
               <>
                 <ColumnCenter>
-                  <ArrowDown size="16" color={theme.colors.textSubtle} />
+                  <ArrowDown size="16" color={theme?.colors.textSubtle} />
                 </ColumnCenter>
                 <Body>
                   <OutlineCard>
@@ -550,12 +562,12 @@ export default function RemoveLiquidity({
                           </Text>
                         </RowFixed>
                       </RowBetween>
-                      {chainId && (oneCurrencyIsWETH || oneCurrencyIsETH) ? (
+                      {supportedWeth && (oneCurrencyIsWETH || oneCurrencyIsETH) ? (
                         <RowBetween style={{ justifyContent: 'flex-end' }}>
                           {oneCurrencyIsETH ? (
                             <StyledInternalLink
-                              to={`/remove/${currencyA === ETHER ? WETH[chainId].address : currencyIdA}/${
-                                currencyB === ETHER ? WETH[chainId].address : currencyIdB
+                              to={`/remove/${currencyA === ETHER ? supportedWeth.address : currencyIdA}/${
+                                currencyB === ETHER ? supportedWeth.address : currencyIdB
                               }`}
                             >
                               {TranslateString(1188, 'Receive WSTRAX')}
@@ -563,8 +575,8 @@ export default function RemoveLiquidity({
                           ) : oneCurrencyIsWETH ? (
                             <StyledInternalLink
                               to={`/remove/${
-                                currencyA && currencyEquals(currencyA, WETH[chainId]) ? 'STRAX' : currencyIdA
-                              }/${currencyB && currencyEquals(currencyB, WETH[chainId]) ? 'STRAX' : currencyIdB}`}
+                                currencyA && supportedWeth && currencyEquals(currencyA, supportedWeth) ? 'STRAX' : currencyIdA
+                              }/${currencyB && supportedWeth && currencyEquals(currencyB, supportedWeth) ? 'STRAX' : currencyIdB}`}
                             >
                               {TranslateString(1190, 'Receive STRAX')}
                             </StyledInternalLink>
@@ -592,7 +604,7 @@ export default function RemoveLiquidity({
                     id="liquidity-amount"
                   />
                   <ColumnCenter>
-                    <ArrowDown size="16" color={theme.colors.textSubtle} />
+                    <ArrowDown size="16" color={theme?.colors.textSubtle} />
                   </ColumnCenter>
                   <CurrencyInputPanel
                     hideBalance
@@ -606,7 +618,7 @@ export default function RemoveLiquidity({
                     id="remove-liquidity-tokena"
                   />
                   <ColumnCenter>
-                    <Plus size="16" color={theme.colors.textSubtle} />
+                    <Plus size="16" color={theme?.colors.textSubtle} />
                   </ColumnCenter>
                   <CurrencyInputPanel
                     hideBalance
@@ -640,6 +652,10 @@ export default function RemoveLiquidity({
               <div style={{ position: 'relative' }}>
                 {!account ? (
                   <ConnectWalletButton width="100%" />
+                ) : isWrongNetwork ? (
+                  <Button disabled width="100%" variant="danger">
+                    Wrong network
+                  </Button>
                 ) : (
                   <RowBetween>
                     <Button

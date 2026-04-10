@@ -1,5 +1,5 @@
 import { CurrencyAmount, JSBI, Token, Trade } from '@xertra/sdk'
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { ArrowDown } from 'react-feather'
 import { CardBody, ArrowDownIcon, Button, IconButton, Text } from 'uikit'
 import { ThemeContext } from 'styled-components'
@@ -10,7 +10,6 @@ import ConfirmSwapModal from 'components/swap/ConfirmSwapModal'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
 import { AutoRow, RowBetween } from 'components/Row'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
-import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
 import { ArrowWrapper, BottomGrouping, SwapCallbackError, Wrapper } from 'components/swap/styleds'
 import TradePrice from 'components/swap/TradePrice'
 import TokenWarningModal from 'components/TokenWarningModal'
@@ -31,13 +30,17 @@ import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from 'utils/prices'
 import Loader from 'components/Loader'
 import useI18n from 'hooks/useI18n'
-import PageHeader from 'components/PageHeader'
+import { SwapPageHeader } from 'components/PageHeader'
 import ConnectWalletButton from 'components/ConnectWalletButton'
+import WrongNetworkBanner from '../../components/WrongNetworkBanner'
+import WrongNetworkModal from '../../components/WrongNetworkModal'
 import AppBody from '../AppBody'
 import Web3AuthContext from '../Web3AuthContext'
+import { TransactionActionPerformed } from '../../state/transactions/actions'
 
 const Swap = () => {
-  const { account } = useContext(Web3AuthContext)
+  const { account, isWrongNetwork } = useContext(Web3AuthContext)
+  const [showWrongNetworkModal, setShowWrongNetworkModal] = useState(false)
 
   const loadedUrlParams = useDefaultsFromURLSearch()
   const TranslateString = useI18n()
@@ -81,11 +84,12 @@ const Swap = () => {
   // swap state
   const { independentField, typedValue, recipient } = useSwapState()
   const { v2Trade, currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedSwapInfo()
-  const { wrapType, execute: onWrap, inputError: wrapInputError } = useWrapCallback(
+  const { wrapType, execute: onWrap, inputError: wrapInputError, isBusy } = useWrapCallback(
     currencies[Field.INPUT],
     currencies[Field.OUTPUT],
-    typedValue
-  )  
+    typedValue,
+  )
+
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
   const trade = showWrap ? undefined : v2Trade
 
@@ -171,20 +175,22 @@ const Swap = () => {
   const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
 
   const handleSwap = useCallback(() => {
-    if (priceImpactWithoutFee && !confirmPriceImpactWithoutFee(priceImpactWithoutFee)) {
-      return
-    }
     if (!swapCallback) {
       return
     }
+
     setSwapState((prevState) => ({ ...prevState, attemptingTxn: true, swapErrorMessage: undefined, txHash: undefined }))
     swapCallback()
-      .then((hash) => {
+      .then(async ({ hash, wait }) => {
+        setSwapState((prevState) => ({
+          ...prevState,
+          swapErrorMessage: undefined,
+          txHash: hash,
+        }))
+        await wait()
         setSwapState((prevState) => ({
           ...prevState,
           attemptingTxn: false,
-          swapErrorMessage: undefined,
-          txHash: hash,
         }))
       })
       .catch((error) => {
@@ -272,8 +278,17 @@ const Swap = () => {
     [onCurrencySelection, checkForWarning]
   )
 
+  useEffect(() => {
+    if (account && isWrongNetwork) {
+      setShowWrongNetworkModal(true)
+    } else {
+      setShowWrongNetworkModal(false)
+    }
+  }, [account, isWrongNetwork])
+
   return (
     <>
+      <WrongNetworkModal isOpen={showWrongNetworkModal} onDismiss={() => setShowWrongNetworkModal(false)} />
       <TokenWarningModal
         isOpen={urlLoadedTokens.length > 0 && !dismissTokenWarning}
         tokens={urlLoadedTokens}
@@ -300,11 +315,12 @@ const Swap = () => {
             swapErrorMessage={swapErrorMessage}
             onDismiss={handleConfirmDismiss}
           />
-          <PageHeader
+          <SwapPageHeader
             title={TranslateString(8, 'Exchange')}
             description={TranslateString(1192, 'Trade tokens in an instant')}
           />
           <CardBody>
+            <WrongNetworkBanner />
             <AutoColumn gap="md">
               <CurrencyInputPanel
                 label={
@@ -362,7 +378,7 @@ const Swap = () => {
                 <>
                   <AutoRow justify="space-between" style={{ padding: '0 1rem' }}>
                     <ArrowWrapper clickable={false}>
-                      <ArrowDown size="16" color={theme.colors.textSubtle} />
+                      <ArrowDown size="16" color={theme?.colors.textSubtle} />
                     </ArrowWrapper>
                     <LinkStyledButton id="remove-recipient-button" onClick={() => onChangeRecipient(null)}>
                       - Remove send
@@ -376,20 +392,22 @@ const Swap = () => {
                 <Card padding=".25rem .75rem 0 .75rem" borderRadius="8px">
                   <AutoColumn gap="4px">
                     {Boolean(trade) && (
-                      <RowBetween align="center">
-                        <Text fontSize="14px">{TranslateString(1182, 'Price')}</Text>
-                        <TradePrice
-                          price={trade?.executionPrice}
-                          showInverted={showInverted}
-                          setShowInverted={setShowInverted}
-                        />
-                      </RowBetween>
-                    )}
-                    {allowedSlippage !== INITIAL_ALLOWED_SLIPPAGE && (
-                      <RowBetween align="center">
-                        <Text fontSize="14px">{TranslateString(88, 'Slippage Tolerance')}</Text>
-                        <Text fontSize="14px">{allowedSlippage / 100}%</Text>
-                      </RowBetween>
+                      <>
+                        <RowBetween align="center">
+                          <Text fontSize="14px">{TranslateString(1182, 'Price')}</Text>
+                          <TradePrice
+                            price={trade?.executionPrice}
+                            showInverted={showInverted}
+                            setShowInverted={setShowInverted}
+                          />
+                        </RowBetween>
+                      { allowedSlippage !== INITIAL_ALLOWED_SLIPPAGE && (
+                        <RowBetween align="center">
+                          <Text fontSize="14px">{TranslateString(88, 'Slippage Tolerance')}</Text>
+                          <Text fontSize="14px">{allowedSlippage / 100}%</Text>
+                        </RowBetween>
+                      )}                
+                      </>
                     )}
                   </AutoColumn>
                 </Card>
@@ -398,10 +416,18 @@ const Swap = () => {
             <BottomGrouping>
               {!account ? (
                 <ConnectWalletButton width="100%" />
+              ) : isWrongNetwork ? (
+                <Button disabled width="100%" variant="danger">
+                  Wrong network
+                </Button>
               ) : showWrap ? (
-                <Button disabled={Boolean(wrapInputError)} onClick={onWrap} width="100%">
-                  {wrapInputError ??
-                    (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
+                <Button disabled={Boolean(wrapInputError) || isBusy} onClick={onWrap} width="100%">
+                  {
+                    isBusy ? 
+                      (wrapType === WrapType.WRAP ? 'Wrapping' : 'Unwrapping')
+                    :
+                      wrapInputError ?? (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)
+                  }
                 </Button>
               ) : noRoute && userHasSpecifiedInputOutput ? (
                 <GreyCard style={{ textAlign: 'center' }}>
@@ -410,7 +436,7 @@ const Swap = () => {
               ) : showApproveFlow ? (
                 <RowBetween>
                   <Button
-                    onClick={approveCallback}
+                    onClick={() => approveCallback(TransactionActionPerformed.ApproveSwap)}
                     disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
                     style={{ width: '48%' }}
                     variant={approval === ApprovalState.APPROVED ? 'success' : 'primary'}

@@ -1,6 +1,6 @@
 import React from 'react'
 import styled, { keyframes } from 'styled-components'
-import { space, layout } from 'styled-system'
+import { spaceStyles, layoutStyles, blockProps, SPACE_PROP_NAMES, LAYOUT_PROP_NAMES } from '../../util/styledProps'
 import { SkeletonProps, animation as ANIMATION, variant as VARIANT } from './types'
 
 const waves = keyframes`
@@ -24,14 +24,15 @@ const pulse = keyframes`
   }
 `
 
-const Root = styled.div<SkeletonProps>`
+const Root = styled.div
+.withConfig({ shouldForwardProp: blockProps(SPACE_PROP_NAMES, LAYOUT_PROP_NAMES, ['variant'] as const) })<SkeletonProps>`
   min-height: 20px;
   display: block;
   background-color: ${({ theme }) => theme.colors.backgroundDisabled};
   border-radius: ${({ variant, theme }) => (variant === VARIANT.CIRCLE ? theme.radii.circle : theme.radii.small)};
 
-  ${layout}
-  ${space}
+  ${layoutStyles}
+  ${spaceStyles}
 `
 
 const Pulse = styled(Root)`

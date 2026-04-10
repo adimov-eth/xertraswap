@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { PropsWithChildren, useState } from 'react'
 import styled from 'styled-components'
 import Text from '../../components/Text/Text'
 import { CopyIcon } from '../../components/Svg'
 
-interface Props {
+interface Props extends PropsWithChildren {
   toCopy: string
 }
 
@@ -14,7 +14,9 @@ const StyleButton = styled(Text).attrs({ role: 'button' })`
   color: ${({ theme }) => theme.colors.primary};
 `
 
-const Tooltip = styled.div<{ isTooltipDisplayed: boolean }>`
+const Tooltip = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'isTooltipDisplayed',
+})<{ isTooltipDisplayed: boolean }>`
   display: ${({ isTooltipDisplayed }) => (isTooltipDisplayed ? 'block' : 'none')};
   position: absolute;
   bottom: -22px;
@@ -27,13 +29,14 @@ const Tooltip = styled.div<{ isTooltipDisplayed: boolean }>`
   opacity: 0.7;
 `
 
-const CopyToClipboard: React.FC<Props> = ({ toCopy, children, ...props }) => {
+function CopyToClipboard({ toCopy, children, ...props }: Props ) {
+
   const [isTooltipDisplayed, setIsTooltipDisplayed] = useState(false)
 
   return (
     <StyleButton
-      small
-      bold
+      $small
+      $bold
       onClick={() => {
         if (navigator.clipboard) {
           navigator.clipboard.writeText(toCopy)

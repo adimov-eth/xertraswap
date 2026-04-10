@@ -10,16 +10,13 @@
     "build:interface": "yarn workspace @xertra/interface build",
     "dev": "yarn build:sdk && yarn workspace @xertra/interface start",
     "build": "yarn build:sdk && yarn build:interface",
+    "typecheck": "yarn workspace @xertra/interface typecheck",
     "lint": "yarn workspace @xertra/interface lint",
     "test": "yarn workspace @xertra/interface test"
   },
   "resolutions": {
-    "@types/react": "17.0.0",
-    "@types/react-dom": "17.0.0",
-    "@types/styled-components": "5.1.32",
-    "@types/node": "18.19.68",
     "eslint-plugin-react": "7.37.5",
-    "typescript": "~5.6.0"
+    "typescript": "~5.9.0"
   },
   "packageManager": "yarn@1.22.22",
   "dependencies": {

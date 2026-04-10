@@ -35,3 +35,4 @@ invoice/
 
 # Unused SDKs
 stratisswap/
+.ant-colony/

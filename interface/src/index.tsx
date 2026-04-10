@@ -1,5 +1,5 @@
-import React, { StrictMode } from 'react'
-import ReactDOM from 'react-dom'
+import React from 'react'
+import { createRoot } from 'react-dom/client'
 import { ResetCSS } from 'uikit'
 import GlobalStyle from './style/Global'
 import CSSVariables from './style/CSSVariables'
@@ -13,11 +13,18 @@ if ('ethereum' in window) {
 }
 
 window.addEventListener('error', () => {
-   localStorage?.removeItem('redux_localstorage_simple_lists')
+  localStorage?.removeItem('redux_localstorage_simple_lists')
 })
 
-ReactDOM.render(
-  <StrictMode>
+const rootElement = document.getElementById('root')
+
+if (!rootElement) {
+  throw new Error('Failed to find #root element')
+}
+
+const root = createRoot(rootElement)
+root.render(
+  <React.StrictMode>
     <Providers>
       <ResetCSS />
       <GlobalStyle />
@@ -25,6 +32,5 @@ ReactDOM.render(
       <ButtonOverrides />
       <App />
     </Providers>
-  </StrictMode>,
-  document.getElementById('root')
+  </React.StrictMode>,
 )

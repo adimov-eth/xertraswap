@@ -7,7 +7,8 @@ import ENS_PUBLIC_RESOLVER_ABI from '../constants/abis/ens-public-resolver.json'
 import { ERC20_BYTES32_ABI } from '../constants/abis/erc20'
 import ERC20_ABI from '../constants/abis/erc20.json'
 import WETH_ABI from '../constants/abis/weth.json'
-import { MULTICALL_ABI, MULTICALL_NETWORKS } from '../constants/multicall'
+import { MULTICALL_ABI } from '../constants/multicall'
+import { getMulticallAddress, isSupportedChainId } from '../config/chains'
 import { getContract } from '../utils'
 import Web3AuthContext from '../pages/Web3AuthContext'
 
@@ -36,7 +37,8 @@ export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: b
 
 export function useWETHContract(withSignerIfPossible?: boolean): Contract | null {
   const { chainId } = useContext(Web3AuthContext)
-  return useContract(chainId ? WETH[chainId].address : undefined, WETH_ABI, withSignerIfPossible)
+  const wethAddress = chainId && isSupportedChainId(chainId) ? WETH[chainId].address : undefined
+  return useContract(wethAddress, WETH_ABI, withSignerIfPossible)
 }
 
 export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contract | null {
@@ -65,5 +67,5 @@ export function usePairContract(pairAddress?: string, withSignerIfPossible?: boo
 
 export function useMulticallContract(): Contract | null {
   const { chainId } = useContext(Web3AuthContext)
-  return useContract(chainId && MULTICALL_NETWORKS[chainId], MULTICALL_ABI, false)
+  return useContract(getMulticallAddress(chainId), MULTICALL_ABI, false)
 }

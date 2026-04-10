@@ -12,6 +12,8 @@ interface Eip1193ProviderLike {
   selectedAddress?: string
   on?: (event: string, listener: (...args: unknown[]) => void) => void
   removeListener?: (event: string, listener: (...args: unknown[]) => void) => void
+  provider?: Eip1193ProviderLike
+  eventProvider?: Eip1193ProviderLike
 }
 
 function resolveWeb3AuthNetwork(): (typeof WEB3AUTH_NETWORK)[keyof typeof WEB3AUTH_NETWORK] {
@@ -144,20 +146,36 @@ export class Web3AuthConnector{
 
 
   async logout(): Promise<void> {
+    if (this.web3auth?.connected) {
+      await this.web3auth.logout()
+    }
+  }
+
+  async switchToChain(targetChainId: number): Promise<boolean> {
+    await this.ensureInitialized()
+
     const provider = this.web3auth?.provider as Eip1193ProviderLike | null
-    if (provider) {
-      // provider.removeListener?.('accountsChanged', this.handleAccountsChanged as unknown as (...args: unknown[]) => void)
-      // provider.removeListener?.('chainChanged', this.handleChainChanged as unknown as (...args: unknown[]) => void)
-      // provider.removeListener?.('disconnect', this.handleDisconnect as unknown as (...args: unknown[]) => void)
+    const targets = [provider, provider?.provider, provider?.eventProvider].filter(Boolean) as Eip1193ProviderLike[]
+    const chainIdHex = `0x${targetChainId.toString(16)}`
+
+    for (const target of targets) {
+      if (!target?.request) continue
+
+      try {
+        await target.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: chainIdHex }],
+        })
+        return true
+      } catch (error: any) {
+        if (error?.code === 4902) {
+          // Chain not added to wallet. For now just continue to next target.
+          continue
+        }
+      }
     }
 
-    if (this.web3auth?.connected) {
-      // Fire-and-forget logout since deactivate is synchronous
-      await this.web3auth.logout()
-      // .catch((err) => {
-      //   console.error('Web3Auth logout error', err)
-      // })
-    }
+    return false
   }
 
   // private handleAccountsChanged = (accounts: unknown): void => {

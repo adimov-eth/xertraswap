@@ -17,7 +17,7 @@ export function RedirectOldAddLiquidityPathStructure(props: RouteComponentProps<
   return <AddLiquidity {...props} />
 }
 
-export function RedirectDuplicateTokenIds(props: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
+export function RedirectDuplicateTokenIds(props: RouteComponentProps<{ currencyIdA: string; currencyIdB: string; from: string }>) {
   const {
     match: {
       params: { currencyIdA, currencyIdB },

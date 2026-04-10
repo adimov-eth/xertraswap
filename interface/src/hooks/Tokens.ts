@@ -1,6 +1,7 @@
 import { parseBytes32String } from '@ethersproject/strings'
 import { Currency, ETHER, Token, currencyEquals } from '@xertra/sdk'
 import { useContext, useMemo } from 'react'
+import { isSupportedChainId } from '../config/chains'
 import { useSelectedTokenList } from '../state/lists/hooks'
 import { NEVER_RELOAD, useSingleCallResult } from '../state/multicall/hooks'
 // eslint-disable-next-line import/no-cycle
@@ -15,7 +16,7 @@ export function useAllTokens(): { [address: string]: Token } {
   const allTokens = useSelectedTokenList()
 
   return useMemo(() => {
-    if (!chainId) return {}
+    if (!chainId || !isSupportedChainId(chainId)) return {}
     return (
       userAddedTokens
         // reduce into all ALL_TOKENS filtered by the current chain
@@ -26,7 +27,7 @@ export function useAllTokens(): { [address: string]: Token } {
           },
           // must make a copy because reduce modifies the map, and we do not
           // want to make a copy in every iteration
-          { ...allTokens[chainId] }
+          { ...(allTokens[chainId] ?? {}) }
         )
     )
   }, [chainId, userAddedTokens, allTokens])

@@ -4,12 +4,13 @@ import { useLocation } from 'react-router-dom'
 import { SvgProps } from '../../../components/Svg'
 import * as IconModule from '../icons'
 import Accordion from './Accordion'
-import { MenuEntry, LinkLabel, LinkStatus } from './MenuEntry'
+import { MenuEntry as MenuEntryItem, LinkLabel, LinkStatus } from './MenuEntry'
 import MenuLink from './MenuLink'
-import { PanelProps, PushedProps } from '../types'
+import { MenuEntry as MenuEntryConfig, PushedProps } from '../types'
 
-interface Props extends PanelProps, PushedProps {
+interface PanelBodyProps extends PushedProps {
   isMobile: boolean
+  links: Array<MenuEntryConfig>
 }
 
 const Icons = IconModule as unknown as { [key: string]: React.FC<SvgProps> }
@@ -22,7 +23,7 @@ const Container = styled.div`
   height: 100%;
 `
 
-const PanelBody: React.FC<Props> = ({ isPushed, pushNav, isMobile, links }) => {
+function PanelBody({ isPushed, pushNav, isMobile, links } : PanelBodyProps) {
   const location = useLocation()
 
   // Close the menu when a user clicks a link on mobile
@@ -70,7 +71,7 @@ const PanelBody: React.FC<Props> = ({ isPushed, pushNav, isMobile, links }) => {
             >
               {isPushed &&
                 entry.items.map((item) => (
-                  <MenuEntry
+                  <MenuEntryItem
                     key={item.href}
                     secondary
                     isActive={isMenuItemActive(item.href, location.pathname)}
@@ -84,18 +85,18 @@ const PanelBody: React.FC<Props> = ({ isPushed, pushNav, isMobile, links }) => {
                         </LinkStatus>
                       )}
                     </MenuLink>
-                  </MenuEntry>
+                  </MenuEntryItem>
                 ))}
             </Accordion>
           )
         }
         return (
-          <MenuEntry
+          <MenuEntryItem
             key={entry.label}
             isActive={entry.href ? isMenuItemActive(entry.href, location.pathname) : false}
             className={calloutClass}
           >
-            <MenuLink href={entry.href} onClick={handleClick}>
+            <MenuLink href={entry.href} onClick={handleClick} target={entry.target} rel={entry.target === '_blank' ? 'noopener noreferrer': undefined}>
               {iconElement}
               <LinkLabel isPushed={isPushed}>{entry.label}</LinkLabel>
               {entry.status && (
@@ -104,7 +105,7 @@ const PanelBody: React.FC<Props> = ({ isPushed, pushNav, isMobile, links }) => {
                 </LinkStatus>
               )}
             </MenuLink>
-          </MenuEntry>
+          </MenuEntryItem>
         )
       })}
     </Container>

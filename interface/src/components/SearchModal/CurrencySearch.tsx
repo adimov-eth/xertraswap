@@ -1,5 +1,5 @@
 import { Currency, ETHER, Token } from '@xertra/sdk'
-import React, { KeyboardEvent, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { KeyboardEvent, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { Text, CloseIcon } from 'uikit'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -49,7 +49,7 @@ export function CurrencySearch({
   
   const theme = useContext(ThemeContext)
 
-  const fixedList = useRef<FixedSizeList>()
+  const fixedList = useRef<FixedSizeList | null>(null)
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [invertSearchOrder, setInvertSearchOrder] = useState<boolean>(false)
   const allTokens = useAllTokens()
@@ -109,7 +109,7 @@ export function CurrencySearch({
   }, [isOpen])
 
   // manage focus on modal show
-  const inputRef = useRef<HTMLInputElement>()
+  const inputRef = useRef<HTMLInputElement | null>(null)
   const handleInput = useCallback((event) => {
     const input = event.target.value
     const checksummedInput = isAddress(input)
@@ -207,7 +207,7 @@ export function CurrencySearch({
                 </Row>
               ) : null}
               <LinkStyledButton
-                style={{ fontWeight: 500, color: theme.colors.textSubtle, fontSize: 16 }}
+                style={{ fontWeight: 500, color: theme?.colors.textSubtle, fontSize: 16 }}
                 onClick={onChangeList}
                 id="currency-search-change-list-button"
               >

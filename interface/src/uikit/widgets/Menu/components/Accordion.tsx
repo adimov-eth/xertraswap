@@ -21,7 +21,9 @@ const Container = styled.div`
   flex-shrink: 0;
 `
 
-const AccordionContent = styled.div<{ isOpen: boolean; isPushed: boolean; maxHeight: number }>`
+const AccordionContent = styled.div.withConfig({
+  shouldForwardProp: (prop) => !['isPushed', 'isOpen', 'maxHeight'].includes(prop),
+})<{ isOpen: boolean; isPushed: boolean; maxHeight: number }>`
   max-height: ${({ isOpen, maxHeight }) => (isOpen ? `${maxHeight}px` : 0)};
   transition: max-height 0.3s ease-out;
   overflow: hidden;

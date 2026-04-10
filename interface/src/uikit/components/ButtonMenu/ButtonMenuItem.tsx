@@ -1,16 +1,15 @@
-import React from 'react'
 import styled from 'styled-components'
 import Button from '../Button/Button'
-import { BaseButtonProps, PolymorphicComponent, variants } from '../Button/types'
+import { StyledButtonProps, PolymorphicComponent, variants } from '../Button/types'
 import { ButtonMenuItemProps } from './types'
 
-interface InactiveButtonProps extends BaseButtonProps {
-  forwardedAs: BaseButtonProps['as']
+interface InactiveButtonProps extends StyledButtonProps {
+  as?: StyledButtonProps['as']
 }
 
 const InactiveButton: PolymorphicComponent<InactiveButtonProps, 'button'> = styled(Button)<InactiveButtonProps>`
   background-color: transparent;
-  color: ${({ theme, variant }) => (variant === variants.PRIMARY ? theme.colors.primary : theme.colors.textSubtle)};
+  color: ${({ theme, $variant }) => ($variant === variants.PRIMARY ? theme.colors.primary : theme.colors.textSubtle)};
   &:hover:not(:disabled):not(:active) {
     background-color: transparent;
   }
@@ -18,15 +17,17 @@ const InactiveButton: PolymorphicComponent<InactiveButtonProps, 'button'> = styl
 
 const ButtonMenuItem: PolymorphicComponent<ButtonMenuItemProps, 'button'> = ({
   isActive = false,
-  variant = variants.PRIMARY,
+  $variant = variants.PRIMARY,
   as,
   ...props
 }: ButtonMenuItemProps) => {
+  const propsWithLink = props as ButtonMenuItemProps
+
   if (!isActive) {
-    return <InactiveButton forwardedAs={as} variant="tertiary" {...props} />
+    return <InactiveButton as={as} $variant={variants.TERTIARY} {...propsWithLink} />
   }
 
-  return <Button as={as} variant={variant} {...props} />
+  return <Button as={as} variant={$variant} {...propsWithLink} />
 }
 
 export default ButtonMenuItem

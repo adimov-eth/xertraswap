@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import styled, { ThemeContext } from 'styled-components'
 import { CurrencyAmount, JSBI, TokenAmount, Trade } from '@xertra/sdk'
@@ -15,10 +15,10 @@ import CurrencyInputPanel from 'components/CurrencyInputPanel'
 import ConfirmSwapModal from 'components/swap/ConfirmSwapModal'
 import TradePrice from 'components/swap/TradePrice'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
-import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
 import ProgressSteps from 'components/ProgressSteps'
 import Loader from 'components/Loader'
 import ConnectWalletButton from 'components/ConnectWalletButton'
+import WrongNetworkBanner from '../../components/WrongNetworkBanner'
 import AddressInputPanel from 'components/AddressInputPanel'
 import { LinkStyledButton } from 'components/Shared'
 import { INITIAL_ALLOWED_SLIPPAGE } from 'constants/index'
@@ -33,6 +33,7 @@ import { useExpertModeManager, useUserDeadline, useUserSlippageTolerance } from 
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from 'utils/prices'
 import Web3AuthContext from '../Web3AuthContext'
+import { TransactionActionPerformed } from '../../state/transactions/actions'
 
 const BodyWrapper = styled(Card)`
   position: relative;
@@ -74,7 +75,7 @@ const BackLink = styled(Link)`
 `
 
 export default function PoolDetails() {
-  const {account} = useContext(Web3AuthContext)
+  const { account, isWrongNetwork } = useContext(Web3AuthContext)
 
   const { currencyIdA, currencyIdB } = useParams<{ currencyIdA: string; currencyIdB: string }>()
   const pools = useAllPools()
@@ -100,7 +101,7 @@ export default function PoolDetails() {
   const [allowedSlippage] = useUserSlippageTolerance()
   const { independentField, typedValue, recipient } = useSwapState()
   const { v2Trade, currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedSwapInfo()
-  const { wrapType, execute: onWrap, inputError: wrapInputError } = useWrapCallback(
+  const { wrapType, execute: onWrap, inputError: wrapInputError, isBusy } = useWrapCallback(
     currencies[Field.INPUT],
     currencies[Field.OUTPUT],
     typedValue
@@ -184,20 +185,22 @@ export default function PoolDetails() {
   const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
 
   const handleSwap = useCallback(() => {
-    if (priceImpactWithoutFee && !confirmPriceImpactWithoutFee(priceImpactWithoutFee)) {
-      return
-    }
     if (!swapCallback) {
       return
     }
+
     setSwapState((prevState) => ({ ...prevState, attemptingTxn: true, swapErrorMessage: undefined, txHash: undefined }))
     swapCallback()
-      .then((hash) => {
+      .then(async ({ hash, wait }) => {
+        setSwapState((prevState) => ({
+          ...prevState,
+          swapErrorMessage: undefined,
+          txHash: hash,
+        }))
+        await wait()
         setSwapState((prevState) => ({
           ...prevState,
           attemptingTxn: false,
-          swapErrorMessage: undefined,
-          txHash: hash,
         }))
       })
       .catch((error) => {
@@ -312,7 +315,7 @@ export default function PoolDetails() {
             </RowBetween>
 
             <StatCard>
-              <Text fontSize="18px" bold mb="16px">Swap</Text>
+              <Text fontSize="18px" $bold mb="16px">Swap</Text>
               <CardBody style={{ padding: '16px' }}>
                 <AutoColumn gap="md">
                   <CurrencyInputPanel
@@ -373,7 +376,7 @@ export default function PoolDetails() {
                     <>
                       <AutoRow justify="space-between" style={{ padding: '0 1rem' }}>
                         <ArrowWrapper clickable={false}>
-                          <ArrowDown size="16" color={theme.colors.textSubtle} />
+                          <ArrowDown size="16" color={theme?.colors.textSubtle} />
                         </ArrowWrapper>
                         <LinkStyledButton id="remove-recipient-button" onClick={() => onChangeRecipient(null)}>
                           - Remove send
@@ -406,11 +409,16 @@ export default function PoolDetails() {
                     </Card>
                   )}
                 </AutoColumn>
+                <WrongNetworkBanner />
                 <BottomGrouping>
                   {!account ? (
                     <ConnectWalletButton width="100%" />
+                  ) : isWrongNetwork ? (
+                    <Button disabled width="100%" variant="danger">
+                      Wrong network
+                    </Button>
                   ) : showWrap ? (
-                    <Button disabled={Boolean(wrapInputError)} onClick={onWrap} width="100%">
+                    <Button disabled={Boolean(wrapInputError) || isBusy} onClick={onWrap} width="100%">
                       {wrapInputError ??
                         (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
                     </Button>
@@ -421,7 +429,7 @@ export default function PoolDetails() {
                   ) : showApproveFlow ? (
                     <RowBetween>
                       <Button
-                        onClick={approveCallback}
+                        onClick={() => approveCallback(TransactionActionPerformed.ApproveSwap)}
                         disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
                         style={{ width: '48%' }}
                         variant={approval === ApprovalState.APPROVED ? 'success' : 'primary'}
@@ -495,14 +503,14 @@ export default function PoolDetails() {
             </StatCard>
 
             <StatCard>
-              <Text fontSize="18px" bold mb="16px">Liquidity</Text>
+              <Text fontSize="18px" $bold mb="16px">Liquidity</Text>
               <StatRow>
                 <Text>{pair.token0.symbol}</Text>
-                <Text bold>{pair.reserve0.toSignificant(6)}</Text>
+                <Text $bold>{pair.reserve0.toSignificant(6)}</Text>
               </StatRow>
               <StatRow>
                 <Text>{pair.token1.symbol}</Text>
-                <Text bold>{pair.reserve1.toSignificant(6)}</Text>
+                <Text $bold>{pair.reserve1.toSignificant(6)}</Text>
               </StatRow>
               <StatRow>
                 <Text>LP Address</Text>
@@ -511,35 +519,35 @@ export default function PoolDetails() {
             </StatCard>
 
             <StatCard>
-              <Text fontSize="18px" bold mb="16px">Price</Text>
+              <Text fontSize="18px" $bold mb="16px">Price</Text>
               <StatRow>
                 <Text>1 {pair.token0.symbol}</Text>
-                <Text bold>{pair.token0Price.toSignificant(6)} {pair.token1.symbol}</Text>
+                <Text $bold>{pair.token0Price.toSignificant(6)} {pair.token1.symbol}</Text>
               </StatRow>
               <StatRow>
                 <Text>1 {pair.token1.symbol}</Text>
-                <Text bold>{pair.token1Price.toSignificant(6)} {pair.token0.symbol}</Text>
+                <Text $bold>{pair.token1Price.toSignificant(6)} {pair.token0.symbol}</Text>
               </StatRow>
             </StatCard>
 
             {userData && userData.poolBalance && !userData.poolBalance.equalTo(new TokenAmount(pair.liquidityToken, '0')) && (
               <StatCard>
-                <Text fontSize="18px" bold mb="16px">Your Position</Text>
+                <Text fontSize="18px" $bold mb="16px">Your Position</Text>
                 <StatRow>
                   <Text>{pair.token0.symbol}</Text>
-                  <Text bold>{userData.token0Deposited?.toSignificant(6) ?? '---'}</Text>
+                  <Text $bold>{userData.token0Deposited?.toSignificant(6) ?? '---'}</Text>
                 </StatRow>
                 <StatRow>
                   <Text>{pair.token1.symbol}</Text>
-                  <Text bold>{userData.token1Deposited?.toSignificant(6) ?? '---'}</Text>
+                  <Text $bold>{userData.token1Deposited?.toSignificant(6) ?? '---'}</Text>
                 </StatRow>
                 <StatRow>
                   <Text>LP Tokens</Text>
-                  <Text bold>{userData.poolBalance?.toSignificant(4) ?? '---'}</Text>
+                  <Text $bold>{userData.poolBalance?.toSignificant(4) ?? '---'}</Text>
                 </StatRow>
                 <StatRow>
                   <Text>Share of Pool</Text>
-                  <Text bold>{userData.poolPercentage ? `${userData.poolPercentage?.toFixed(2)}%` : '---'}</Text>
+                  <Text $bold>{userData.poolPercentage ? `${userData.poolPercentage?.toFixed(2)}%` : '---'}</Text>
                 </StatRow>
               </StatCard>
             )}

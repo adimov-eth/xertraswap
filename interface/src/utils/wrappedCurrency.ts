@@ -1,8 +1,12 @@
 import { Currency, CurrencyAmount, ETHER, Token, TokenAmount, WETH } from '@xertra/sdk'
+import { isSupportedChainId } from '../config/chains'
 
 export function wrappedCurrency(currency: Currency | undefined, chainId: number | undefined): Token | undefined {
-  // eslint-disable-next-line no-nested-ternary
-  return chainId && currency === ETHER ? WETH[chainId] : currency instanceof Token ? currency : undefined
+  if (currency === ETHER) {
+    return chainId && isSupportedChainId(chainId) ? WETH[chainId] : undefined
+  }
+
+  return currency instanceof Token ? currency : undefined
 }
 
 export function wrappedCurrencyAmount(
@@ -14,6 +18,6 @@ export function wrappedCurrencyAmount(
 }
 
 export function unwrappedToken(token: Token): Currency {
-  if (token.equals(WETH[token.chainId])) return ETHER
+  if (isSupportedChainId(token.chainId) && token.equals(WETH[token.chainId])) return ETHER
   return token
 }

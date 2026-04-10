@@ -40,7 +40,7 @@ const Container = styled.div`
   }
 `
 
-const Dropdown: React.FC<DropdownProps> = ({ target, position = 'bottom', children }) => {
+function Dropdown({ target, position = 'bottom', children }: DropdownProps) {
   return (
     <Container>
       {target}

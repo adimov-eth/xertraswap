@@ -16,13 +16,13 @@ const AccountModal: React.FC<Props> = ({ account, logout, onDismiss = () => null
   <Modal title="Your wallet" onDismiss={onDismiss}>
     <Text
       fontSize="20px"
-      bold
+      $bold
       style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginBottom: '8px' }}
     >
       {account}
     </Text>
     <Flex mb="32px">
-      <LinkExternal small href={`https://explorer.xertra.com/address/${account}`} mr="16px">
+      <LinkExternal $small href={`https://explorer.xertra.com/address/${account}`} mr="16px">
         View on Explorer
       </LinkExternal>
       <CopyToClipboard toCopy={account}>Copy Address</CopyToClipboard>

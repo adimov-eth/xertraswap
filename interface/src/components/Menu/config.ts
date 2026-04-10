@@ -23,6 +23,7 @@ const config: MenuEntry[] = [
     label: 'Bridge',
     icon: 'MoreIcon',
     href: 'https://wormhole.xertra.com/',
+    target: '_blank'
   },
   ...(isTestnet
     ? [

@@ -1,4 +1,4 @@
-import { LayoutProps, SpaceProps } from 'styled-system'
+import { LayoutProps, SpaceProps } from '../../util/styledProps'
 
 export const animation = {
   WAVES: 'waves',

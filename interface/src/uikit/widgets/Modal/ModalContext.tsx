@@ -28,7 +28,7 @@ export const Context = createContext<ModalsContext>({
   setCloseOnOverlayClick: () => true,
 })
 
-const ModalProvider: React.FC = ({ children }) => {
+function ModalProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false)
   const [modalNode, setModalNode] = useState<React.ReactNode>()
   const [closeOnOverlayClick, setCloseOnOverlayClick] = useState(true)

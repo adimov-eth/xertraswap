@@ -8,6 +8,7 @@ import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, ETHER } from '
 import { ROUTER_ADDRESS } from '../constants'
 import { BLOCK_EXPLORER_URLS, CHAIN_IDS } from '../config/chains'
 import { TokenAddressMap } from '../state/lists/hooks'
+import handleError from './errorHandler'
 
 const IUniswapV2Router02ABI  = v2Router.abi
 // returns the checksummed address if the address is valid, otherwise returns false
@@ -96,4 +97,19 @@ export function escapeRegExp(string: string): string {
 export function isTokenOnList(defaultTokens: TokenAddressMap, currency?: Currency): boolean {
   if (currency === ETHER) return true
   return Boolean(currency instanceof Token && defaultTokens[currency.chainId]?.[currency.address])
+}
+
+export const safeHandler = (fn) => async (...args) => {
+  try {
+    await fn(...args);
+  } catch (error) {
+    handleError(error)
+  }
+};
+
+export function handleKey(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      e.target.click();
+    }
 }

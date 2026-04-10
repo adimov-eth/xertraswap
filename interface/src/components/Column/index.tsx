@@ -10,7 +10,9 @@ export const ColumnCenter = styled(Column)`
   align-items: center;
 `
 
-export const AutoColumn = styled.div<{
+export const AutoColumn = styled.div
+.withConfig({ shouldForwardProp: (prop) => !['gap', 'justify'].includes(prop) })
+<{
   gap?: 'sm' | 'md' | 'lg' | string
   justify?: 'stretch' | 'center' | 'start' | 'end' | 'flex-start' | 'flex-end' | 'space-between'
 }>`

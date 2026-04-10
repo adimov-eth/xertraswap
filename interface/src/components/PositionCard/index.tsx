@@ -24,7 +24,7 @@ export const FixedHeightRow = styled(RowBetween)`
 export const HoverCard = styled(Card)`
   border: 1px solid ${({ theme }) => theme.colors.borderColor};
   border-radius: 8px;
-  :hover {
+  &:hover {
     border: 1px solid ${({ theme }) => theme.colors.primary};
   }
 `
@@ -198,7 +198,7 @@ export default function FullPositionCard({ pair }: PositionCardProps) {
               <Text>{poolTokenPercentage ? `${poolTokenPercentage.toFixed(2)}%` : '-'}</Text>
             </FixedHeightRow>
 
-            <RowBetween marginTop="10px">
+            <RowBetween style={{ marginTop: '10px' }}>
               <Button as={Link} to={`/add/${currencyId(currency0)}/${currencyId(currency1)}`} style={{ width: '48%' }}>
                 Add
               </Button>
