@@ -1,5 +1,5 @@
 import { currencyEquals, Trade } from '@xertra/sdk'
-import React, { useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
   TransactionErrorContent
@@ -33,7 +33,9 @@ export default function ConfirmSwapModal({
   swapErrorMessage,
   isOpen,
   attemptingTxn,
-  txHash
+  txHash,
+  marginTop,
+  alignSelf
 }: {
   isOpen: boolean
   trade: Trade | undefined
@@ -46,6 +48,8 @@ export default function ConfirmSwapModal({
   onConfirm: () => void
   swapErrorMessage: string | undefined
   onDismiss: () => void
+  marginTop?: string
+  alignSelf?: string 
 }) {
   const showAcceptChanges = useMemo(
     () => Boolean(trade && originalTrade && tradeMeaningfullyDiffers(trade, originalTrade)),
@@ -104,6 +108,8 @@ export default function ConfirmSwapModal({
       hash={txHash}
       content={confirmationContent}
       pendingText={pendingText}
+      alignSelf={alignSelf}
+      marginTop={marginTop}      
     />
   )
 }

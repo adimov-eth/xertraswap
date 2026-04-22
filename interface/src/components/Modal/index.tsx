@@ -22,7 +22,7 @@ const Overlay = styled.div.withConfig({
 
 const Content = styled.div.withConfig({
   shouldForwardProp: (prop) => !prop.startsWith('$'),
-})<{ $minHeight?: number | false; $maxHeight?: number; $mobile: boolean; $visible: boolean }>`
+})<{ $minHeight?: number | false; $maxHeight?: number; $mobile: boolean; $visible: boolean, $alignSelf?: string, $marginTop?: string }>`
   margin: 0 0 2rem 0;
   border: 1px solid ${({ theme }) => theme.colors.borderColor};
   background-color: ${({ theme }) => theme.colors.card};
@@ -30,7 +30,8 @@ const Content = styled.div.withConfig({
   padding: 0;
   width: 80%;
   overflow: hidden;
-  align-self: ${({ $mobile }) => ($mobile ? 'flex-end' : 'center')};
+  align-self: ${({ $mobile, $alignSelf }) => ($mobile ? 'flex-end' : $alignSelf ? $alignSelf : 'center')};
+  margin-top: ${({ $mobile, $marginTop }) => ($mobile ? '0' : $marginTop ? $marginTop : '0')};
   max-width: 420px;
   display: flex;
   border-radius: 8px;
@@ -63,6 +64,8 @@ interface ModalProps {
   onDismiss: () => void
   minHeight?: number | false
   maxHeight?: number
+  marginTop?: string
+  alignSelf?: string
   initialFocusRef?: React.RefObject<any>
   children?: React.ReactNode
 }
@@ -72,6 +75,8 @@ export default function Modal({
   onDismiss,
   minHeight = false,
   maxHeight = 50,
+  marginTop,
+  alignSelf,
   initialFocusRef,
   children,
 }: ModalProps) {
@@ -120,6 +125,8 @@ export default function Modal({
         $maxHeight={maxHeight}
         $mobile={isMobile}
         $visible={isOpen}
+        $marginTop={marginTop}
+        $alignSelf={alignSelf}
       >
         {children}
       </Content>

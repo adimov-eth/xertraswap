@@ -46,6 +46,8 @@ const BodyWrapper = styled(Card)`
   max-width: 1100px;
   width: 100%;
   z-index: 5;
+  border-radius: 8px;
+  border: 1px solid ${({ theme }) => theme.colors.borderColor};  
 `
 
 const Grid = styled.div`
@@ -215,9 +217,9 @@ export default function Pools() {
                     <Td>
                       <AutoColumn gap="sm">
                         <DoubleCurrencyLogo currency0={pool.pair.token0} currency1={pool.pair.token1} size={25} margin />
-                        <Text >
+                        <Link to={`/pool/${pool.pair.token0.address}/${pool.pair.token1.address}`} style={{ textDecoration: 'none', fontWeight: 500 }}>
                           {pool.info.lpSymbol}
-                        </Text>
+                        </Link>
                         {(getBridgeInfo(pool.pair.token0.address, pool.pair.token0.name ?? '') || getBridgeInfo(pool.pair.token1.address, pool.pair.token1.name ?? '')) && (
                           <Text fontSize="11px" color="textSubtle">
                             {getBridgeInfo(pool.pair.token0.address, pool.pair.token0.name ?? '') || getBridgeInfo(pool.pair.token1.address, pool.pair.token1.name ?? '')}
