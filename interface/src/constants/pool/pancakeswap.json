@@ -85,6 +85,14 @@
       "lpAddress": "0x7f358F8a8FA50dB454910F9f8C120E450C133920",
       "token": "0xD1f463d39164901e07AFED20c2ba1554915E0d2e",
       "quoteToken": "0xaa0e34a393dadaaf661132dea1edd834c5628e16"
-    }    
+    },
+    {
+      "pid": 6,
+      "chainId": 105105,
+      "lpSymbol": "STRAX-USDC (BSC) LP",
+      "lpAddress": "0x65ae9Ad7B787EE4a6f833b717A2f1BbA7C3eF961",
+      "token": "0xeA705D2DbD8DE7Dc70Db7B531D0F620d9CeE9d18",
+      "quoteToken": "0xaa0e34a393dadaaf661132dea1edd834c5628e16"
+    } 
   ]
 }

@@ -158,7 +158,6 @@ const SUGGESTED_POOLS = [
   { symbol: 'WETH', address: '0xc398Cc4828E7ce677B357c8f94B6792Cb5538c03' },
   { symbol: 'WBNB', address: '0xE6d9419BFE31992a3aA4763B1e86Faf384c91697' },
   { symbol: 'USDC', address: '0x959A50Db9B9c78990698cA621d7a0bA7F1d6f2D6' },
-  { symbol: 'USDC', address: '0xaa0e34A393dadAAF661132deA1EDD834c5628e16' },
 ]
 
 function SuggestedPoolRow({ tokenAddress, symbol }: { tokenAddress: string; symbol: string }) {
