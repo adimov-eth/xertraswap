@@ -1,0 +1,45 @@
+
+    // These pools does exist but are hidden from the UI until further notice. 
+
+    {
+      "pid": 1,
+      "chainId": 105105,
+      "lpSymbol": "USDT-WSTRAX LP",
+      "lpAddress": "0xdD132834Ca70df5795A272bEeDAB56Dbc3f4baD9",
+      "token": "0xe46f25af64467c21a01c20ae0edf94e2ed934c5c",
+      "quoteToken": "0xea705d2dbd8de7dc70db7b531d0f620d9cee9d18"
+    },
+    {
+      "pid": 2,
+      "chainId": 105105,
+      "lpSymbol": "USDC-WSTRAX LP",
+      "lpAddress": "0x65c376f6F07F117F2cF8540a3a430315b5f12af1",
+      "token": "0xdd0c4bb4b46a1c10d36593e4fa5f76abdb583f7a",
+      "quoteToken": "0xea705d2dbd8de7dc70db7b531d0f620d9cee9d18"
+    },
+    {
+      "pid": 3,
+      "chainId": 105105,
+      "lpSymbol": "WETH-WSTRAX LP",
+      "lpAddress": "0x07cd3314a68BC67792f93841cbBF8039671376c5",
+      "token": "0xef11f04217d7a78641f6a300a0de83791961b3b6",
+      "quoteToken": "0xea705d2dbd8de7dc70db7b531d0f620d9cee9d18"
+    },
+    {
+      "pid": 1,
+      "chainId": 205205,
+      "lpSymbol": "xUSD-WSTRAX LP",
+      "lpAddress": "0xAc4Fc1b2C740dB83C6A82b6eB9a3D24a40EDf684",
+      "token": "0xE71d254C2F1430b597b53D83B3453d519F4C4564",
+      "quoteToken": "0x57402359Eb6f3aB02c19EA7B98F366f324b66Aae"
+    },
+
+    // This pool is broken as it was seeded incorrectly using USDC (via chainport) which has 6 decimals.
+    {
+      "pid": 1,
+      "chainId": 105105,
+      "lpSymbol": "STRAX-USDC (BSC) LP",
+      "lpAddress": "0x65ae9Ad7B787EE4a6f833b717A2f1BbA7C3eF961",
+      "token": "0xeA705D2DbD8DE7Dc70Db7B531D0F620d9CeE9d18",
+      "quoteToken": "0xaa0e34a393dadaaf661132dea1edd834c5628e16"
+    },  

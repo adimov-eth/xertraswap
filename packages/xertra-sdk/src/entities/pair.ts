@@ -17,24 +17,27 @@ export class Pair {
   private readonly tokenAmounts: [TokenAmount, TokenAmount]
 
   public static getAddress(tokenA: Token, tokenB: Token): string {
-    const tokens = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA] // does safety checks
 
-    if (PAIR_ADDRESS_CACHE?.[tokens[0].address]?.[tokens[1].address] === undefined) {
-      PAIR_ADDRESS_CACHE = {
-        ...PAIR_ADDRESS_CACHE,
-        [tokens[0].address]: {
-          ...PAIR_ADDRESS_CACHE?.[tokens[0].address],
-          [tokens[1].address]: getCreate2Address(
-            FACTORY_ADDRESS[tokens[0].chainId as ChainId],
-            keccak256(['bytes'], [pack(['address', 'address'], [tokens[0].address, tokens[1].address])]),
-            INIT_CODE_HASH[tokens[0].chainId as ChainId]
-          )
-        }
-      }
+    const [token0, token1] = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA] // does safety checks
+
+    // ALWAYS use sorted addresses as cache key
+    const key0 = token0.address.toLowerCase()
+    const key1 = token1.address.toLowerCase()
+
+    if (!PAIR_ADDRESS_CACHE[key0]) {
+      PAIR_ADDRESS_CACHE[key0] = {}
     }
 
-    return PAIR_ADDRESS_CACHE[tokens[0].address][tokens[1].address]
-  }
+    if (!PAIR_ADDRESS_CACHE[key0][key1]) {
+      PAIR_ADDRESS_CACHE[key0][key1] = getCreate2Address(
+        FACTORY_ADDRESS[token0.chainId as ChainId],
+        keccak256(['bytes'], [pack(['address', 'address'], [key0, key1])]),
+        INIT_CODE_HASH[token0.chainId as ChainId]
+      )
+    }
+
+    return PAIR_ADDRESS_CACHE[key0][key1]
+  }  
 
   public constructor(tokenAmountA: TokenAmount, tokenAmountB: TokenAmount) {
     const tokenAmounts = tokenAmountA.token.sortsBefore(tokenAmountB.token) // does safety checks

@@ -22,9 +22,12 @@ export const WSTRAX = new Token(
   'WSTRAX',
   'Wrapped STRAX'
 )
-export const DAI = new Token(ChainId.MAINNET, '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3', 18, 'DAI', 'Dai Stablecoin')
+
 export const USDT = new Token(ChainId.MAINNET, '0xe46f25Af64467c21a01c20Ae0edf94E2Ed934c5C', 18, 'USDT', 'Tether USD')
-export const USDC = new Token(ChainId.MAINNET, '0xDD0C4bb4b46A1C10D36593E4FA5F76abdB583f7A', 18, 'USDC', 'USD Coin')
+export const USDC = new Token(ChainId.MAINNET, '0xaa0e34A393dadAAF661132deA1EDD834c5628e16', 18, 'USDC', 'USD Coin')
+
+// This USDC token will no longer be used a base.
+// export const USDC = new Token(ChainId.MAINNET, '0xDD0C4bb4b46A1C10D36593E4FA5F76abdB583f7A', 18, 'USDC', 'USD Coin')
 
 const WETH_ONLY: ChainTokenList = {
   [ChainId.MAINNET]: [WETH[ChainId.MAINNET]],
@@ -34,7 +37,7 @@ const WETH_ONLY: ChainTokenList = {
 // used to construct intermediary pairs for trading
 export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   ...WETH_ONLY,
-  [ChainId.MAINNET]: [...WETH_ONLY[ChainId.MAINNET], DAI, USDT, USDC],
+  [ChainId.MAINNET]: [...WETH_ONLY[ChainId.MAINNET], USDT, USDC],
 }
 
 /**
@@ -48,21 +51,20 @@ export const CUSTOM_BASES: { [chainId in ChainId]?: { [tokenAddress: string]: To
 // used for display in the default list when adding liquidity
 export const SUGGESTED_BASES: ChainTokenList = {
   ...WETH_ONLY,
-  [ChainId.MAINNET]: [...WETH_ONLY[ChainId.MAINNET], DAI, USDT, USDC],
+  [ChainId.MAINNET]: [...WETH_ONLY[ChainId.MAINNET], USDT, USDC],
 }
 
 // used to construct the list of all pairs we consider by default in the frontend
 export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
   ...WETH_ONLY,
-  [ChainId.MAINNET]: [...WETH_ONLY[ChainId.MAINNET], DAI, USDT, USDC],
+  [ChainId.MAINNET]: [...WETH_ONLY[ChainId.MAINNET], USDT, USDC],
 }
 
 export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } = {
   [ChainId.MAINNET]: [
     [WSTRAX, USDT],
     [WSTRAX, USDC],
-    [USDT, USDC],
-    [DAI, USDT],
+    [USDT, USDC]
   ],
 }
 
