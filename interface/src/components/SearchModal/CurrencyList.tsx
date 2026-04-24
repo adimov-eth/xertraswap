@@ -23,7 +23,7 @@ const BRIDGE_INFO: Record<string, string> = {
   '0xc398Cc4828E7ce677B357c8f94B6792Cb5538c03': 'via Wormhole', // WETH
   '0xE6d9419BFE31992a3aA4763B1e86Faf384c91697': 'via Wormhole', // WBNB
   '0x959A50Db9B9c78990698cA621d7a0bA7F1d6f2D6': 'via Wormhole (Ethereum)', // USDC from ETH
-  '0xaa0e34A393dadAAF661132deA1EDD834c5628e16': 'via Wormhole (BSC)', // USDC from BSC
+  '0xaa0e34A393dadAAF661132deA1EDD834c5628e16': 'via Wormhole', // USDC from BSC
   // ChainPort tokens
   '0xe46f25Af64467c21a01c20Ae0edf94E2Ed934c5C': 'via ChainPort', // USDT
   '0xDD0C4bb4b46A1C10D36593E4FA5F76abdB583f7A': 'via ChainPort', // USDC
@@ -139,6 +139,7 @@ function CurrencyRow({
       <CurrencyLogo currency={currency} size="24px" />
       <Column>
         <Text title={currency.name}>{currency.symbol}</Text>
+        <Text fontSize="12px" color="textSubtle">{currency.name}</Text>
         {getBridgeInfo(currency) && (
           <Text fontSize="12px" color="textSubtle">{getBridgeInfo(currency)}</Text>
         )}

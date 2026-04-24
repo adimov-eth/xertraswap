@@ -160,6 +160,7 @@ const SUGGESTED_POOLS = [
   { symbol: 'USDC', address: '0x959A50Db9B9c78990698cA621d7a0bA7F1d6f2D6' },
 ]
 
+/* Commenting out for reference and if we need to at some point re-introduce it.
 function SuggestedPoolRow({ tokenAddress, symbol }: { tokenAddress: string; symbol: string }) {
   const currency = useCurrency(tokenAddress)
   const straxCurrency = useCurrency('STRAX')
@@ -184,7 +185,7 @@ function SuggestedPoolRow({ tokenAddress, symbol }: { tokenAddress: string; symb
       </Button>
     </SuggestedPoolCard>
   )
-}
+}*/
 
 export default function Pools() {
   const pools = useAllPools()
@@ -314,6 +315,8 @@ export default function Pools() {
           </tbody>
         </table>
 
+        {/* Commenting out for reference and if we need to at some point re-introduce it. 
+        
         <SectionTitle>Create New Pools</SectionTitle>
         <Text color="textSubtle" style={{ paddingLeft: '10px', marginBottom: '16px' }}>
           These tokens need liquidity pools. Click to create a pool with STRAX.
@@ -324,7 +327,7 @@ export default function Pools() {
             tokenAddress={pool.address}
             symbol={pool.symbol}
           />
-        ))}
+        ))} */}
       </Wrapper>
     </BodyWrapper>
   )
