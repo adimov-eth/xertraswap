@@ -125,6 +125,7 @@ export default function AddLiquidity({
     const { account: connectedAccount } = connection
     const router = getRouterContract(chainId, connection.provider, connectedAccount)
     const { [Field.CURRENCY_A]: parsedAmountA, [Field.CURRENCY_B]: parsedAmountB } = parsedAmounts
+    
     if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB) {
       return
     }
@@ -168,36 +169,36 @@ export default function AddLiquidity({
       ]
       value = null
     }
+    
+    try {
+      setAttemptingTxn(true)
 
-      try {
-        setAttemptingTxn(true)
-        
-        const estimatedGasLimit = await estimate(...args, value ? { value } : {})
-        const transactionResponse = await method(...args, {
-          ...(value ? { value } : {}),
-          gasLimit: calculateGasMargin(estimatedGasLimit),
-        })
+      const estimatedGasLimit = await estimate(...args, value ? { value } : {})
+      const transactionResponse = await method(...args, {
+        ...(value ? { value } : {}),
+        gasLimit: calculateGasMargin(estimatedGasLimit),
+      })
 
-        setTxHash(transactionResponse.hash)
+      setTxHash(transactionResponse.hash)
 
-        addTransaction(
-          transactionResponse, 
-          TransactionActionPerformed.Liquidity, {
-          summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
-            currencies[Field.CURRENCY_A]?.symbol
-          } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`,
-        })
+      addTransaction(
+        transactionResponse, 
+        TransactionActionPerformed.Liquidity, {
+        summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
+          currencies[Field.CURRENCY_A]?.symbol
+        } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`,
+      })
 
-        await transactionResponse.wait()
+      await transactionResponse.wait()
 
-        setAttemptingTxn(false)
-      } catch (e : any) {
-        setAttemptingTxn(false)
-        // we only care if the error is something _other_ than the user rejected the tx
-        if (e?.code !== 4001) {
-          console.error(e)
-        }
+      setAttemptingTxn(false)
+    } catch (e : any) {
+      setAttemptingTxn(false)
+      // we only care if the error is something _other_ than the user rejected the tx
+      if (e?.code !== 4001) {
+        console.error(e)
       }
+    }
   }
 
   const modalHeader = () => {
@@ -270,6 +271,7 @@ export default function AddLiquidity({
     },
     [currencyIdB, history, currencyIdA]
   )
+
   const handleCurrencyBSelect = useCallback(
     (currB: Currency) => {
       const newCurrencyIdB = currencyId(currB)

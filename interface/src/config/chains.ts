@@ -27,9 +27,10 @@ export const BLOCK_EXPLORER_URLS: Record<SupportedChainId, string> = {
 // Contract addresses per network
 export interface NetworkContracts {
   WSTRAX: string
-  FACTORY: string
+  FACTORY_V1?: string
+  FACTORY?: string
+  ROUTER_V1?: string
   ROUTER: string
-  ROUTER01: string
   INIT_HASH: string
   MULTICALL: string
 }
@@ -37,17 +38,17 @@ export interface NetworkContracts {
 export const NETWORK_CONTRACTS: Record<SupportedChainId, NetworkContracts> = {
   [CHAIN_IDS.MAINNET]: {
     WSTRAX: '0xeA705D2DbD8DE7Dc70Db7B531D0F620d9CeE9d18',
-    FACTORY: '0xDC29A634611914ed73261A71C8F20D828cA2c09F',
-    ROUTER: '0xE71d254C2F1430b597b53D83B3453d519F4C4564',
-    ROUTER01: '0xB81CeAA5452408c29F88b2AdAfaA6B3078FBbE18',
-    INIT_HASH: '0xa70eeb9bb3b548bd3404057cd53405c892d49801acca673e77238beb06b75b15',
+    FACTORY_V1: '0xDC29A634611914ed73261A71C8F20D828cA2c09F',
+    FACTORY: '0x2c85eF97339256cA0d17353Ad89C33Ec224C2DDb',
+    ROUTER_V1: '0xE71d254C2F1430b597b53D83B3453d519F4C4564',
+    ROUTER: '0x324aAE138CDA22a4A12fa873985AF891A79F6869',    
+    INIT_HASH: '0xd6ccaf200833bda77e2d626223654ea8c06cbf107639b883303f80a82331e017',
     MULTICALL: '0x23D1682b48124F9cBDF8A3a4e937759F9BB86c61',
   },
   [CHAIN_IDS.TESTNET]: {
     WSTRAX: '0x57402359Eb6f3aB02c19EA7B98F366f324b66Aae',
     FACTORY: '0xfbC6220786AE5B4c86C3F49c3bD013939186C1f2',
-    ROUTER: '0x83e88E09803FF8726A761ec25e91784872596fdB',
-    ROUTER01: '0x83e88E09803FF8726A761ec25e91784872596fdB',
+    ROUTER: '0x9BBAAD42b3334a1809E34af35375920a11589A17',    
     INIT_HASH: '0x6f59e2a4a56c0b6962ace9a1191d2cd9ff32be0669b90d36c663eadae954314b',
     MULTICALL: '0xDC29A634611914ed73261A71C8F20D828cA2c09F',
   },
@@ -75,7 +76,7 @@ export function getCurrentRpcUrl(): string {
 // Bad recipient addresses - contracts that should not receive tokens directly
 export function getBadRecipientAddresses(): string[] {
   const contracts = getCurrentContracts()
-  return [contracts.FACTORY, contracts.ROUTER01, contracts.ROUTER]
+  return [contracts.FACTORY, contracts.ROUTER]
 }
 
 // Supported chain IDs for wallet connectors

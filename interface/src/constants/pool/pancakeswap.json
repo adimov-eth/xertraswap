@@ -17,21 +17,47 @@
     {
       "pid": 1,
       "chainId": 105105,
-      "lpSymbol": "SPX-USDC (BSC) LP",
-      "lpAddress": "0x7f358F8a8FA50dB454910F9f8C120E450C133920",
-      "token": "0xD1f463d39164901e07AFED20c2ba1554915E0d2e",
+      "lpSymbol": "STRAX-USDC (BSC) LP",
+      "lpAddress": "0x73C5c2B5938508b04066457BC94a2b4900D23a28",
+      "token": "0xeA705D2DbD8DE7Dc70Db7B531D0F620d9CeE9d18",
       "quoteToken": "0xaa0e34a393dadaaf661132dea1edd834c5628e16"
-    },    
+    },
     {
       "pid": 2,
+      "chainId": 105105,
+      "lpSymbol": "SPX-USDC (BSC) LP",
+      "lpAddress": "0xB62C1CbD5400Bc4f266Bc66aD897D6C2125F5846",
+      "token": "0xD1f463d39164901e07AFED20c2ba1554915E0d2e",
+      "quoteToken": "0xaa0e34a393dadaaf661132dea1edd834c5628e16"
+    },       
+    {
+      "pid": 3,
       "chainId": 105105,
       "lpSymbol": "tSPX-USDC (BSC) LP",
       "lpAddress": "0x1996c0e53de02de88401f40c4024f2e3f14d7cf4",
       "token": "0x677027a1a25341803a179ba495ade4eebc3a8ebe",
       "quoteToken": "0xaa0e34a393dadaaf661132dea1edd834c5628e16"
-    },   
+    },
     {
-      "pid": 3,
+      "pid": 4,
+      "chainId": 105105,
+      "lpSymbol": "STRAX-USDC (BSC) LP (v1)",
+      "lpAddress": "0x65ae9Ad7B787EE4a6f833b717A2f1BbA7C3eF961",
+      "token": "0xeA705D2DbD8DE7Dc70Db7B531D0F620d9CeE9d18",
+      "quoteToken": "0xaa0e34a393dadaaf661132dea1edd834c5628e16",
+      "isDeprecated" : true
+    },
+    {
+      "pid": 5,
+      "chainId": 105105,
+      "lpSymbol": "SPX-USDC (BSC) LP (v1)",
+      "lpAddress": "0x7f358F8a8FA50dB454910F9f8C120E450C133920",
+      "token": "0xD1f463d39164901e07AFED20c2ba1554915E0d2e",
+      "quoteToken": "0xaa0e34a393dadaaf661132dea1edd834c5628e16",
+      "isDeprecated" : true
+    },      
+    {
+      "pid": 6,
       "chainId": 205205,
       "lpSymbol": "xETH-WSTRAX LP",
       "lpAddress": "0x9f95fC89Da1DD6bbab00E609054F557969F69D48",
@@ -39,7 +65,7 @@
       "quoteToken": "0x57402359Eb6f3aB02c19EA7B98F366f324b66Aae"
     },
     {
-      "pid": 4,
+      "pid": 7,
       "chainId": 205205,
       "lpSymbol": "xBTC-WSTRAX LP",
       "lpAddress": "0x138cF9832B3CC4974F793EDae0420ACD67D05942",
@@ -47,7 +73,7 @@
       "quoteToken": "0x57402359Eb6f3aB02c19EA7B98F366f324b66Aae"
     },
     {
-      "pid": 5,
+      "pid": 8,
       "chainId": 205205,
       "lpSymbol": "xUSD-xETH LP",
       "lpAddress": "0xA9b70a3d233B04Ae46462c310991850EDCE1221d",
