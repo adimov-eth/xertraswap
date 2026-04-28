@@ -34,12 +34,3 @@
       "quoteToken": "0x57402359Eb6f3aB02c19EA7B98F366f324b66Aae"
     },
 
-    // This pool is broken as it was seeded incorrectly using USDC (via chainport) which has 6 decimals.
-    {
-      "pid": 1,
-      "chainId": 105105,
-      "lpSymbol": "STRAX-USDC (BSC) LP",
-      "lpAddress": "0x65ae9Ad7B787EE4a6f833b717A2f1BbA7C3eF961",
-      "token": "0xeA705D2DbD8DE7Dc70Db7B531D0F620d9CeE9d18",
-      "quoteToken": "0xaa0e34a393dadaaf661132dea1edd834c5628e16"
-    },  
