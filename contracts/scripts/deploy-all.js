@@ -1,7 +1,7 @@
 // Deploy full DEX stack to Auroria testnet in one shot
 // Usage: npx hardhat run scripts/deploy-all.js --network auroria
 //
-// Uses existing WSTRAX on Auroria: 0x57402359Eb6f3aB02c19EA7B98F366f324b66Aae
+// Uses existing WSTRAX on Auroria: 0xeA705D2DbD8DE7Dc70Db7B531D0F620d9CeE9d18
 // Override with WSTRAX_ADDRESS env var if deploying fresh
 
 const deployFactory = require("./deploy-factory")
@@ -9,7 +9,7 @@ const deployRouter = require("./deploy-router")
 const deployMulticall = require("./deploy-multicall")
 
 // Known WSTRAX on Auroria (6 holders, 1162 STRAX wrapped)
-const AURORIA_WSTRAX = "0x57402359Eb6f3aB02c19EA7B98F366f324b66Aae"
+const AURORIA_WSTRAX = "0xeA705D2DbD8DE7Dc70Db7B531D0F620d9CeE9d18"
 
 async function main() {
   const network = await ethers.provider.getNetwork()
@@ -31,18 +31,18 @@ async function main() {
   const { router } = await deployRouter(factory, wstrax)
   console.log("")
 
-  // 3. Multicall (skip if already deployed)
-  console.log("--- Step 3: Multicall2 ---")
-  const existingMulticall = process.env.MULTICALL_ADDRESS
-  let multicall
-  if (existingMulticall) {
-    console.log("Using existing Multicall2:", existingMulticall)
-    multicall = existingMulticall
-  } else {
-    const result = await deployMulticall()
-    multicall = result.multicall
-  }
-  console.log("")
+  // // 3. Multicall (skip if already deployed)
+  // console.log("--- Step 3: Multicall2 ---")
+  // const existingMulticall = process.env.MULTICALL_ADDRESS
+  // let multicall
+  // if (existingMulticall) {
+  //   console.log("Using existing Multicall2:", existingMulticall)
+  //   multicall = existingMulticall
+  // } else {
+  //   const result = await deployMulticall()
+  //   multicall = result.multicall
+  // }
+  // console.log("")
 
   // Summary
   console.log("==============================================")
@@ -53,7 +53,7 @@ async function main() {
   console.log(`  PancakeFactory:      ${factory}`)
   console.log(`  INIT_CODE_PAIR_HASH: ${initCodeHash}`)
   console.log(`  PancakeRouter:       ${router}`)
-  console.log(`  Multicall2:          ${multicall}`)
+  //console.log(`  Multicall2:          ${multicall}`)
   console.log("")
   console.log("Next steps:")
   console.log("  1. Update interface/src/config/chains.ts with these addresses")

@@ -10,8 +10,8 @@ import useI18n from 'hooks/useI18n'
 import { Wrapper } from 'components/swap/styleds'
 import { AutoColumn } from 'components/Column'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
-import { useCurrency } from 'hooks/Tokens'
 import Loader from 'components/Loader'
+import { DEX_VERSION } from '../../config/chains'
 
 // Bridge info lookup by token address
 const BRIDGE_INFO: Record<string, string> = {
@@ -289,9 +289,11 @@ export default function Pools() {
                     </TdHideLg>
                     <Td>
                       <AutoColumn gap="sm">
-                        <Button scale="sm" as={Link} to={`/add/${pool.pair.token0.address}/${pool.pair.token1.address}/pools`}>
-                          {TranslateString(168, 'Add Liquidity')}
-                        </Button>
+                        {pool.info.version >= DEX_VERSION && 
+                          <Button scale="sm" as={Link} to={`/add/${pool.pair.token0.address}/${pool.pair.token1.address}/pools`}>
+                            {TranslateString(168, 'Add Liquidity')}
+                          </Button>
+                        }   
                         {userPoolData[i].poolBalance && !userPoolData[i].poolBalance.equalTo(new TokenAmount(pool.pair.liquidityToken, '0')) ? (
                           <Button
                             scale="sm"
@@ -302,7 +304,10 @@ export default function Pools() {
                             {TranslateString(168, 'Remove Liquidity')}
                           </Button>
                         ) : (
-                          <Button scale="sm" variant="secondary" disabled>
+                          <Button
+                            scale="sm" 
+                            variant="secondary" 
+                            disabled>
                             {TranslateString(168, 'Remove Liquidity')}
                           </Button>
                         )}

@@ -9,6 +9,7 @@ import { tryParseAmount } from '../swap/hooks'
 import { useTokenBalances } from '../wallet/hooks'
 import { Field, typeInput } from './actions'
 import Web3AuthContext from '../../pages/Web3AuthContext'
+import { DEX_VERSION } from '../../config/chains'
 
 export function useBurnState(): AppState['burn'] {
   return useSelector<AppState, AppState['burn']>(state => state.burn)
@@ -16,7 +17,8 @@ export function useBurnState(): AppState['burn'] {
 
 export function useDerivedBurnInfo(
   currencyA: Currency | undefined,
-  currencyB: Currency | undefined
+  currencyB: Currency | undefined,
+  version: 1 | 2 = DEX_VERSION
 ): {
   pair?: Pair | null
   parsedAmounts: {

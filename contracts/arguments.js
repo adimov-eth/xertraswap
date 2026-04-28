@@ -1,0 +1,5 @@
+// arguments.js
+module.exports = [
+  "0xc4431a7817aF6D70D82506ba241Ab471A4A5A04d",
+  "0xeA705D2DbD8DE7Dc70Db7B531D0F620d9CeE9d18"
+];

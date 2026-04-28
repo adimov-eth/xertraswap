@@ -42,7 +42,7 @@ import { Field } from '../../state/burn/actions'
 import { useUserDeadline, useUserSlippageTolerance } from '../../state/user/hooks'
 import Web3AuthContext from '../Web3AuthContext'
 import { TransactionActionPerformed } from '../../state/transactions/actions'
-import { from } from 'stylis'
+import { from, token } from 'stylis'
 
 const OutlineCard = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.borderColor};
@@ -73,6 +73,8 @@ export default function RemoveLiquidity({
   ])
 
   const theme = useContext(ThemeContext)
+
+  console.log(tokenA, tokenB)
 
   // burn state
   const { independentField, typedValue } = useBurnState()
@@ -112,6 +114,7 @@ export default function RemoveLiquidity({
   // allowance handling
   const [signatureData, setSignatureData] = useState<{ v: number; r: string; s: string; deadline: number } | null>(null)
   const [approval, approveCallback] = useApproveCallback(parsedAmounts[Field.LIQUIDITY], ROUTER_ADDRESS)
+  
   async function onAttemptToApprove() {
     if (!pairContract || !pair || connection.kind !== 'connected') throw new Error('missing dependencies')
     const { account: connectedAccount } = connection

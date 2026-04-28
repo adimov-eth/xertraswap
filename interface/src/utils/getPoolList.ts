@@ -9,7 +9,7 @@ export interface PoolInfo {
   readonly lpAddress: string
   readonly token: string
   readonly quoteToken: string
-  readonly isDeprecated?: boolean
+  readonly version: number
 }
 
 export interface PoolList {
