@@ -1,5 +1,4 @@
 import { MaxUint256 } from '@ethersproject/constants'
-import { TransactionResponse } from '@ethersproject/providers'
 import { Trade, TokenAmount, CurrencyAmount, ETHER } from '@xertra/sdk'
 import { useCallback, useContext, useMemo } from 'react'
 import { ROUTER_ADDRESS } from '../constants'
@@ -11,6 +10,7 @@ import { calculateGasMargin } from '../utils'
 import { useTokenContract } from './useContract'
 import Web3AuthContext from '../pages/Web3AuthContext'
 import { TransactionActionPerformed } from '../state/transactions/actions'
+import useRawTransactionSender from './useSendRawTransaction'
 
 export enum ApprovalState {
   UNKNOWN,
@@ -24,10 +24,11 @@ export function useApproveCallback(
   amountToApprove?: CurrencyAmount,
   spender?: string
 ): [ApprovalState, (actionPerformed: TransactionActionPerformed) => Promise<void>] {
-  const {account} = useContext(Web3AuthContext)
+  const { account } = useContext(Web3AuthContext)
   const token = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
   const pendingApproval = useHasPendingApproval(token?.address, spender)
+  const { sendContractTransaction } = useRawTransactionSender()
 
   // check the current approval status
   const approvalState: ApprovalState = useMemo(() => {
@@ -80,20 +81,25 @@ export function useApproveCallback(
     })
 
     // eslint-disable-next-line consistent-return
-    return tokenContract
-      .approve(spender, useExact ? amountToApprove.raw.toString() : MaxUint256, {
-        gasLimit: calculateGasMargin(estimatedGas),
+    const approvalAmount = useExact
+      ? amountToApprove.raw.toString()
+      : MaxUint256.toString()
+
+    const txHash = await sendContractTransaction({
+        contract: tokenContract,
+        methodName: 'approve',
+        args: [spender, approvalAmount],
+        gasEstimate: estimatedGas,
       })
-      .then((response: TransactionResponse) => {
-        addTransaction(response, actionPerformed, {
-          summary: `Approve ${amountToApprove.currency.symbol}`,
-          approval: { tokenAddress: token.address, spender },
-        })
-      })
-      .catch((error: Error) => {
-        console.error('Failed to approve token', error)
-        throw error
-      })
+
+    addTransaction(
+      { hash: txHash } as any,
+      actionPerformed,
+      {
+        summary: `Approve ${amountToApprove.currency.symbol}`,
+        approval: { tokenAddress: token.address, spender },
+      }
+    )
   }, [approvalState, token, tokenContract, amountToApprove, spender, addTransaction])
 
   return [approvalState, approve]
